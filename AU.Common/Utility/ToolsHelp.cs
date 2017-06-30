@@ -1,0 +1,157 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+namespace AU.Common.Utility
+{
+    /// <summary>
+    /// 工具类
+    /// </summary>
+    public class ToolsHelp
+    {
+        /// <summary>
+        /// 从指定网络地址下载文件到指定目录
+        /// </summary>
+        /// <param name="downpath">下载地址</param>
+        /// <param name="writepath">保存地址</param>
+        /// <param name="filename">文件名称</param>
+        /// <exception cref="System.IO.IOException">写目录失败</exception>
+        /// <exception cref="System.Net.WebException">下载文件失败</exception>
+        /// <returns>返回下载地址</returns>
+        public static string DownAutoUpdateFile(string downpath, string writepath, string filename)
+        {
+            //System.Net.WebRequest req = System.Net.WebRequest.Create(downpath);
+            //System.Net.WebResponse res = req.GetResponse();
+            //if (res.ContentLength > 0)
+            string path = string.Empty;
+            try
+            {
+                if (!System.IO.Directory.Exists(writepath))
+                    System.IO.Directory.CreateDirectory(writepath);
+                path = writepath + "/" + filename;
+
+                using (System.Net.WebClient wClient = new System.Net.WebClient())
+                {
+                    wClient.DownloadFile(downpath.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ? downpath : "http://" + downpath, path);
+                }
+            }
+            catch
+            {
+            }
+
+            return path;
+        }
+        /// <summary>
+        /// 创建目录
+        /// </summary>
+        /// <param name="path">目录</param>
+        public static void CreateDirtory(string path)
+        {
+            if (!File.Exists(path))
+            {
+                string[] dirArray = path.Split('\\');
+                string temp = string.Empty;
+                for (int i = 0; i < dirArray.Length - 1; i++)
+                {
+                    temp += dirArray[i].Trim() + "\\";
+                    if (!Directory.Exists(temp))
+                        Directory.CreateDirectory(temp);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 复制文件，递归拷贝
+        /// </summary>
+        /// <param name="sourcePath">源路径</param>
+        /// <param name="objPath">目标路径</param>
+        public static void CopyFile(string sourcePath, string objPath)
+        {
+            if (!Directory.Exists(objPath))
+            {
+                Directory.CreateDirectory(objPath);
+            }
+            string[] files = Directory.GetFiles(sourcePath);
+            for (int i = 0; i < files.Length; i++)
+            {
+                string[] childfile = files[i].Split('\\');
+                File.Copy(files[i], objPath + @"\" + childfile[childfile.Length - 1], true);
+            }
+            string[] dirs = Directory.GetDirectories(sourcePath);
+            for (int i = 0; i < dirs.Length; i++)
+            {
+                string[] childdir = dirs[i].Split('\\');
+                CopyFile(dirs[i], objPath + @"\" + childdir[childdir.Length - 1]);
+            }
+        }
+
+
+        /// <summary>
+        ///  计算指定文件的SHA1值
+        /// </summary>
+        /// <param name="fileName">指定文件的完全限定名称</param>
+        /// <returns>返回值的字符串形式</returns>
+        public static String ComputeSHA1(String fileName)
+        {
+            String hashSHA1 = String.Empty;
+
+            //检查文件是否存在，如果文件存在则进行计算，否则返回空值
+            if (System.IO.File.Exists(fileName))
+            {
+                using (System.IO.FileStream fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                {
+                    //计算文件的SHA1值
+                    System.Security.Cryptography.SHA1 calculator = System.Security.Cryptography.SHA1.Create();
+                    Byte[] buffer = calculator.ComputeHash(fs);
+                    calculator.Clear();
+                    //将字节数组转换成十六进制的字符串形式
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        stringBuilder.Append(buffer[i].ToString("x2"));
+                    }
+
+                    hashSHA1 = stringBuilder.ToString();
+
+                }//关闭文件流
+            }
+
+            return hashSHA1;
+        }//ComputeSHA1
+
+        /// <summary>
+        ///  计算指定文件的SHA1值
+        /// </summary>
+        /// <param name="fileName">指定文件的完全限定名称</param>
+        /// <returns>返回值的字符串形式</returns>
+        public static String ComputeSHA256(String fileName)
+        {
+            String hashSHA256 = String.Empty;
+
+            //检查文件是否存在，如果文件存在则进行计算，否则返回空值
+            if (System.IO.File.Exists(fileName))
+            {
+                using (System.IO.FileStream fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                {
+                    //计算文件的SHA1值
+                    System.Security.Cryptography.SHA256 calculator = System.Security.Cryptography.SHA256.Create();
+                    Byte[] buffer = calculator.ComputeHash(fs);
+                    calculator.Clear();
+                    //将字节数组转换成十六进制的字符串形式
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        stringBuilder.Append(buffer[i].ToString("x2"));
+                    }
+
+                    hashSHA256 = stringBuilder.ToString();
+
+                }//关闭文件流
+            }
+
+            return hashSHA256;
+        }//ComputeSHA1
+    }
+}
