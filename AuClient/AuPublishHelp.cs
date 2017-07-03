@@ -7,30 +7,11 @@ using System.Threading.Tasks;
 
 namespace AuClient
 {
+    /// <summary>
+    /// 包发布
+    /// </summary>
     public class AuPublishHelp
     {
-        /// <summary>
-        /// 更新地址
-        /// </summary>
-        //public string UpdatePath { get; private set; }
-
-        //public bool AllowPublish { get; set; }
-        /// <summary>
-        /// 发布地址
-        /// </summary>
-        //public string PublishAddress { get; set; }
-        /// <summary>
-        /// 是否UI
-        /// </summary>
-        //public bool AllowUI { get; set; }
-        /// <summary>
-        /// 执行频率
-        /// </summary>
-        //public int Interval { get; set; }
-        /// <summary>
-        /// 更新子系统
-        /// </summary>
-        //public string SubSystem { get; set; }
         /// <summary>
         /// 监听发布
         /// </summary>
@@ -43,12 +24,6 @@ namespace AuClient
         public AuPublishHelp(MainForm ui)
         {
             this.UI = ui;
-            //this.Interval = 5000;
-            //this.AllowPublish = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowPublish"], StringComparison.InvariantCultureIgnoreCase);
-            //this.AllowUI = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowUI"], StringComparison.InvariantCultureIgnoreCase);
-            //this.UpdatePath = Application.StartupPath; //+ "\\" + System.Configuration.ConfigurationManager.AppSettings["SubSystem"];
-            //this.PublishAddress = System.Configuration.ConfigurationManager.AppSettings["PublishAddress"] ?? "";
-            //this.SubSystem = System.Configuration.ConfigurationManager.AppSettings["SubSystem"] ?? "";
             if (AppConfig.Current.AllowPublish)
                 nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
         }
@@ -65,8 +40,6 @@ namespace AuClient
             cts = new System.Threading.CancellationTokenSource();
             Task engineTask = new Task(() => Engine(cts.Token), cts.Token);
             engineTask.Start();
-            //Task publishTask = new Task(() => Publish(cts.Token), cts.Token);
-            //publishTask.Start();
             if (AppConfig.Current.AllowPublish)
                 nancySelfHost.Start();
             return true;
@@ -81,23 +54,6 @@ namespace AuClient
                 cts.Cancel();
             if (AppConfig.Current.AllowPublish)
                 nancySelfHost.Stop();
-        }
-
-
-        /// <summary>
-        /// 处理引擎
-        /// </summary>
-        private void Publish(System.Threading.CancellationToken ct)
-        {
-
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
         }
         /// <summary>
         /// 处理引擎
@@ -139,18 +95,6 @@ namespace AuClient
                     //log
                 }
             }
-
-
-        }
-    }
-
-    public class MyBootstrapper : Nancy.DefaultNancyBootstrapper
-    {
-
-        protected override void ConfigureConventions(Nancy.Conventions.NancyConventions nancyConventions)
-        {
-            base.ConfigureConventions(nancyConventions);
-            nancyConventions.StaticContentsConventions.Add(Nancy.Conventions.StaticContentConventionBuilder.AddDirectory("package"));
         }
     }
 }

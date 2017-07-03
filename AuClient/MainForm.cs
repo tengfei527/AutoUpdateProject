@@ -25,15 +25,6 @@ namespace AuClient
         /// 获取更新文件列表
         /// </summary>
         private AuPackage htUpdateFile = null;
-
-        /// <summary>
-        /// 系统路径
-        /// </summary>
-        //public string SystemPath = string.Empty;
-        /// <summary>
-        /// 备份路径
-        /// </summary>
-        //public string AuBackupPath = string.Empty;
         /// <summary>
         /// 发布包信息
         /// </summary>
@@ -46,11 +37,7 @@ namespace AuClient
             InitializeComponent();
             this.WindowState = FormWindowState.Minimized;
             this.auPublishHelp = new AuPublishHelp(this);
-
-            //this.AuBackupPath = System.IO.Path.Combine(Application.StartupPath, this.auPublishHelp.SubSystem + "\\aubackup\\");
-            //this.SystemPath = System.IO.Path.Combine(Application.StartupPath, System.Configuration.ConfigurationManager.AppSettings["SystemPath"]);
-
-            linkLabel1.Text = AppConfig.Current.LinkUrl; //AppConfig.Current.LinkUrl;
+            linkLabel1.Text = AppConfig.Current.LinkUrl;
         }
         /// <summary>
         ///检查是否显示UI

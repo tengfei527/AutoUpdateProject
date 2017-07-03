@@ -597,14 +597,4 @@ namespace AuWriter
             }
         }
     }
-
-    public class MyBootstrapper : Nancy.DefaultNancyBootstrapper
-    {
-
-        protected override void ConfigureConventions(Nancy.Conventions.NancyConventions nancyConventions)
-        {
-            base.ConfigureConventions(nancyConventions);
-            nancyConventions.StaticContentsConventions.Add(Nancy.Conventions.StaticContentConventionBuilder.AddDirectory("package"));
-        }
-    }
 }
