@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuServer", "AuServer", "{DF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageServer", "PackageServer\PackageServer.csproj", "{22BC3355-FBC1-44D4-B152-AE93AFFD8FB5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorServer", "MonitorServer\MonitorServer.csproj", "{2DF71C50-0EE5-43CE-9E0B-1819144956FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{22BC3355-FBC1-44D4-B152-AE93AFFD8FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22BC3355-FBC1-44D4-B152-AE93AFFD8FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22BC3355-FBC1-44D4-B152-AE93AFFD8FB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DF71C50-0EE5-43CE-9E0B-1819144956FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DF71C50-0EE5-43CE-9E0B-1819144956FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DF71C50-0EE5-43CE-9E0B-1819144956FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DF71C50-0EE5-43CE-9E0B-1819144956FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,5 +60,6 @@ Global
 		{7683CC96-0B19-4E6C-B33E-7EB381930E6B} = {880E383B-BE5F-4330-82E5-12A85DA9F6E1}
 		{E3C57C14-83E4-4108-9DF2-CC3B9CB7ADAF} = {880E383B-BE5F-4330-82E5-12A85DA9F6E1}
 		{22BC3355-FBC1-44D4-B152-AE93AFFD8FB5} = {DFD58A69-3DCA-4CEB-B4D1-20819463BD5A}
+		{2DF71C50-0EE5-43CE-9E0B-1819144956FB} = {DFD58A69-3DCA-4CEB-B4D1-20819463BD5A}
 	EndGlobalSection
 EndGlobal
