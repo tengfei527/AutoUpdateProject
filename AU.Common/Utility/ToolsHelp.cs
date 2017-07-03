@@ -153,5 +153,24 @@ namespace AU.Common.Utility
 
             return hashSHA256;
         }//ComputeSHA1
+
+        /// <summary>
+        /// 关闭主应用程序
+        /// </summary>
+        /// <param name="applicationName"></param>
+        public static void CloseApplication(string applicationName)
+        {
+            System.Diagnostics.Process[] allProcess = System.Diagnostics.Process.GetProcesses();
+            foreach (System.Diagnostics.Process p in allProcess)
+            {
+
+                if (p.ProcessName.ToLower() + ".exe" == applicationName)
+                {
+                    for (int i = 0; i < p.Threads.Count; i++)
+                        p.Threads[i].Dispose();
+                    p.Kill();
+                }
+            }
+        }
     }
 }

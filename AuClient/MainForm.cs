@@ -69,7 +69,7 @@ namespace AuClient
                     //验证是否最新
                 }
 
-                auUpdater = new AppUpdater(AppConfig.Current.SystemPath, AppConfig.Current.UpdateTempPath, AppConfig.Current.AuBackupPath);
+                auUpdater = new AppUpdater(AppConfig.Current.SystemPath, AppConfig.Current.UpdateTempPath, AppConfig.Current.AuBackupPath, AppConfig.Current.SystemPath);
                 auUpdater.Notify += Au_Notify;
             }
             catch
@@ -152,35 +152,6 @@ namespace AuClient
 
         }
         /// <summary>
-        /// 完成更新
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnFinish_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (auUpdater.IsUpgrade)
-                {
-                    AU.Common.Utility.ToolsHelp.CopyFile(htUpdateFile.LocalPath, AppConfig.Current.SystemPath);
-                    System.IO.Directory.Delete(htUpdateFile.LocalPath, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
-            }
-            if (!IsMainAppRun())
-            {
-                string path = AppConfig.Current.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
-                if (System.IO.File.Exists(path))
-                {
-                    System.Diagnostics.Process.Start(path);
-                }
-            }
-            this.Hide();
-        }
-        /// <summary>
         /// 执行更新
         /// </summary>
         /// <param name="sender"></param>
@@ -218,15 +189,14 @@ namespace AuClient
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Hide();
-            if (!IsMainAppRun())
+            string path = string.Empty;
+            if (!IsMainAppRun(out path))
             {
-                string path = auUpdater.TargetAuPackage.LocalAuList.Application.Location + "\\" + auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint;
                 if (System.IO.File.Exists(path))
                 {
                     System.Diagnostics.Process.Start(path);
                 }
             }
-
         }
 
 
@@ -252,8 +222,7 @@ namespace AuClient
                 tabPageMain.TabPages.Clear();
                 tabPageMain.TabPages.Add(tabPageSucess);
                 btnNext.Visible = false;
-                btnCancel.Visible = false;
-                btnFinish.Visible = true;
+                btnCancel.Text = "完成";
             }
             else
             {
@@ -262,17 +231,18 @@ namespace AuClient
                 lbState.Text = "点击“下一步”开始更新文件";
                 pbDownFile.Value = 0;
                 btnNext.Visible = true;
-                btnCancel.Visible = true;
-                btnFinish.Visible = false;
+                btnCancel.Text = "取消";
             }
         }
         /// <summary>
         /// 判断主应用程序是否正在运行
         /// </summary>
         /// <returns></returns>
-        private bool IsMainAppRun()
+        private bool IsMainAppRun(out string applicationPath)
         {
             string name = string.Empty;
+            applicationPath = string.Empty;
+
             if (auUpdater.IsUpgrade)
             {
                 if (htUpdateFile.LocalAuList.Application.StartType != 1)
@@ -280,13 +250,17 @@ namespace AuClient
                     return true;
                 }
                 name = htUpdateFile.LocalAuList.Application.EntryPoint.ToLower();
+                applicationPath = AppConfig.Current.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
             }
             else
             {
                 if (auUpdater.TargetAuPackage == null || auUpdater.TargetAuPackage.LocalAuList == null || auUpdater.TargetAuPackage.LocalAuList.Application.StartType != 1)
                     return true;
                 else
+                {
                     name = auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower();
+                    applicationPath = auUpdater.TargetAuPackage.LocalAuList.Application.Location + "\\" + auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint;
+                }
             }
             bool isRun = false;
             Process[] allProcess = Process.GetProcesses();

@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.btnFinish = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -42,38 +41,29 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabPageMain = new System.Windows.Forms.TabControl();
-            this.tabPageList = new System.Windows.Forms.TabPage();
             this.tabPageMsg = new System.Windows.Forms.TabPage();
+            this.tbUpdateMsg = new System.Windows.Forms.TextBox();
+            this.tabPageList = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lbState = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.pbDownFile = new System.Windows.Forms.ProgressBar();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lvUpdateList = new System.Windows.Forms.ListView();
             this.No = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Version = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Progress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.WritePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SHA256 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pbDownFile = new System.Windows.Forms.ProgressBar();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.tbUpdateMsg = new System.Windows.Forms.TextBox();
-            this.lbState = new System.Windows.Forms.Label();
             this.tabPageSucess = new System.Windows.Forms.TabPage();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPageMain.SuspendLayout();
-            this.tabPageList.SuspendLayout();
             this.tabPageMsg.SuspendLayout();
+            this.tabPageList.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPageSucess.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnFinish
-            // 
-            this.btnFinish.Location = new System.Drawing.Point(224, 323);
-            this.btnFinish.Name = "btnFinish";
-            this.btnFinish.Size = new System.Drawing.Size(80, 24);
-            this.btnFinish.TabIndex = 8;
-            this.btnFinish.Text = "完成(&F)";
-            this.btnFinish.Click += new System.EventHandler(this.btnFinish_Click);
             // 
             // groupBox3
             // 
@@ -191,17 +181,6 @@
             this.tabPageMain.Size = new System.Drawing.Size(402, 307);
             this.tabPageMain.TabIndex = 12;
             // 
-            // tabPageList
-            // 
-            this.tabPageList.Controls.Add(this.panel1);
-            this.tabPageList.Location = new System.Drawing.Point(4, 22);
-            this.tabPageList.Name = "tabPageList";
-            this.tabPageList.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageList.Size = new System.Drawing.Size(394, 281);
-            this.tabPageList.TabIndex = 0;
-            this.tabPageList.Text = "以下为更新文件列表";
-            this.tabPageList.UseVisualStyleBackColor = true;
-            // 
             // tabPageMsg
             // 
             this.tabPageMsg.Controls.Add(this.tbUpdateMsg);
@@ -212,6 +191,27 @@
             this.tabPageMsg.TabIndex = 1;
             this.tabPageMsg.Text = "更新说明";
             this.tabPageMsg.UseVisualStyleBackColor = true;
+            // 
+            // tbUpdateMsg
+            // 
+            this.tbUpdateMsg.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbUpdateMsg.Location = new System.Drawing.Point(3, 3);
+            this.tbUpdateMsg.Multiline = true;
+            this.tbUpdateMsg.Name = "tbUpdateMsg";
+            this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbUpdateMsg.Size = new System.Drawing.Size(388, 275);
+            this.tbUpdateMsg.TabIndex = 18;
+            // 
+            // tabPageList
+            // 
+            this.tabPageList.Controls.Add(this.panel1);
+            this.tabPageList.Location = new System.Drawing.Point(4, 22);
+            this.tabPageList.Name = "tabPageList";
+            this.tabPageList.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageList.Size = new System.Drawing.Size(394, 281);
+            this.tabPageList.TabIndex = 0;
+            this.tabPageList.Text = "以下为更新文件列表";
+            this.tabPageList.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
@@ -226,6 +226,16 @@
             this.panel1.Size = new System.Drawing.Size(388, 275);
             this.panel1.TabIndex = 8;
             // 
+            // lbState
+            // 
+            this.lbState.AutoSize = true;
+            this.lbState.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lbState.Location = new System.Drawing.Point(0, 238);
+            this.lbState.Name = "lbState";
+            this.lbState.Size = new System.Drawing.Size(137, 12);
+            this.lbState.TabIndex = 8;
+            this.lbState.Text = "点击“下一步”开始更新";
+            // 
             // groupBox2
             // 
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -235,6 +245,23 @@
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "groupBox2";
+            // 
+            // pbDownFile
+            // 
+            this.pbDownFile.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pbDownFile.Location = new System.Drawing.Point(0, 252);
+            this.pbDownFile.Name = "pbDownFile";
+            this.pbDownFile.Size = new System.Drawing.Size(388, 23);
+            this.pbDownFile.TabIndex = 5;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(388, 8);
+            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabStop = false;
             // 
             // lvUpdateList
             // 
@@ -276,43 +303,6 @@
             // 
             this.SHA256.Text = "SHA256";
             // 
-            // pbDownFile
-            // 
-            this.pbDownFile.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pbDownFile.Location = new System.Drawing.Point(0, 252);
-            this.pbDownFile.Name = "pbDownFile";
-            this.pbDownFile.Size = new System.Drawing.Size(388, 23);
-            this.pbDownFile.TabIndex = 5;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(388, 8);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            // 
-            // tbUpdateMsg
-            // 
-            this.tbUpdateMsg.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbUpdateMsg.Location = new System.Drawing.Point(3, 3);
-            this.tbUpdateMsg.Multiline = true;
-            this.tbUpdateMsg.Name = "tbUpdateMsg";
-            this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbUpdateMsg.Size = new System.Drawing.Size(388, 275);
-            this.tbUpdateMsg.TabIndex = 18;
-            // 
-            // lbState
-            // 
-            this.lbState.AutoSize = true;
-            this.lbState.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lbState.Location = new System.Drawing.Point(0, 238);
-            this.lbState.Name = "lbState";
-            this.lbState.Size = new System.Drawing.Size(137, 12);
-            this.lbState.TabIndex = 8;
-            this.lbState.Text = "点击“下一步”开始更新";
-            // 
             // tabPageSucess
             // 
             this.tabPageSucess.Controls.Add(this.panel2);
@@ -331,7 +321,6 @@
             this.ClientSize = new System.Drawing.Size(530, 362);
             this.ControlBox = false;
             this.Controls.Add(this.tabPageMain);
-            this.Controls.Add(this.btnFinish);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.pictureBox1);
@@ -345,9 +334,9 @@
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPageMain.ResumeLayout(false);
-            this.tabPageList.ResumeLayout(false);
             this.tabPageMsg.ResumeLayout(false);
             this.tabPageMsg.PerformLayout();
+            this.tabPageList.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabPageSucess.ResumeLayout(false);
@@ -356,8 +345,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnFinish;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;

@@ -39,6 +39,10 @@ namespace AU.Common
         /// 备份路径
         /// </summary>
         public string AuBackupPath { get; set; }
+        /// <summary>
+        /// 系统地址
+        /// </summary>
+        public string SystemPath { get; set; }
         #endregion
 
         /// <summary>
@@ -46,8 +50,9 @@ namespace AU.Common
         /// </summary>
         /// <param name="targetPath">待升级包信息</param>
         /// <param name="updatePath">新版本包信息</param>
-        public AppUpdater(string targetPath, string updatePath, string aubackupPath)
+        public AppUpdater(string targetPath, string updatePath, string aubackupPath, string systemPath)
         {
+            this.SystemPath = systemPath;
             this.AuBackupPath = aubackupPath;
             //this.handle = handle;
             this.UpdateAuPackage = new AuPackage(updatePath);
@@ -182,17 +187,7 @@ namespace AU.Common
             {
                 if (this.TargetAuPackage.LocalAuList != null && this.TargetAuPackage.LocalAuList.Application.StartType == 1)
                 {
-                    Process[] allProcess = Process.GetProcesses();
-                    foreach (Process p in allProcess)
-                    {
-
-                        if (p.ProcessName.ToLower() + ".exe" == this.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower())
-                        {
-                            for (int i = 0; i < p.Threads.Count; i++)
-                                p.Threads[i].Dispose();
-                            p.Kill();
-                        }
-                    }
+                    AU.Common.Utility.ToolsHelp.CloseApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower());
                 }
                 //清除备份路径
                 if (System.IO.Directory.Exists(this.AuBackupPath))
@@ -212,7 +207,7 @@ namespace AU.Common
                         if (System.IO.File.Exists(path))
                         {
                             //备份
-                            string bak = AuBackupPath + m.WritePath;
+                            string bak = this.AuBackupPath + m.WritePath;
                             ToolsHelp.CreateDirtory(bak);
                             System.IO.File.Copy(path, bak, true);
                         }
@@ -231,6 +226,10 @@ namespace AU.Common
                 {
                     System.IO.File.Copy(this.TargetAuPackage.PackagePath, this.AuBackupPath + "\\" + AuPackage.PackageName, true);
                 }
+                //升级 根据文件类型选择升级？
+                AU.Common.Utility.ToolsHelp.CopyFile(upgradeFiles.LocalPath, this.SystemPath);
+                System.IO.Directory.Delete(upgradeFiles.LocalPath, true);
+
                 this.IsUpgrade = true;
             }
             catch (Exception e)
@@ -246,7 +245,26 @@ namespace AU.Common
             }
             return;
         }
+        /// <summary>
+        /// 还原系统
+        /// </summary>
+        /// <returns>还原是否成功</returns>
+        public bool Rollback()
+        {
+            if (System.IO.Directory.Exists(this.AuBackupPath))
+            {
+                if (this.TargetAuPackage.LocalAuList != null && this.TargetAuPackage.LocalAuList.Application.StartType == 1)
+                {
+                    AU.Common.Utility.ToolsHelp.CloseApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower());
+                }
 
+                AU.Common.Utility.ToolsHelp.CopyFile(this.AuBackupPath, this.SystemPath);
+
+                return true;
+            }
+
+            return false;
+        }
         /*
     public void DownUpdateFile(object obj)
     {
