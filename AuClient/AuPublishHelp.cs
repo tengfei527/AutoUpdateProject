@@ -12,25 +12,25 @@ namespace AuClient
         /// <summary>
         /// 更新地址
         /// </summary>
-        public string UpdatePath { get; private set; }
+        //public string UpdatePath { get; private set; }
 
-        public bool AllowPublish { get; set; }
+        //public bool AllowPublish { get; set; }
         /// <summary>
         /// 发布地址
         /// </summary>
-        public string PublishAddress { get; set; }
+        //public string PublishAddress { get; set; }
         /// <summary>
         /// 是否UI
         /// </summary>
-        public bool AllowUI { get; set; }
+        //public bool AllowUI { get; set; }
         /// <summary>
         /// 执行频率
         /// </summary>
-        public int Interval { get; set; }
+        //public int Interval { get; set; }
         /// <summary>
         /// 更新子系统
         /// </summary>
-        public string SubSystem { get; set; }
+        //public string SubSystem { get; set; }
         /// <summary>
         /// 监听发布
         /// </summary>
@@ -43,14 +43,14 @@ namespace AuClient
         public AuPublishHelp(MainForm ui)
         {
             this.UI = ui;
-            this.Interval = 5000;
-            this.AllowPublish = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowPublish"], StringComparison.InvariantCultureIgnoreCase);
-            this.AllowUI = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowUI"], StringComparison.InvariantCultureIgnoreCase);
-            this.UpdatePath = Application.StartupPath; //+ "\\" + System.Configuration.ConfigurationManager.AppSettings["SubSystem"];
-            this.PublishAddress = System.Configuration.ConfigurationManager.AppSettings["PublishAddress"] ?? "";
-            this.SubSystem = System.Configuration.ConfigurationManager.AppSettings["SubSystem"] ?? "";
-            if (this.AllowPublish)
-                nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri("http://localhost:54321"), new MyBootstrapper());
+            //this.Interval = 5000;
+            //this.AllowPublish = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowPublish"], StringComparison.InvariantCultureIgnoreCase);
+            //this.AllowUI = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowUI"], StringComparison.InvariantCultureIgnoreCase);
+            //this.UpdatePath = Application.StartupPath; //+ "\\" + System.Configuration.ConfigurationManager.AppSettings["SubSystem"];
+            //this.PublishAddress = System.Configuration.ConfigurationManager.AppSettings["PublishAddress"] ?? "";
+            //this.SubSystem = System.Configuration.ConfigurationManager.AppSettings["SubSystem"] ?? "";
+            if (AppConfig.Current.AllowPublish)
+                nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
         }
         /// <summary>
         /// 取消控制变量
@@ -67,7 +67,7 @@ namespace AuClient
             engineTask.Start();
             //Task publishTask = new Task(() => Publish(cts.Token), cts.Token);
             //publishTask.Start();
-            if (this.AllowPublish)
+            if (AppConfig.Current.AllowPublish)
                 nancySelfHost.Start();
             return true;
         }
@@ -79,7 +79,7 @@ namespace AuClient
         {
             if (cts != null)
                 cts.Cancel();
-            if (this.AllowPublish)
+            if (AppConfig.Current.AllowPublish)
                 nancySelfHost.Stop();
         }
 
@@ -108,7 +108,7 @@ namespace AuClient
             {
                 try
                 {
-                    AppPublish appPublish = new AppPublish(this.SubSystem, this.UpdatePath, this.PublishAddress);
+                    AppPublish appPublish = new AppPublish(AppConfig.Current.SubSystem, AppConfig.Current.UpdateConfigPath, AppConfig.Current.PublishAddress);
                     AuPublish aup = null;
 
                     if (appPublish.CheckForUpdate(out aup) > 0 && aup != null)
@@ -132,7 +132,7 @@ namespace AuClient
                     });
                     if (ct.IsCancellationRequested)
                         break;
-                    System.Threading.Thread.Sleep(this.Interval);
+                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                 }
                 catch (Exception e)
                 {

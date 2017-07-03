@@ -69,7 +69,7 @@ namespace AU.Common
         public AppPublish(string subsystem, string path, string publishaddress)
         {
             this.SubSystem = subsystem;
-            this.PublishAddress = publishaddress;
+            this.PublishAddress = publishaddress + "/package";
             this.LocalPath = path;
             this.PackagePath = this.LocalPath + "\\" + PackageName;
 

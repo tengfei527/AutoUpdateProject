@@ -25,18 +25,15 @@ namespace AuClient
         /// 获取更新文件列表
         /// </summary>
         private AuPackage htUpdateFile = null;
-        /// <summary>
-        /// 更新地址
-        /// </summary>
-        private string UpdatePath = string.Empty;
+
         /// <summary>
         /// 系统路径
         /// </summary>
-        public string SystemPath = string.Empty;
+        //public string SystemPath = string.Empty;
         /// <summary>
         /// 备份路径
         /// </summary>
-        public string AuBackupPath = string.Empty;
+        //public string AuBackupPath = string.Empty;
         /// <summary>
         /// 发布包信息
         /// </summary>
@@ -49,17 +46,18 @@ namespace AuClient
             InitializeComponent();
             this.WindowState = FormWindowState.Minimized;
             this.auPublishHelp = new AuPublishHelp(this);
-            this.UpdatePath = System.IO.Path.Combine(Application.StartupPath, this.auPublishHelp.SubSystem + "\\autemp\\");
-            this.AuBackupPath = System.IO.Path.Combine(Application.StartupPath, this.auPublishHelp.SubSystem + "\\aubackup\\");
-            this.SystemPath = System.IO.Path.Combine(Application.StartupPath, System.Configuration.ConfigurationManager.AppSettings["SystemPath"]);
-            linkLabel1.Text = System.Configuration.ConfigurationManager.AppSettings["LinkUrl"] ?? "";
+
+            //this.AuBackupPath = System.IO.Path.Combine(Application.StartupPath, this.auPublishHelp.SubSystem + "\\aubackup\\");
+            //this.SystemPath = System.IO.Path.Combine(Application.StartupPath, System.Configuration.ConfigurationManager.AppSettings["SystemPath"]);
+
+            linkLabel1.Text = AppConfig.Current.LinkUrl; //AppConfig.Current.LinkUrl;
         }
         /// <summary>
         ///检查是否显示UI
         /// </summary>
         public void Check()
         {
-            if (System.IO.Directory.Exists(this.UpdatePath) && (this.WindowState == FormWindowState.Minimized || !this.Visible))
+            if (System.IO.Directory.Exists(AppConfig.Current.UpdateTempPath) && (this.WindowState == FormWindowState.Minimized || !this.Visible))
             {
                 this.ShowUpdate("");
             }
@@ -75,16 +73,16 @@ namespace AuClient
 
             try
             {
-                if (System.IO.File.Exists(path) && !System.IO.Directory.Exists(this.UpdatePath))
+                if (System.IO.File.Exists(path) && !System.IO.Directory.Exists(AppConfig.Current.UpdateTempPath))
                 {
-                    AU.Common.Utility.ZipUtility.Decompress(path, this.UpdatePath);
+                    AU.Common.Utility.ZipUtility.Decompress(path, AppConfig.Current.UpdateTempPath);
                 }
                 else
                 {
                     //验证是否最新
                 }
 
-                auUpdater = new AppUpdater(this.SystemPath, this.UpdatePath, this.AuBackupPath);
+                auUpdater = new AppUpdater(AppConfig.Current.SystemPath, AppConfig.Current.UpdateTempPath, AppConfig.Current.AuBackupPath);
                 auUpdater.Notify += Au_Notify;
             }
             catch
@@ -177,7 +175,7 @@ namespace AuClient
             {
                 if (auUpdater.IsUpgrade)
                 {
-                    AU.Common.Utility.ToolsHelp.CopyFile(htUpdateFile.LocalPath, SystemPath);
+                    AU.Common.Utility.ToolsHelp.CopyFile(htUpdateFile.LocalPath, AppConfig.Current.SystemPath);
                     System.IO.Directory.Delete(htUpdateFile.LocalPath, true);
                 }
             }
@@ -187,7 +185,7 @@ namespace AuClient
             }
             if (!IsMainAppRun())
             {
-                string path = SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
+                string path = AppConfig.Current.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
                 if (System.IO.File.Exists(path))
                 {
                     System.Diagnostics.Process.Start(path);
