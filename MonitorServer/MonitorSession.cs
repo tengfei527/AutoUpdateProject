@@ -14,17 +14,17 @@ namespace MonitorServer
     {
         protected override void OnSessionStarted()
         {
-            this.Send("This is Monitor");
+            this.Send("This is Monitor Server");
         }
 
         protected override void HandleUnknownRequest(StringRequestInfo requestInfo)
         {
-            this.Send("Unknow request");
+            this.Send("Unknow request >> " + requestInfo.Body);
         }
 
         protected override void HandleException(Exception e)
         {
-            this.Send("Application error: {0}", e.Message);
+            this.Send("Application error >> {0}", e.Message);
         }
 
         protected override void OnSessionClosed(CloseReason reason)
