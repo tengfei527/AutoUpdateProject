@@ -19,7 +19,7 @@ namespace MonitorServer
 
         protected override void HandleUnknownRequest(StringRequestInfo requestInfo)
         {
-            this.Send("Unknow request >> " + requestInfo.Body);
+            this.Send("Unknow request >> " + requestInfo.Key + " " + requestInfo.Body);
         }
 
         protected override void HandleException(Exception e)
