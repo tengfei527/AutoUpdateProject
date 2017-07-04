@@ -19,16 +19,15 @@ namespace MonitorServer
         {
             InitializeComponent();
             Console.SetOut(new ListTextWriter(this.lbLog));
+            if (!bootstrap.Initialize())
+            {
+                Console.WriteLine("Failed to initialize!");
+            }
         }
         private void btnStart_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!bootstrap.Initialize())
-                {
-                    Console.WriteLine("Failed to initialize!");
-                    return;
-                }
                 StartResult result = bootstrap.Start();
                 Console.WriteLine("Start result: {0}!", result);
 
