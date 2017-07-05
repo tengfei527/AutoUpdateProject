@@ -6,7 +6,7 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.SocketBase.Protocol;
 
-namespace MonitorServer
+namespace AU.Monitor.Server
 {
     public class MonitorServer : AppServer<MonitorSession>
     {

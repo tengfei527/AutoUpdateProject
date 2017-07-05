@@ -5,7 +5,7 @@ using System.Text;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 
-namespace MonitorServer
+namespace AU.Monitor.Server
 {
     /// <summary>
     /// 会话

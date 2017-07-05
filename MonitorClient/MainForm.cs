@@ -1,4 +1,6 @@
-﻿using SuperSocket.ClientEngine;
+﻿using AU.Monitor.Client;
+using AU.Monitor.Client.Extensions;
+using SuperSocket.ClientEngine;
 using SuperSocket.ProtoBase;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ namespace MonitorClient
         public MainForm()
         {
             InitializeComponent();
-            Console.SetOut(new ListTextWriter(this.lbLog));
+            Console.SetOut(new Monitor.Common.ListTextWriter(this.lbLog));
             m_Encoding = System.Text.Encoding.Default;
             easyClient.Initialize(new FakeReceiveFilter(m_Encoding), (p =>
             {
@@ -60,30 +62,5 @@ namespace MonitorClient
         }
     }
 
-    public class FakeReceiveFilter : TerminatorReceiveFilter<StringPackageInfo>
-    {
-        public System.Text.Encoding MessageEncoding { get; private set; }
-        public FakeReceiveFilter(System.Text.Encoding m_Encoding, string terminator = "\r\n")
-            : base(m_Encoding.GetBytes(terminator))
-        {
-            this.MessageEncoding = m_Encoding;
-        }
-
-        public override StringPackageInfo ResolvePackage(IBufferStream bufferStream)
-        {
-            var buffer = bufferStream.Read();
-            string msg = MessageEncoding.GetString(buffer);
-            return new StringPackageInfo(msg.Substring(0, msg.Length - 2), new BasicStringParser(":", ","));
-        }
-    }
-    public static class IBufferStreamExtensions
-    {
-        public static byte[] Read(this IBufferStream bufferStream)
-        {
-            var buffer = new byte[bufferStream.Length];
-
-            bufferStream.Read(buffer, 0, (int)bufferStream.Length);
-            return buffer;
-        }
-    }
+    
 }

@@ -18,11 +18,7 @@ namespace MonitorServer
         public MainForm()
         {
             InitializeComponent();
-            Console.SetOut(new ListTextWriter(this.lbLog));
-            if (!bootstrap.Initialize())
-            {
-                Console.WriteLine("Failed to initialize!");
-            }
+            Console.SetOut(new Monitor.Common.ListTextWriter(this.lbLog));
         }
         private void btnStart_Click(object sender, EventArgs e)
         {
@@ -52,6 +48,14 @@ namespace MonitorServer
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+            }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            if (!bootstrap.Initialize())
+            {
+                Console.WriteLine("Failed to initialize!");
             }
         }
     }

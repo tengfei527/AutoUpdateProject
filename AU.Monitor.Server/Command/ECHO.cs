@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MonitorServer.Cmd
+namespace AU.Monitor.Server.Command
 {
     public class ECHO : CommandBase<MonitorSession, StringRequestInfo>
     {

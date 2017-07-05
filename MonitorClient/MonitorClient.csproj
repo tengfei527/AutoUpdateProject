@@ -59,7 +59,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ListTextWriter.cs" />
+    <Compile Include="..\AU.Monitor.Client\Extensions\IBufferStreamExtensions.cs">
+      <Link>IBufferStreamExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\AU.Monitor.Client\FakeReceiveFilter.cs">
+      <Link>FakeReceiveFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\MonitorServer\ListTextWriter.cs">
+      <Link>ListTextWriter.cs</Link>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
