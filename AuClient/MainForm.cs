@@ -125,7 +125,7 @@ namespace AuClient
         /// <param name="session"></param>
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
-            session.Send("Welcome to SuperSocket Telnet Server");
+            session.Send("Welcome to AuClient Socket Server");
         }
         /// <summary>
         /// 消息通知

@@ -207,7 +207,7 @@ namespace AuWriter
         }
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
-            session.Send("Welcome to SuperSocket Telnet Server");
+            session.Send("Welcome to AuWriter Socket Server");
         }
         #endregion [主窗体加载]
 
