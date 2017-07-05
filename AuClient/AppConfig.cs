@@ -63,6 +63,10 @@ namespace AuClient
         /// </summary>
         public string LinkUrl { get; set; }
         /// <summary>
+        /// Socket服务器地址
+        /// </summary>
+        public string SocketServer { get; set; }
+        /// <summary>
         ///初始化系统参数 
         /// </summary>
         private AppConfig()
@@ -90,6 +94,8 @@ namespace AuClient
             this.AuBackupPath = System.IO.Path.Combine(Application.StartupPath, this.SubSystem + "\\aubackup\\");
             this.SystemPath = System.IO.Path.Combine(Application.StartupPath, System.Configuration.ConfigurationManager.AppSettings["SystemPath"]);
             this.LinkUrl = System.Configuration.ConfigurationManager.AppSettings["LinkUrl"] ?? "";
+
+            this.SocketServer = System.Configuration.ConfigurationManager.AppSettings["SocketServer"] ?? "";
         }
 
 

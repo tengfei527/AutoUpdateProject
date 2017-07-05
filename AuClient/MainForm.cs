@@ -107,6 +107,7 @@ namespace AuClient
                 return;
             }
         }
+        private SuperSocket.ClientEngine.EasyClient easyClient = new SuperSocket.ClientEngine.EasyClient();
         /// <summary>
         /// 系统加载
         /// </summary>
@@ -118,6 +119,20 @@ namespace AuClient
             //Server
             StartResult result = AU.Monitor.Server.ServerBootstrap.Start(Ms_NewSessionConnected);
             Console.WriteLine("Start result: {0}!", result);
+            //Client
+            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.Default), (p =>
+            {
+                string body = p.Body;
+                string key = p.Key;
+                string[] par = p.Parameters;
+                if (key != body)
+                    Console.WriteLine("{0}:{1}", key, body);
+                else
+                    Console.WriteLine(key);
+            }));
+            //var ips = AppConfig.Current.SocketServer.Split(':');
+            //System.Threading.Tasks.Task<bool> result = easyClient.ConnectAsync(new System.Net.IPEndPoint(ips[0],ips[1]);
+            //System.Threading.Tasks.Task.WaitAll(result);
         }
         /// <summary>
         /// 新客户端连接
