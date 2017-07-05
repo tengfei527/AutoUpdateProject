@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
+using SuperSocket.SocketBase;
 
 namespace AuWriter
 {
@@ -47,6 +48,8 @@ namespace AuWriter
         public AuWriterForm()
         {
             InitializeComponent();
+
+            Console.SetOut(new Monitor.Common.ListTextWriter(this.lbLog));
         }
         #region [选择主程序]
         /// <summary>
@@ -199,7 +202,12 @@ namespace AuWriter
             {
                 Console.WriteLine(ex);
             }
-            Console.WriteLine("已经停止 \n NancySelfHost已关闭。。");
+            StartResult result = AU.Monitor.Server.ServerBootstrap.Start(Ms_NewSessionConnected);
+            Console.WriteLine("Start result: {0}!", result);
+        }
+        private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
+        {
+            session.Send("Welcome to SuperSocket Telnet Server");
         }
         #endregion [主窗体加载]
 
@@ -393,7 +401,9 @@ namespace AuWriter
                 };
                 //发布包
                 StreamWriter swau = new StreamWriter(aupublish, false, System.Text.Encoding.UTF8);
-                swau.Write(Newtonsoft.Json.JsonConvert.SerializeObject(auPublish));
+                string aujson = Newtonsoft.Json.JsonConvert.SerializeObject(auPublish);
+                swau.Write(aujson);
+
                 swau.Close();
             }
             #endregion
@@ -405,6 +415,8 @@ namespace AuWriter
                 this.prbProd.Visible = false;
                 this.btnProduce.Text = "生成(&G)";
                 cbPackage.Enabled = true;
+                //发送客户端通知消息
+
                 MessageBox.Show(this, "自动更新文件生成成功:" + mesg, "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (System.IO.Directory.Exists(PackageTempPath))
                     System.IO.Directory.Delete(PackageTempPath, true);

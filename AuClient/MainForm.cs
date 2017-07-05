@@ -1,4 +1,5 @@
 ﻿using AU.Common;
+using SuperSocket.SocketBase;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -114,6 +115,17 @@ namespace AuClient
         private void MainForm_Load(object sender, EventArgs e)
         {
             auPublishHelp.Start();
+            //Server
+            StartResult result = AU.Monitor.Server.ServerBootstrap.Start(Ms_NewSessionConnected);
+            Console.WriteLine("Start result: {0}!", result);
+        }
+        /// <summary>
+        /// 新客户端连接
+        /// </summary>
+        /// <param name="session"></param>
+        private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
+        {
+            session.Send("Welcome to SuperSocket Telnet Server");
         }
         /// <summary>
         /// 消息通知

@@ -30,22 +30,24 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnConnect = new System.Windows.Forms.Button();
+            this.tbIP = new System.Windows.Forms.TextBox();
+            this.tbMsg = new System.Windows.Forms.TextBox();
+            this.btnSend = new System.Windows.Forms.Button();
             this.lbLog = new System.Windows.Forms.ListBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnSend = new System.Windows.Forms.Button();
-            this.tbMsg = new System.Windows.Forms.TextBox();
-            this.tbIP = new System.Windows.Forms.TextBox();
-            this.btnConnect = new System.Windows.Forms.Button();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -73,16 +75,6 @@
             this.tabControl1.Size = new System.Drawing.Size(693, 352);
             this.tabControl1.TabIndex = 4;
             // 
-            // tabPage1
-            // 
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(685, 326);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "操作";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.groupBox1);
@@ -94,6 +86,56 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "日志";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.numericUpDown1);
+            this.groupBox1.Controls.Add(this.btnConnect);
+            this.groupBox1.Controls.Add(this.tbIP);
+            this.groupBox1.Controls.Add(this.tbMsg);
+            this.groupBox1.Controls.Add(this.btnSend);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(679, 100);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(569, 39);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(100, 23);
+            this.btnConnect.TabIndex = 7;
+            this.btnConnect.Text = "连接";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
+            // tbIP
+            // 
+            this.tbIP.Location = new System.Drawing.Point(569, 12);
+            this.tbIP.Name = "tbIP";
+            this.tbIP.Size = new System.Drawing.Size(65, 21);
+            this.tbIP.TabIndex = 6;
+            this.tbIP.Text = "127.0.0.1";
+            // 
+            // tbMsg
+            // 
+            this.tbMsg.Location = new System.Drawing.Point(6, 12);
+            this.tbMsg.Multiline = true;
+            this.tbMsg.Name = "tbMsg";
+            this.tbMsg.Size = new System.Drawing.Size(557, 82);
+            this.tbMsg.TabIndex = 5;
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(569, 71);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(100, 23);
+            this.btnSend.TabIndex = 3;
+            this.btnSend.Text = "发送";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // lbLog
             // 
@@ -111,6 +153,16 @@
             this.lbLog.Size = new System.Drawing.Size(679, 220);
             this.lbLog.TabIndex = 1;
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(685, 326);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "操作";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Location = new System.Drawing.Point(0, 376);
@@ -127,54 +179,27 @@
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // groupBox1
+            // numericUpDown1
             // 
-            this.groupBox1.Controls.Add(this.btnConnect);
-            this.groupBox1.Controls.Add(this.tbIP);
-            this.groupBox1.Controls.Add(this.tbMsg);
-            this.groupBox1.Controls.Add(this.btnSend);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(679, 100);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            // 
-            // btnSend
-            // 
-            this.btnSend.Location = new System.Drawing.Point(569, 71);
-            this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(100, 23);
-            this.btnSend.TabIndex = 3;
-            this.btnSend.Text = "发送";
-            this.btnSend.UseVisualStyleBackColor = true;
-            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
-            // 
-            // tbMsg
-            // 
-            this.tbMsg.Location = new System.Drawing.Point(6, 12);
-            this.tbMsg.Multiline = true;
-            this.tbMsg.Name = "tbMsg";
-            this.tbMsg.Size = new System.Drawing.Size(557, 82);
-            this.tbMsg.TabIndex = 5;
-            // 
-            // tbIP
-            // 
-            this.tbIP.Location = new System.Drawing.Point(569, 12);
-            this.tbIP.Name = "tbIP";
-            this.tbIP.Size = new System.Drawing.Size(100, 21);
-            this.tbIP.TabIndex = 6;
-            this.tbIP.Text = "127.0.0.1";
-            // 
-            // btnConnect
-            // 
-            this.btnConnect.Location = new System.Drawing.Point(569, 39);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(100, 23);
-            this.btnConnect.TabIndex = 7;
-            this.btnConnect.Text = "连接";
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.numericUpDown1.Location = new System.Drawing.Point(634, 12);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(45, 21);
+            this.numericUpDown1.TabIndex = 8;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            5275,
+            0,
+            0,
+            0});
             // 
             // MainForm
             // 
@@ -193,6 +218,7 @@
             this.tabPage2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -212,6 +238,7 @@
         private System.Windows.Forms.TextBox tbMsg;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.TextBox tbIP;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }
 

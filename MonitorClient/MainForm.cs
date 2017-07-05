@@ -41,7 +41,7 @@ namespace MonitorClient
             System.Net.IPAddress ip;
             if (System.Net.IPAddress.TryParse(tbIP.Text.Trim(), out ip))
             {
-                Task<bool> result = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, 5275));
+                Task<bool> result = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, (int)numericUpDown1.Value));
                 Task.WaitAll(result);
                 btnConnect.Enabled = !result.Result;
             }
@@ -62,5 +62,5 @@ namespace MonitorClient
         }
     }
 
-    
+
 }

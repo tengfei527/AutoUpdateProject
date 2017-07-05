@@ -54,6 +54,27 @@
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.ClientEngine, Version=0.8.0.12, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.ClientEngine.0.8.0.12\lib\net40-client\SuperSocket.ClientEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Common, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net40\SuperSocket.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Facility, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net40\SuperSocket.Facility.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.ProtoBase, Version=1.7.0.17, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.ProtoBase.1.7.0.17\lib\net40\SuperSocket.ProtoBase.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketBase, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net40\SuperSocket.SocketBase.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketEngine, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.Engine.1.6.6.1\lib\net40\SuperSocket.SocketEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketService, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.Engine.1.6.6.1\lib\net40\SuperSocket.SocketService.exe</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -87,6 +108,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="Config\log4net.config" />
+    <None Include="Config\log4net.unix.config" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -98,6 +121,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="supersocket.cmd" />
+    <None Include="supersocket.sh" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -106,6 +131,14 @@
     <ProjectReference Include="..\AU.Common\AU.Common.csproj">
       <Project>{2aebfe27-0f6f-4cf3-b7b5-0dffcd41c102}</Project>
       <Name>AU.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AU.Monitor.Client\AU.Monitor.Client.csproj">
+      <Project>{59d7c6d9-70c5-4a60-8237-ab3f448eb60e}</Project>
+      <Name>AU.Monitor.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AU.Monitor.Server\AU.Monitor.Server.csproj">
+      <Project>{ea55dbdc-02b2-4982-a8a4-d9ae8663b6ee}</Project>
+      <Name>AU.Monitor.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

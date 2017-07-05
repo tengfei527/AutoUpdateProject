@@ -36,6 +36,12 @@
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbpBase = new System.Windows.Forms.TabPage();
+            this.tbVersion = new System.Windows.Forms.TextBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.prbProd = new System.Windows.Forms.ProgressBar();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.btnProduce = new System.Windows.Forms.Button();
+            this.cbFilter = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.cbSubSystem = new System.Windows.Forms.ComboBox();
             this.btnExpt = new System.Windows.Forms.Button();
@@ -50,22 +56,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.prbProd = new System.Windows.Forms.ProgressBar();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.btnProduce = new System.Windows.Forms.Button();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.tbpControl = new System.Windows.Forms.TabPage();
             this.fbdSrc = new System.Windows.Forms.FolderBrowserDialog();
-            this.cbFilter = new System.Windows.Forms.CheckBox();
-            this.tbVersion = new System.Windows.Forms.TextBox();
             this.tbUpdateMsg = new System.Windows.Forms.TextBox();
-            this.tbpOpt.SuspendLayout();
+            this.lbLog = new System.Windows.Forms.ListBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tbMsg = new System.Windows.Forms.TextBox();
+            this.btnSend = new System.Windows.Forms.Button();
             this.tbpBase.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.tbpControl.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -85,11 +88,10 @@
             // 
             // tbpOpt
             // 
-            this.tbpOpt.Controls.Add(this.tbUpdateMsg);
             this.tbpOpt.Location = new System.Drawing.Point(4, 22);
             this.tbpOpt.Name = "tbpOpt";
             this.tbpOpt.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpOpt.Size = new System.Drawing.Size(521, 278);
+            this.tbpOpt.Size = new System.Drawing.Size(521, 371);
             this.tbpOpt.TabIndex = 1;
             this.tbpOpt.Text = "※选项";
             this.tbpOpt.UseVisualStyleBackColor = true;
@@ -133,7 +135,9 @@
             // 
             // tbpBase
             // 
+            this.tbpBase.Controls.Add(this.tbUpdateMsg);
             this.tbpBase.Controls.Add(this.tbVersion);
+            this.tbpBase.Controls.Add(this.panel2);
             this.tbpBase.Controls.Add(this.cbFilter);
             this.tbpBase.Controls.Add(this.label6);
             this.tbpBase.Controls.Add(this.cbSubSystem);
@@ -153,10 +157,71 @@
             this.tbpBase.Location = new System.Drawing.Point(4, 22);
             this.tbpBase.Name = "tbpBase";
             this.tbpBase.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpBase.Size = new System.Drawing.Size(521, 278);
+            this.tbpBase.Size = new System.Drawing.Size(521, 371);
             this.tbpBase.TabIndex = 0;
             this.tbpBase.Text = "※基本信息";
             this.tbpBase.UseVisualStyleBackColor = true;
+            // 
+            // tbVersion
+            // 
+            this.tbVersion.Location = new System.Drawing.Point(424, 65);
+            this.tbVersion.Name = "tbVersion";
+            this.tbVersion.Size = new System.Drawing.Size(79, 21);
+            this.tbVersion.TabIndex = 15;
+            this.tbVersion.TextChanged += new System.EventHandler(this.tbVersion_TextChanged);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.prbProd);
+            this.panel2.Controls.Add(this.btnExit);
+            this.panel2.Controls.Add(this.btnProduce);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(3, 328);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(515, 40);
+            this.panel2.TabIndex = 4;
+            // 
+            // prbProd
+            // 
+            this.prbProd.Location = new System.Drawing.Point(7, 9);
+            this.prbProd.Name = "prbProd";
+            this.prbProd.Size = new System.Drawing.Size(370, 23);
+            this.prbProd.TabIndex = 2;
+            this.prbProd.Visible = false;
+            // 
+            // btnExit
+            // 
+            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnExit.Location = new System.Drawing.Point(446, 9);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(64, 23);
+            this.btnExit.TabIndex = 1;
+            this.btnExit.Text = "退出(&X)";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // btnProduce
+            // 
+            this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnProduce.Location = new System.Drawing.Point(380, 10);
+            this.btnProduce.Name = "btnProduce";
+            this.btnProduce.Size = new System.Drawing.Size(60, 23);
+            this.btnProduce.TabIndex = 0;
+            this.btnProduce.Text = "生成(&G)";
+            this.btnProduce.UseVisualStyleBackColor = true;
+            this.btnProduce.Click += new System.EventHandler(this.btnProduce_Click);
+            // 
+            // cbFilter
+            // 
+            this.cbFilter.AutoSize = true;
+            this.cbFilter.Checked = true;
+            this.cbFilter.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbFilter.Location = new System.Drawing.Point(70, 89);
+            this.cbFilter.Name = "cbFilter";
+            this.cbFilter.Size = new System.Drawing.Size(300, 16);
+            this.cbFilter.TabIndex = 14;
+            this.cbFilter.Text = "过滤文件(*.log,*.config,*.db,*.dat,unins000.*)";
+            this.cbFilter.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -274,9 +339,9 @@
             // 
             this.groupBox1.Controls.Add(this.tabControl1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(0, 53);
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(535, 324);
+            this.groupBox1.Size = new System.Drawing.Size(535, 417);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             // 
@@ -284,103 +349,77 @@
             // 
             this.tabControl1.Controls.Add(this.tbpBase);
             this.tabControl1.Controls.Add(this.tbpOpt);
+            this.tabControl1.Controls.Add(this.tbpControl);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(3, 17);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(529, 304);
+            this.tabControl1.Size = new System.Drawing.Size(529, 397);
             this.tabControl1.TabIndex = 0;
             // 
-            // prbProd
+            // tbpControl
             // 
-            this.prbProd.Location = new System.Drawing.Point(7, 9);
-            this.prbProd.Name = "prbProd";
-            this.prbProd.Size = new System.Drawing.Size(370, 23);
-            this.prbProd.TabIndex = 2;
-            this.prbProd.Visible = false;
-            // 
-            // btnExit
-            // 
-            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExit.Location = new System.Drawing.Point(446, 9);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(64, 23);
-            this.btnExit.TabIndex = 1;
-            this.btnExit.Text = "退出(&X)";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // btnProduce
-            // 
-            this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnProduce.Location = new System.Drawing.Point(380, 10);
-            this.btnProduce.Name = "btnProduce";
-            this.btnProduce.Size = new System.Drawing.Size(60, 23);
-            this.btnProduce.TabIndex = 0;
-            this.btnProduce.Text = "生成(&G)";
-            this.btnProduce.UseVisualStyleBackColor = true;
-            this.btnProduce.Click += new System.EventHandler(this.btnProduce_Click);
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.prbProd);
-            this.panel2.Controls.Add(this.btnExit);
-            this.panel2.Controls.Add(this.btnProduce);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 377);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(535, 40);
-            this.panel2.TabIndex = 4;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Times New Roman", 21.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(71, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(297, 33);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "AutoUpdaterList Writer";
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(535, 53);
-            this.panel1.TabIndex = 3;
-            // 
-            // cbFilter
-            // 
-            this.cbFilter.AutoSize = true;
-            this.cbFilter.Checked = true;
-            this.cbFilter.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFilter.Location = new System.Drawing.Point(70, 89);
-            this.cbFilter.Name = "cbFilter";
-            this.cbFilter.Size = new System.Drawing.Size(300, 16);
-            this.cbFilter.TabIndex = 14;
-            this.cbFilter.Text = "过滤文件(*.log,*.config,*.db,*.dat,unins000.*)";
-            this.cbFilter.UseVisualStyleBackColor = true;
-            // 
-            // tbVersion
-            // 
-            this.tbVersion.Location = new System.Drawing.Point(424, 65);
-            this.tbVersion.Name = "tbVersion";
-            this.tbVersion.Size = new System.Drawing.Size(79, 21);
-            this.tbVersion.TabIndex = 15;
-            this.tbVersion.TextChanged += new System.EventHandler(this.tbVersion_TextChanged);
+            this.tbpControl.Controls.Add(this.lbLog);
+            this.tbpControl.Controls.Add(this.groupBox2);
+            this.tbpControl.Location = new System.Drawing.Point(4, 22);
+            this.tbpControl.Name = "tbpControl";
+            this.tbpControl.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpControl.Size = new System.Drawing.Size(521, 371);
+            this.tbpControl.TabIndex = 2;
+            this.tbpControl.Text = "※控制";
+            this.tbpControl.UseVisualStyleBackColor = true;
             // 
             // tbUpdateMsg
             // 
-            this.tbUpdateMsg.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbUpdateMsg.Location = new System.Drawing.Point(3, 3);
+            this.tbUpdateMsg.Location = new System.Drawing.Point(69, 263);
             this.tbUpdateMsg.Multiline = true;
             this.tbUpdateMsg.Name = "tbUpdateMsg";
             this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbUpdateMsg.Size = new System.Drawing.Size(515, 272);
-            this.tbUpdateMsg.TabIndex = 17;
+            this.tbUpdateMsg.Size = new System.Drawing.Size(375, 59);
+            this.tbUpdateMsg.TabIndex = 18;
             this.tbUpdateMsg.Text = "更新说明：";
+            // 
+            // lbLog
+            // 
+            this.lbLog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbLog.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.lbLog.FormattingEnabled = true;
+            this.lbLog.HorizontalScrollbar = true;
+            this.lbLog.ItemHeight = 12;
+            this.lbLog.Location = new System.Drawing.Point(3, 89);
+            this.lbLog.Name = "lbLog";
+            this.lbLog.ScrollAlwaysVisible = true;
+            this.lbLog.Size = new System.Drawing.Size(515, 279);
+            this.lbLog.TabIndex = 8;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.tbMsg);
+            this.groupBox2.Controls.Add(this.btnSend);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox2.Location = new System.Drawing.Point(3, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(515, 86);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            // 
+            // tbMsg
+            // 
+            this.tbMsg.Location = new System.Drawing.Point(6, 10);
+            this.tbMsg.Multiline = true;
+            this.tbMsg.Name = "tbMsg";
+            this.tbMsg.Size = new System.Drawing.Size(424, 69);
+            this.tbMsg.TabIndex = 5;
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(436, 56);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(64, 23);
+            this.btnSend.TabIndex = 3;
+            this.btnSend.Text = "发送";
+            this.btnSend.UseVisualStyleBackColor = true;
             // 
             // AuWriterForm
             // 
@@ -388,20 +427,17 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(535, 417);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
             this.Name = "AuWriterForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.tbpOpt.ResumeLayout(false);
-            this.tbpOpt.PerformLayout();
             this.tbpBase.ResumeLayout(false);
             this.tbpBase.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.tbpControl.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -431,15 +467,18 @@
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnProduce;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnDir;
         private System.Windows.Forms.FolderBrowserDialog fbdSrc;
         private System.Windows.Forms.ComboBox cbSubSystem;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox cbFilter;
         private System.Windows.Forms.TextBox tbVersion;
+        private System.Windows.Forms.TabPage tbpControl;
         private System.Windows.Forms.TextBox tbUpdateMsg;
+        private System.Windows.Forms.ListBox lbLog;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox tbMsg;
+        private System.Windows.Forms.Button btnSend;
     }
 }
 
