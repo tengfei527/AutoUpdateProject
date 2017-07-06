@@ -55,6 +55,29 @@ namespace AuClient
             if (AppConfig.Current.AllowPublish)
                 nancySelfHost.Stop();
         }
+
+        /// <summary>
+        /// 更新消息到达
+        /// </summary>
+        public void UpdateNotify(List<AuPublish> aupublishs)
+        {
+            foreach (var a in aupublishs)
+            {
+                //判断系统通知类型
+                switch ((SystemType)a.PublishType)
+                {
+                    case SystemType.coreserver:
+                        //判断是否本服务管理系统
+                        break;
+                    case SystemType.managerserver:
+                        break;
+                    case SystemType.vmsclient:
+                        break;
+                }
+            }
+        }
+
+
         /// <summary>
         /// 处理引擎
         /// </summary>

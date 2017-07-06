@@ -59,6 +59,7 @@
     <Compile Include="Utility\ConfigUtility.cs" />
     <Compile Include="Utility\HttpHelper.cs" />
     <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Utility\RegistryHelper.cs" />
     <Compile Include="Utility\ToolsHelp.cs" />
     <Compile Include="Utility\ZipUtility.cs" />
   </ItemGroup>

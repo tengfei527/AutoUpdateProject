@@ -110,6 +110,12 @@ namespace AU.Common
         /// 系统发布字典
         /// </summary>
         public static readonly Dictionary<string, int> DicPublishType = new Dictionary<string, int>() {
+            //手持机
+            { "handsetserver", 0x101},
+            //图象服务器
+            {"imageserver", 0x201},
+             //API服务器
+            { "coreserver", 0x301},
             //管理中心
             {"managerserver", 0x01},
             //车管系统
@@ -120,12 +126,6 @@ namespace AU.Common
             { "cmsclient" ,0x31},
             //考勤系统
             {"wmsclient",0x41 },
-            //手持机
-            { "handsetserver", 0x5},
-            //API服务器
-            { "coreserver", 0x61},
-            //图象服务器
-            {"imageserver", 0x71},
             //消息服务器
             { "mqserver",0x81},
             //巡更
@@ -141,5 +141,42 @@ namespace AU.Common
             //灯光引导
             { "lgsclient", 0xE1},
         };
+        /// <summary>
+        /// 系统类别
+        /// </summary>
+        
     }
+    public enum SystemType : int
+    {
+        //管理中心
+        managerserver = 0x01,
+        //车管系统
+        vmsclient = 0x11,
+        //门禁系统
+        dmsclient = 0x21,
+        //消费系统
+        cmsclient = 0x31,
+        //考勤系统
+        wmsclient = 0x41,
+        //手持机
+        handsetserver = 0x5,
+        //API服务器
+        coreserver = 0x61,
+        //图象服务器
+        imageserver = 0x71,
+        //消息服务器
+        mqserver = 0x81,
+        //巡更
+        kwsclient = 0x91,
+        //访客
+        vtsclient = 0xA1,
+        //通道
+        pwsclient = 0xB1,
+        //车位引导
+        pgsclient = 0xC1,
+        //反向巡车
+        rpcsclient = 0xD1,
+        //灯光引导
+        lgsclient = 0xE1
+    };
 }
