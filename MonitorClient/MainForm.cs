@@ -23,7 +23,7 @@ namespace MonitorClient
         {
             InitializeComponent();
             Console.SetOut(new Monitor.Common.ListTextWriter(this.lbLog));
-            m_Encoding = System.Text.Encoding.Default;
+            m_Encoding = System.Text.Encoding.UTF8;
             easyClient.Initialize(new FakeReceiveFilter(m_Encoding), (p =>
             {
                 string body = p.Body;

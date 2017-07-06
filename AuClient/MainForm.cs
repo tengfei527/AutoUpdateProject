@@ -117,10 +117,11 @@ namespace AuClient
         {
             auPublishHelp.Start();
             //Server
-            StartResult result = AU.Monitor.Server.ServerBootstrap.Start(Ms_NewSessionConnected);
+            AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed);
+            StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
             Console.WriteLine("Start result: {0}!", result);
             //Client
-            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.Default), (p =>
+            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), (p =>
             {
                 string body = p.Body;
                 string key = p.Key;
@@ -130,9 +131,30 @@ namespace AuClient
                 else
                     Console.WriteLine(key);
             }));
-            //var ips = AppConfig.Current.SocketServer.Split(':');
-            //System.Threading.Tasks.Task<bool> result = easyClient.ConnectAsync(new System.Net.IPEndPoint(ips[0],ips[1]);
-            //System.Threading.Tasks.Task.WaitAll(result);
+            var ips = AppConfig.Current.SocketServer.Split(':');
+            System.Net.IPAddress ip = System.Net.IPAddress.Parse(ips[0]);
+            int port = Convert.ToInt32(ips[1]);
+            System.Threading.Tasks.Task client = new System.Threading.Tasks.Task(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        if (!easyClient.IsConnected)
+                        {
+                            var res = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, port));
+                            System.Threading.Tasks.Task.WaitAll(res);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //log
+                    }
+
+                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                }
+            });
+            client.Start();
         }
         /// <summary>
         /// 新客户端连接
@@ -140,7 +162,12 @@ namespace AuClient
         /// <param name="session"></param>
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
+            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
             session.Send("Welcome to AuClient Socket Server");
+        }
+        private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
+        {
+            Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
         }
         /// <summary>
         /// 消息通知

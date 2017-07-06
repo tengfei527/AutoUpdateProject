@@ -26,7 +26,7 @@ namespace AU.Common
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// 发布类型 0=标准 1=非标
+        /// 发布类型 AU.Common.SubSystem.DicPublishType
         /// </summary>
         public int PublishType { get; set; }
 

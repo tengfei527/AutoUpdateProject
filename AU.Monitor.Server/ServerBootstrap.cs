@@ -22,12 +22,22 @@ namespace AU.Monitor.Server
                 return lazyBootstrap.Value;
             }
         }
+        public static void Send(string Message)
+        {
+            foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
+            {
+                foreach (var s in d.GetAllSessions())
+                {
+                    s.Send(Message.Replace("\r\n", ""));
+                }
+            }
+        }
         /// <summary>
-        /// 启动
+        /// 初始化
         /// </summary>
-        /// <param name="SessionConnectedEvent">NewSessionConnected</param>
-        /// <returns></returns>
-        public static StartResult Start(SessionHandler<MonitorSession> SessionConnectedEvent)
+        /// <param name="SessionConnectedEvent"></param>
+        /// <param name="SessionClosedEvent"></param>
+        public static void Init(SessionHandler<MonitorSession> SessionConnectedEvent, SessionHandler<MonitorSession, CloseReason> SessionClosedEvent)
         {
             foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
             {
@@ -36,8 +46,23 @@ namespace AU.Monitor.Server
                 Console.WriteLine(listen);
                 if (SessionConnectedEvent != null)
                     d.NewSessionConnected += SessionConnectedEvent;
+                if (SessionClosedEvent != null)
+                    d.SessionClosed += SessionClosedEvent;
             }
+        }
+        /// <summary>
+        /// 启动
+        /// </summary>
+        public static StartResult Start()
+        {
             return Bootstrap.Start();
+        }
+        /// <summary>
+        /// 停止服务
+        /// </summary>
+        public static void Stop()
+        {
+            Bootstrap.Stop();
         }
     }
 }

@@ -41,6 +41,14 @@ namespace AuWriter
         /// 更新路径
         /// </summary>
         public string UpdatePackagePath;
+        /// <summary>
+        /// 子系统
+        /// </summary>
+        public string SubSystem;
+        /// <summary>
+        /// 
+        /// </summary>
+        List<AU.Common.AuPublish> AuPublishs = new List<AU.Common.AuPublish>();
         #endregion
         /// <summary>
         /// 构造函数
@@ -173,6 +181,30 @@ namespace AuWriter
         #endregion [选择主程序]
 
         #region [主窗体加载]
+        private void InitAuPublishs()
+        {
+            this.UpdatePackagePath = Application.StartupPath + "\\" + (System.Configuration.ConfigurationManager.AppSettings["VirtualPath"] ?? "package");
+            foreach (string f in this.GetAllFiles(this.UpdatePackagePath))
+            {
+                if (f.EndsWith("aupublish.json"))
+                {
+                    var pub = AU.Common.AppPublish.ReadPackage(f);
+                    if (pub != null)
+                    {
+                        AddAuPublishs(pub);
+                    }
+                }
+            }
+        }
+        private void AddAuPublishs(AU.Common.AuPublish auPublish)
+        {
+            var autemp = this.AuPublishs.FirstOrDefault(d => d.PublishType == auPublish.PublishType);
+            if (autemp != null)
+            {
+                this.AuPublishs.Remove(autemp);
+            }
+            this.AuPublishs.Add(auPublish);
+        }
         /// <summary>
         /// 窗体加载
         /// </summary>
@@ -188,7 +220,7 @@ namespace AuWriter
             this.cbSubSystem.SelectedIndexChanged += new System.EventHandler(this.cbSubSystem_SelectedIndexChanged);
             this.cbSubSystem_SelectedIndexChanged(cbSubSystem, EventArgs.Empty);
             this.txtUrl.Text = BaseUpdatePath;
-
+            InitAuPublishs();
             string url = "http://localhost:12345";
             var nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(url), new MyBootstrapper());
             try
@@ -202,12 +234,9 @@ namespace AuWriter
             {
                 Console.WriteLine(ex);
             }
-            StartResult result = AU.Monitor.Server.ServerBootstrap.Start(Ms_NewSessionConnected);
-            Console.WriteLine("Start result: {0}!", result);
-        }
-        private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
-        {
-            session.Send("Welcome to AuWriter Socket Server");
+
+            AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed);
+            btnStart_Click(btnStart, EventArgs.Empty);
         }
         #endregion [主窗体加载]
 
@@ -379,22 +408,22 @@ namespace AuWriter
             if (IsPackage)
             {
                 string packagename = aulist.Application.Version + ".aup";
-                mesg = Path.Combine(UpdatePackagePath, packagename);
+                mesg = Path.Combine(UpdatePackagePath + "\\" + this.SubSystem + "\\", packagename);
                 AU.Common.Utility.ZipUtility.Compress(PackageTempPath, mesg);
-                string aupublish = UpdatePackagePath + "aupublish.json";
+                string aupublish = UpdatePackagePath + "\\" + this.SubSystem + "\\aupublish.json";
                 string No = "1";
                 if (System.IO.File.Exists(aupublish))
                 {
-                    No = (Convert.ToInt32(new AU.Common.AppPublish().ReadPackage(aupublish).No) + 1).ToString();
+                    No = (Convert.ToInt32(AU.Common.AppPublish.ReadPackage(aupublish).No) + 1).ToString();
                 }
                 AU.Common.AuPublish auPublish = new AU.Common.AuPublish()
                 {
                     No = No,
-                    Description = "打包更新" + packagename,
+                    Description = "发布更新" + packagename,
                     Url = BaseUpdatePath,
                     DownPath = packagename,
                     LastUpdateTime = DateTime.Now,
-                    PublishType = 0,
+                    PublishType = AU.Common.SubSystem.DicPublishType[this.SubSystem],
                     SHA256 = AU.Common.Utility.ToolsHelp.ComputeSHA256(mesg),
                     UpdateType = 0,
                     Version = aulist.Application.Version,
@@ -405,6 +434,8 @@ namespace AuWriter
                 swau.Write(aujson);
 
                 swau.Close();
+                //同时把新包加入列表
+                AddAuPublishs(auPublish);
             }
             #endregion
             #region [Notification]
@@ -416,7 +447,7 @@ namespace AuWriter
                 this.btnProduce.Text = "生成(&G)";
                 cbPackage.Enabled = true;
                 //发送客户端通知消息
-
+                AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
                 MessageBox.Show(this, "自动更新文件生成成功:" + mesg, "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (System.IO.Directory.Exists(PackageTempPath))
                     System.IO.Directory.Delete(PackageTempPath, true);
@@ -592,7 +623,7 @@ namespace AuWriter
         {
             this.BaseUpdatePath = Path.Combine(System.Configuration.ConfigurationManager.AppSettings["UpdateUrl"] ?? "", cbSubSystem.SelectedValue.ToString()) + "/";
             this.txtUrl.Text = this.BaseUpdatePath;
-            this.UpdatePackagePath = Application.StartupPath + "\\" + (System.Configuration.ConfigurationManager.AppSettings["VirtualPath"] ?? "package") + "\\" + cbSubSystem.SelectedValue.ToString() + "\\";
+            this.SubSystem = cbSubSystem.SelectedValue.ToString();
         }
 
         private void tbVersion_TextChanged(object sender, EventArgs e)
@@ -606,6 +637,40 @@ namespace AuWriter
             else
             {
                 MessageBox.Show("输入版本号格式不正确，请重新输入！");
+            }
+        }
+        private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
+        {
+            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
+            AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+        }
+        private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
+        {
+            Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
+        }
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (btnStart.Text == "启动服务")
+                {
+
+                    StartResult result = AU.Monitor.Server.ServerBootstrap.Bootstrap.Start();
+                    Console.WriteLine("Start result: {0}!", result);
+                    if (result != StartResult.Failed)
+                    {
+                        btnStart.Text = "停止服务";
+                    }
+                }
+                else
+                {
+                    AU.Monitor.Server.ServerBootstrap.Stop();
+                    btnStart.Text = "启动服务";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
     }

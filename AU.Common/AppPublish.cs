@@ -81,7 +81,7 @@ namespace AU.Common
         /// <summary>
         /// 初始化
         /// </summary>
-        public AuPublish ReadPackage(string path)
+        public static AuPublish ReadPackage(string path)
         {
             try
             {

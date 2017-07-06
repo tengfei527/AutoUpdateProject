@@ -36,6 +36,7 @@
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbpBase = new System.Windows.Forms.TabPage();
+            this.tbUpdateMsg = new System.Windows.Forms.TextBox();
             this.tbVersion = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.prbProd = new System.Windows.Forms.ProgressBar();
@@ -57,12 +58,12 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tbpControl = new System.Windows.Forms.TabPage();
-            this.fbdSrc = new System.Windows.Forms.FolderBrowserDialog();
-            this.tbUpdateMsg = new System.Windows.Forms.TextBox();
             this.lbLog = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbMsg = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
+            this.fbdSrc = new System.Windows.Forms.FolderBrowserDialog();
+            this.btnStart = new System.Windows.Forms.Button();
             this.tbpBase.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -161,6 +162,16 @@
             this.tbpBase.TabIndex = 0;
             this.tbpBase.Text = "※基本信息";
             this.tbpBase.UseVisualStyleBackColor = true;
+            // 
+            // tbUpdateMsg
+            // 
+            this.tbUpdateMsg.Location = new System.Drawing.Point(69, 263);
+            this.tbUpdateMsg.Multiline = true;
+            this.tbUpdateMsg.Name = "tbUpdateMsg";
+            this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbUpdateMsg.Size = new System.Drawing.Size(375, 59);
+            this.tbUpdateMsg.TabIndex = 18;
+            this.tbUpdateMsg.Text = "更新说明：";
             // 
             // tbVersion
             // 
@@ -369,16 +380,6 @@
             this.tbpControl.Text = "※控制";
             this.tbpControl.UseVisualStyleBackColor = true;
             // 
-            // tbUpdateMsg
-            // 
-            this.tbUpdateMsg.Location = new System.Drawing.Point(69, 263);
-            this.tbUpdateMsg.Multiline = true;
-            this.tbUpdateMsg.Name = "tbUpdateMsg";
-            this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbUpdateMsg.Size = new System.Drawing.Size(375, 59);
-            this.tbUpdateMsg.TabIndex = 18;
-            this.tbUpdateMsg.Text = "更新说明：";
-            // 
             // lbLog
             // 
             this.lbLog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -396,6 +397,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.tbMsg);
+            this.groupBox2.Controls.Add(this.btnStart);
             this.groupBox2.Controls.Add(this.btnSend);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
@@ -420,6 +422,16 @@
             this.btnSend.TabIndex = 3;
             this.btnSend.Text = "发送";
             this.btnSend.UseVisualStyleBackColor = true;
+            // 
+            // btnStart
+            // 
+            this.btnStart.Location = new System.Drawing.Point(436, 10);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(64, 23);
+            this.btnStart.TabIndex = 3;
+            this.btnStart.Text = "启动服务";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // AuWriterForm
             // 
@@ -479,6 +491,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox tbMsg;
         private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.Button btnStart;
     }
 }
 
