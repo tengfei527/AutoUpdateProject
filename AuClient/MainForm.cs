@@ -50,6 +50,79 @@ namespace AuClient
                 this.ShowUpdate("");
             }
         }
+
+        /// <summary>
+        ///检查是否显示UI
+        /// </summary>
+        public bool Check(string subsystem, string systemPath)
+        {
+            if (System.IO.Directory.Exists(AppConfig.GetUpdateTempPath(subsystem)) && (this.WindowState == FormWindowState.Minimized || !this.Visible))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        /// 显示更新
+        /// </summary>
+        public bool ShowUpdate(string path, string subsystem, string systemPath)
+        {
+            if (this.WindowState != FormWindowState.Minimized && this.Visible)
+                return false;
+            this.InvalidateControl(false);
+            string updateTempPath = AppConfig.GetUpdateTempPath(subsystem);
+            try
+            {
+                if (System.IO.File.Exists(path) && !System.IO.Directory.Exists(updateTempPath))
+                {
+                    AU.Common.Utility.ZipUtility.Decompress(path, updateTempPath);
+                }
+                else
+                {
+                    //验证是否最新
+                }
+                //更新
+                auUpdater = new AppUpdater(systemPath, updateTempPath, AppConfig.GetAuBackupPath(subsystem), systemPath);
+                auUpdater.Notify += Au_Notify;
+            }
+            catch
+            {
+                MessageBox.Show("配置文件出错!", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            //与服务器连接,下载更新配置文件
+            try
+            {
+                AvailableUpdate = auUpdater.CheckForUpdate(out htUpdateFile);
+                if (AvailableUpdate > 0)
+                {
+                    tbUpdateMsg.Text = htUpdateFile.LocalAuList.Description;
+                    lvUpdateList.Items.Clear();
+                    htUpdateFile.LocalAuList.Files.ForEach(d => lvUpdateList.Items.Add(new ListViewItem(
+                        new string[]
+                        {
+                            d.No,d.Version,"",d.WritePath,d.SHA256
+                        })));
+                    //有更新
+                    if (this.WindowState == FormWindowState.Minimized)
+                        this.WindowState = FormWindowState.Normal;
+                    this.Show();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("与服务器连接失败,操作超时!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+        }
+
+
         /// <summary>
         /// 显示更新
         /// </summary>
@@ -107,7 +180,7 @@ namespace AuClient
                 return;
             }
         }
-        private SuperSocket.ClientEngine.EasyClient easyClient = new SuperSocket.ClientEngine.EasyClient();
+
         /// <summary>
         /// 系统加载
         /// </summary>
@@ -116,58 +189,6 @@ namespace AuClient
         private void MainForm_Load(object sender, EventArgs e)
         {
             auPublishHelp.Start();
-            //Server
-            AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed);
-            StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
-            Console.WriteLine("Start result: {0}!", result);
-            //Client
-            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), (p =>
-            {
-                string body = p.Body;
-                string key = p.Key;
-                string[] par = p.Parameters;
-                if (key != body)
-                    Console.WriteLine("{0}:{1}", key, body);
-                else
-                    Console.WriteLine(key);
-            }));
-            var ips = AppConfig.Current.SocketServer.Split(':');
-            System.Net.IPAddress ip = System.Net.IPAddress.Parse(ips[0]);
-            int port = Convert.ToInt32(ips[1]);
-            System.Threading.Tasks.Task client = new System.Threading.Tasks.Task(() =>
-            {
-                while (true)
-                {
-                    try
-                    {
-                        if (!easyClient.IsConnected)
-                        {
-                            var res = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, port));
-                            System.Threading.Tasks.Task.WaitAll(res);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        //log
-                    }
-
-                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
-                }
-            });
-            client.Start();
-        }
-        /// <summary>
-        /// 新客户端连接
-        /// </summary>
-        /// <param name="session"></param>
-        private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
-        {
-            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
-            session.Send("Welcome to AuClient Socket Server");
-        }
-        private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
-        {
-            Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
         }
         /// <summary>
         /// 消息通知
@@ -251,6 +272,8 @@ namespace AuClient
                     System.Diagnostics.Process.Start(path);
                 }
             }
+
+            this.auPublishHelp.StartUpdateCheck();
         }
 
 
@@ -304,7 +327,7 @@ namespace AuClient
                     return true;
                 }
                 name = htUpdateFile.LocalAuList.Application.EntryPoint.ToLower();
-                applicationPath = AppConfig.Current.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
+                applicationPath = auUpdater.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
             }
             else
             {
@@ -313,7 +336,7 @@ namespace AuClient
                 else
                 {
                     name = auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower();
-                    applicationPath = auUpdater.TargetAuPackage.LocalAuList.Application.Location + "\\" + auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint;
+                    applicationPath = auUpdater.SystemPath + "\\" + auUpdater.TargetAuPackage.LocalAuList.Application.Location + "\\" + auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint;
                 }
             }
             bool isRun = false;
@@ -329,5 +352,10 @@ namespace AuClient
 
             return isRun;
         }
+
+        private void bgw_DoWork(object sender, DoWorkEventArgs e)
+        {
+        }
+
     }
 }

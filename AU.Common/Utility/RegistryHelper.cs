@@ -16,6 +16,34 @@ namespace AU.Common.Utility
     public class RegistryHelper
     {
         /// <summary>
+        /// 获取键下所有子节点
+        /// </summary>
+        /// <param name="root">主键</param>
+        /// <param name="subkey">节点</param>
+        /// <returns></returns>
+        public static Dictionary<string, string> GetRegistrySubs(RegistryKey root, string subkey)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            // 打开子路径
+            RegistryKey myKey = root.OpenSubKey(subkey, false);
+
+            if (myKey != null)
+            {
+                String[] keyNameArray = myKey.GetValueNames();
+                foreach (string keyName in keyNameArray)
+                {
+                    // 读取键值
+                    string keyValue = (string)myKey.GetValue(keyName);
+                    if (dic.ContainsKey(keyName))
+                        dic[keyName] = keyValue;
+                    else
+                        dic.Add(keyName, keyValue);
+                }
+            }
+
+            return dic;
+        }
+        /// <summary>
         /// 读取指定名称的注册表的值
         /// </summary>
         /// <param name="name"></param>

@@ -98,6 +98,15 @@ namespace AuClient
             this.SocketServer = System.Configuration.ConfigurationManager.AppSettings["SocketServer"] ?? "";
         }
 
+        public static string GetUpdateTempPath(string subsystem)
+        {
+            return appConfig.UpdateConfigPath + "\\" + subsystem + "\\autemp\\";
+        }
+        public static string GetAuBackupPath(string subsystem)
+        {
+            return appConfig.UpdateConfigPath + "\\" + subsystem + "\\aubackup\\";
+        }
+
 
         //+ "\\" + System.Configuration.ConfigurationManager.AppSettings["SubSystem"];
 

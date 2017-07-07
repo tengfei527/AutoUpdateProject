@@ -56,6 +56,7 @@
             this.WritePath = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SHA256 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPageSucess = new System.Windows.Forms.TabPage();
+            this.bgw = new System.ComponentModel.BackgroundWorker();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPageMain.SuspendLayout();
@@ -314,6 +315,11 @@
             this.tabPageSucess.Text = "更新完成";
             this.tabPageSucess.UseVisualStyleBackColor = true;
             // 
+            // bgw
+            // 
+            this.bgw.WorkerSupportsCancellation = true;
+            this.bgw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgw_DoWork);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -372,5 +378,6 @@
         private System.Windows.Forms.TextBox tbUpdateMsg;
         private System.Windows.Forms.Label lbState;
         private System.Windows.Forms.TabPage tabPageSucess;
+        private System.ComponentModel.BackgroundWorker bgw;
     }
 }

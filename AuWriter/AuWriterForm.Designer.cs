@@ -61,9 +61,9 @@
             this.lbLog = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbMsg = new System.Windows.Forms.TextBox();
+            this.btnStart = new System.Windows.Forms.Button();
             this.btnSend = new System.Windows.Forms.Button();
             this.fbdSrc = new System.Windows.Forms.FolderBrowserDialog();
-            this.btnStart = new System.Windows.Forms.Button();
             this.tbpBase.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -414,15 +414,6 @@
             this.tbMsg.Size = new System.Drawing.Size(424, 69);
             this.tbMsg.TabIndex = 5;
             // 
-            // btnSend
-            // 
-            this.btnSend.Location = new System.Drawing.Point(436, 56);
-            this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(64, 23);
-            this.btnSend.TabIndex = 3;
-            this.btnSend.Text = "发送";
-            this.btnSend.UseVisualStyleBackColor = true;
-            // 
             // btnStart
             // 
             this.btnStart.Location = new System.Drawing.Point(436, 10);
@@ -432,6 +423,16 @@
             this.btnStart.Text = "启动服务";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(436, 56);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(64, 23);
+            this.btnSend.TabIndex = 3;
+            this.btnSend.Text = "发送";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // AuWriterForm
             // 

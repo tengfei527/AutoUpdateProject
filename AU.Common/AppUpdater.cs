@@ -234,7 +234,7 @@ namespace AU.Common
             }
             catch (Exception e)
             {
-                NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "关闭主线程失败", e));
+                NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "复制文件失败", e));
 
                 this.IsUpgrade = false;
                 return;

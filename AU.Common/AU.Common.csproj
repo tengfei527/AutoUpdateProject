@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppPublish.cs" />
+    <Compile Include="AppRemotePublish.cs" />
     <Compile Include="AppUpdater.cs" />
     <Compile Include="AuApplication.cs" />
     <Compile Include="AuFile.cs" />

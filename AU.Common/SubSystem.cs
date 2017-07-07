@@ -144,10 +144,17 @@ namespace AU.Common
         /// <summary>
         /// 系统类别
         /// </summary>
-        
+
     }
     public enum SystemType : int
     {
+
+        //手持机
+        handsetserver = 0x101,
+        //图象服务器
+        imageserver = 0x201,
+        //API服务器
+        coreserver = 0x301,
         //管理中心
         managerserver = 0x01,
         //车管系统
@@ -158,12 +165,6 @@ namespace AU.Common
         cmsclient = 0x31,
         //考勤系统
         wmsclient = 0x41,
-        //手持机
-        handsetserver = 0x5,
-        //API服务器
-        coreserver = 0x61,
-        //图象服务器
-        imageserver = 0x71,
         //消息服务器
         mqserver = 0x81,
         //巡更

@@ -673,5 +673,13 @@ namespace AuWriter
                 Console.WriteLine(ex);
             }
         }
+
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            if(string.IsNullOrEmpty(tbMsg.Text))
+            {
+                AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+            }
+        }
     }
 }

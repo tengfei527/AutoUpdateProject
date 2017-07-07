@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using SuperSocket.SocketBase;
+using System.Collections.Concurrent;
 
 namespace AuClient
 {
@@ -16,30 +18,123 @@ namespace AuClient
         /// 监听发布
         /// </summary>
         Nancy.Hosting.Self.NancyHost nancySelfHost = null;
+        /// <summary>
+        /// 取消控制变量
+        /// </summary>
+        private System.Threading.CancellationTokenSource cts;
+
+        public Dictionary<string, string> SubSystemDic { get; private set; }
+
+        private SuperSocket.ClientEngine.EasyClient easyClient = new SuperSocket.ClientEngine.EasyClient();
 
         public MainForm UI = null;
+        AppRemotePublish AppRemotePublishConten { get; set; }
         /// <summary>
         /// 构造函数
         /// </summary>
         public AuPublishHelp(MainForm ui)
         {
+            this.AppRemotePublishConten = new AppRemotePublish(AppConfig.Current.PublishAddress, AppConfig.Current.UpdateConfigPath + "\\package\\");
             this.UI = ui;
             if (AppConfig.Current.AllowPublish)
+            {
                 nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
+                //Server
+                AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed);
+                StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
+                Console.WriteLine("Start result: {0}!", result);
+            }
+
+            InitSocketClient();
+        }
+        private ConcurrentQueue<AuPublish> AuPublishQueue = new ConcurrentQueue<AuPublish>();
+        private void InitSocketClient()
+        {
+            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), (p =>
+            {
+                string body = p.Body;
+                string key = p.Key;
+                string[] par = p.Parameters;
+                if (key != body)
+                    Console.WriteLine("{0}:{1}", key, body);
+                else
+                    Console.WriteLine(key);
+                try
+                {
+                    switch (key)
+                    {
+                        case "AUVERSION":
+                            List<AuPublish> aulist = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AuPublish>>(p.Body);
+                            if (aulist != null)
+                            {
+                                foreach (var a in aulist)
+                                    AuPublishQueue.Enqueue(a);
+                            }
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    //log
+                    Console.WriteLine(e);
+                }
+            }));
+
+            //Client            
+            var ips = AppConfig.Current.SocketServer.Split(':');
+            System.Net.IPAddress ip = System.Net.IPAddress.Parse(ips[0]);
+            int port = Convert.ToInt32(ips[1]);
+            System.Threading.Tasks.Task client = new System.Threading.Tasks.Task(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        if (!easyClient.IsConnected)
+                        {
+                            var res = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, port));
+                            System.Threading.Tasks.Task.WaitAll(res);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //log
+                    }
+
+                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                }
+            });
+            client.Start();
         }
         /// <summary>
-        /// 取消控制变量
+        /// 新客户端连接
         /// </summary>
-        private System.Threading.CancellationTokenSource cts;
+        /// <param name="session"></param>
+        private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
+        {
+            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
+            session.Send("Welcome to AuClient Socket Server");
+        }
+        private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
+        {
+            Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
+        }
+
         /// <summary>
         /// 启动
         /// </summary>
         /// <returns>启动结果</returns>
         public bool Start()
         {
+            //读注册表
+            SubSystemDic = AU.Common.Utility.RegistryHelper.GetRegistrySubs(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7");
+            //cts = new System.Threading.CancellationTokenSource();
+            //Task engineTask = new Task(() => Engine(cts.Token), cts.Token);
+            //engineTask.Start();
             cts = new System.Threading.CancellationTokenSource();
-            Task engineTask = new Task(() => Engine(cts.Token), cts.Token);
+            Task engineTask = new Task(() => UpdateProcess(cts.Token), cts.Token);
             engineTask.Start();
+            this.StartUpdateCheck();
             if (AppConfig.Current.AllowPublish)
                 nancySelfHost.Start();
             return true;
@@ -50,31 +145,75 @@ namespace AuClient
         /// <returns></returns>
         public void Stop()
         {
+            this.IsUpdateCheckRun = false;
             if (cts != null)
                 cts.Cancel();
             if (AppConfig.Current.AllowPublish)
                 nancySelfHost.Stop();
         }
 
+        public void StartUpdateCheck()
+        {
+            this.IsUpdateCheckRun = true;
+        }
+
+        public bool IsUpdateCheckRun { get; private set; }
         /// <summary>
         /// 更新消息到达
         /// </summary>
-        public void UpdateNotify(List<AuPublish> aupublishs)
+        public void UpdateProcess(System.Threading.CancellationToken ct)
         {
-            foreach (var a in aupublishs)
+            AuPublish a = null;
+            while (true)
             {
-                //判断系统通知类型
-                switch ((SystemType)a.PublishType)
+                if (ct.IsCancellationRequested)
+                    break;
+                if (!this.IsUpdateCheckRun)
                 {
-                    case SystemType.coreserver:
-                        //判断是否本服务管理系统
-                        break;
-                    case SystemType.managerserver:
-                        break;
-                    case SystemType.vmsclient:
-                        break;
+                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                    continue;
                 }
+
+                if (!AuPublishQueue.TryDequeue(out a))
+                {
+                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                    continue;
+                }
+                if (!Enum.IsDefined(typeof(SystemType), a.PublishType))
+                {
+                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                    continue;
+                }
+
+                string sub = ((SystemType)a.PublishType).ToString();
+                if (!this.SubSystemDic.ContainsKey(sub) && !AppConfig.Current.AllowPublish)
+                {
+                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                    continue;
+                }
+                //升级服务
+                if (this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0)
+                {
+                    //更新
+                    string file = this.AppRemotePublishConten.DownUpdateFile(sub, a, AppConfig.Current.AllowPublish);
+
+                    if (this.SubSystemDic.ContainsKey(sub) && System.IO.File.Exists(file))
+                    {
+                        this.UI.BeginInvoke((MethodInvoker)delegate ()
+                        {
+                            if (!this.UI.ShowUpdate(file, sub, this.SubSystemDic[sub]))
+                            {
+                                System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                                this.IsUpdateCheckRun = true;
+                            }
+                        });
+                    }
+                }
+                if (ct.IsCancellationRequested)
+                    break;
+                System.Threading.Thread.Sleep(AppConfig.Current.Interval);
             }
+            this.IsUpdateCheckRun = false;
         }
 
 
