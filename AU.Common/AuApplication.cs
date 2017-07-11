@@ -14,6 +14,18 @@ namespace AU.Common
         /// </summary>
         public int StartType { get; set; }
         /// <summary>
+        /// 启动参数
+        /// </summary>
+        public string StartArgs { get; set; }
+        /// <summary>
+        /// 关闭类型 0=进城关闭 1=参数关闭
+        /// </summary>
+        public int CloseType { get; set; }
+        /// <summary>
+        /// 关闭参数
+        /// </summary>
+        public string CloseArgs { get; set; }
+        /// <summary>
         /// 应用编号
         /// </summary>
         public string ApplicationId { get; set; }

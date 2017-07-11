@@ -121,10 +121,16 @@ namespace AU.Common
                     updateFileList.Add(m);
                     k++;
                 }//服务器版本高更新
-                else if (index > -1 && m.Version.CompareTo(this.TargetAuPackage.LocalAuList.Files[index].Version) > 0)
+                else
                 {
-                    updateFileList.Add(m);
-                    k++;
+                    var tempversion = new Version(m.Version);
+                    var localversion = new Version(this.TargetAuPackage.LocalAuList.Files[index].Version);
+                    string localFile = this.TargetAuPackage.LocalPath + "\\" + this.TargetAuPackage.LocalAuList.Files[index].WritePath;
+                    if (!System.IO.File.Exists(localFile) || tempversion > localversion || (tempversion == localversion && !this.FilterExtension(localFile) && ToolsHelp.ComputeSHA256(localFile).ToLower() != m.SHA256.ToLower()))
+                    {
+                        updateFileList.Add(m);
+                        k++;
+                    }
                 }
             }
             if (k > 0)
@@ -134,7 +140,12 @@ namespace AU.Common
             }
             return k;
         }
+        public bool FilterExtension(string file)
+        {
+            System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"\.(log|config|db|dat|txt|json)$|(unins000.exe)", System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace);
 
+            return rg.IsMatch(file);
+        }
         /// <summary>
         /// 通知消息
         /// </summary>
@@ -143,25 +154,7 @@ namespace AU.Common
         {
             if (Notify != null)
             {
-                //if (Notify.Target is System.Windows.Forms.Control)
-                //{
-                //    var c = Notify.Target as System.Windows.Forms.Control;
-                //    try
-                //    {
-                //        c.Invoke((System.Windows.Forms.MethodInvoker)delegate ()
-                //        {
-                //            Notify(this, state);
-                //        });
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        //this.loge.Error("[" + this.ServiceType.ToString() + "】发送通知异常", e);
-                //    }
-                //}
-                //else
-                //{
                 Notify.Invoke(this, state);
-                //}
             }
         }
         /// <summary>
@@ -185,9 +178,23 @@ namespace AU.Common
 
             try
             {
-                if (this.TargetAuPackage.LocalAuList != null && this.TargetAuPackage.LocalAuList.Application.StartType == 1)
+                AuApplication auapplication = this.TargetAuPackage.LocalAuList != null ? this.TargetAuPackage.LocalAuList.Application : this.UpdateAuPackage.LocalAuList.Application;
+
+                if (auapplication != null&&!string.IsNullOrEmpty(auapplication.EntryPoint))
                 {
-                    AU.Common.Utility.ToolsHelp.CloseApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower());
+                    if (auapplication.CloseType == 0)
+                        AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint.ToLower());
+                    else
+                    {
+                        string p = this.TargetAuPackage.LocalPath + "\\" + auapplication.Location + "\\" + auapplication.ApplicationId;
+                        if (System.IO.File.Exists(p))
+                        {
+                            System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
+                            //防止未关闭进程关闭一次
+                            System.Threading.Thread.Sleep(1000);
+                            AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint.ToLower());
+                        }
+                    }
                 }
                 //清除备份路径
                 if (System.IO.Directory.Exists(this.AuBackupPath))
@@ -224,6 +231,7 @@ namespace AU.Common
                 //备份目标包信息
                 if (System.IO.File.Exists(this.TargetAuPackage.PackagePath))
                 {
+                    ToolsHelp.CreateDirtory(this.AuBackupPath + "\\" + AuPackage.PackageName);
                     System.IO.File.Copy(this.TargetAuPackage.PackagePath, this.AuBackupPath + "\\" + AuPackage.PackageName, true);
                 }
                 //升级 根据文件类型选择升级？

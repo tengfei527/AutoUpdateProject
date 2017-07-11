@@ -184,17 +184,18 @@ namespace AuWriter
         private void InitAuPublishs()
         {
             this.UpdatePackagePath = Application.StartupPath + "\\" + (System.Configuration.ConfigurationManager.AppSettings["VirtualPath"] ?? "package");
-            foreach (string f in this.GetAllFiles(this.UpdatePackagePath))
-            {
-                if (f.EndsWith("aupublish.json"))
+            if (System.IO.Directory.Exists(this.UpdatePackagePath))
+                foreach (string f in this.GetAllFiles(this.UpdatePackagePath))
                 {
-                    var pub = AU.Common.AppPublish.ReadPackage(f);
-                    if (pub != null)
+                    if (f.EndsWith("aupublish.json"))
                     {
-                        AddAuPublishs(pub);
+                        var pub = AU.Common.AppPublish.ReadPackage(f);
+                        if (pub != null)
+                        {
+                            AddAuPublishs(pub);
+                        }
                     }
                 }
-            }
         }
         private void AddAuPublishs(AU.Common.AuPublish auPublish)
         {
@@ -332,15 +333,28 @@ namespace AuWriter
                 }
                 aulist.Application.ApplicationId = strEntryPoint;
                 dr = this.txtSrc.Text.Substring(0, this.txtSrc.Text.LastIndexOf(@"\"));
+                aulist.Application.Location = ".";
             }
             else
             {
                 dr = this.txtSrc.Text;
                 aulist.Application.Version = this.PublishVersion;
+                if (SubSystem == AU.Common.SystemType.coreserver.ToString())
+                {
+                    if (File.Exists(dr + "\\Manage\\OneCardSystem.SyncTokenControl.exe"))
+                    {
+                        aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.SyncTokenControl.exe";
+                        aulist.Application.StartType = 1;
+                        aulist.Application.StartArgs = "-m";
+                        aulist.Application.CloseType = 1;
+                        aulist.Application.CloseArgs = "-u";
+                        aulist.Application.Location = ".\\Manage\\";
+                    }
+                }
             }
             aulist.Description = tbUpdateMsg.Text;
             aulist.LastUpdateTime = DateTime.Now;
-            aulist.Application.Location = ".";
+
             #endregion [application]
 
             #region [Files]
@@ -641,8 +655,9 @@ namespace AuWriter
         }
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
-            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
             AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
+
         }
         private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
         {
@@ -676,7 +691,7 @@ namespace AuWriter
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(tbMsg.Text))
+            if (string.IsNullOrEmpty(tbMsg.Text))
             {
                 AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
             }

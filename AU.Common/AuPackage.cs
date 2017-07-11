@@ -34,6 +34,11 @@ namespace AU.Common
 
             this.LocalAuList = ReadPackage(this.PackagePath);
         }
+
+        public void SetPackage(AuList au)
+        {
+            this.LocalAuList = au;
+        }
         /// <summary>
         /// 初始化
         /// </summary>

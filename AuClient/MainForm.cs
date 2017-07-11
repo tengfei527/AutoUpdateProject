@@ -17,7 +17,7 @@ namespace AuClient
         /// <summary>
         /// 更新文件个数
         /// </summary>
-        private int AvailableUpdate = 0;
+        private int AvailableUpdate = -1;
         /// <summary>
         /// 更新辅助类
         /// </summary>
@@ -31,6 +31,19 @@ namespace AuClient
         /// </summary>
         AuPublishHelp auPublishHelp = null;
         /// <summary>
+        /// 主窗体是否显示
+        /// </summary>
+        public bool IsShow
+        {
+            get
+            {
+                bool show = this.WindowState != FormWindowState.Minimized && this.Visible;
+
+                return show;
+            }
+        }
+
+        /// <summary>
         /// 初始化系统参数
         /// </summary>
         public MainForm()
@@ -41,40 +54,66 @@ namespace AuClient
             linkLabel1.Text = AppConfig.Current.LinkUrl;
         }
         /// <summary>
-        ///检查是否显示UI
+        /// 静默更新
         /// </summary>
-        public void Check()
+        /// <param name="path"></param>
+        /// <param name="subsystem"></param>
+        /// <param name="systemPath"></param>
+        /// <returns></returns>
+        private bool DoUpgrade(string path, string subsystem, string systemPath)
         {
-            if (System.IO.Directory.Exists(AppConfig.Current.UpdateTempPath) && (this.WindowState == FormWindowState.Minimized || !this.Visible))
+            try
             {
-                this.ShowUpdate("");
-            }
-        }
+                this.AvailableUpdate = Check(path, subsystem, systemPath);
+                if (AvailableUpdate > 0)
+                {
+                    //升级
+                    this.auUpdater.Upgrade(htUpdateFile);
+                    this.MainAppRun();
+                    this.AvailableUpdate = 0;
 
-        /// <summary>
-        ///检查是否显示UI
-        /// </summary>
-        public bool Check(string subsystem, string systemPath)
-        {
-            if (System.IO.Directory.Exists(AppConfig.GetUpdateTempPath(subsystem)) && (this.WindowState == FormWindowState.Minimized || !this.Visible))
+                    return true;
+                }
+                else
+                {
+                    this.MainAppRun();
+                    //删除临时目录
+                    if (string.IsNullOrWhiteSpace(path) && System.IO.Directory.Exists(AppConfig.GetUpdateTempPath(subsystem)))
+                        System.IO.Directory.Delete(AppConfig.GetUpdateTempPath(subsystem), true);
+                }
+            }
+            catch
             {
-                return true;
+                //log
+                MessageBox.Show("与服务器连接失败,操作超时!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (!this.bgw.IsBusy)
+                    this.bgw.RunWorkerAsync();
             }
 
             return false;
         }
-        /// <summary>
-        /// 显示更新
-        /// </summary>
-        public bool ShowUpdate(string path, string subsystem, string systemPath)
+
+        private int Check(string path, string subsystem, string systemPath)
         {
-            if (this.WindowState != FormWindowState.Minimized && this.Visible)
-                return false;
-            this.InvalidateControl(false);
             string updateTempPath = AppConfig.GetUpdateTempPath(subsystem);
-            try
+            //更新
+            auUpdater = new AppUpdater(systemPath, updateTempPath, AppConfig.GetAuBackupPath(subsystem), systemPath);
+            if (auUpdater.UpdateAuPackage.LocalAuList == null && System.IO.File.Exists(path))
             {
-                if (System.IO.File.Exists(path) && !System.IO.Directory.Exists(updateTempPath))
+                //解压一个文件
+                string temp = AU.Common.Utility.ZipUtility.DecompressFile(path, AuPackage.PackageName, System.Text.Encoding.UTF8);
+                AuList a = Newtonsoft.Json.JsonConvert.DeserializeObject<AuList>(temp);
+                auUpdater.UpdateAuPackage.SetPackage(a);
+            }
+            auUpdater.Notify += Au_Notify;
+            int up = auUpdater.CheckForUpdate(out htUpdateFile);
+            if (up > 0)
+            {
+                //解压临时包
+                if (!System.IO.Directory.Exists(updateTempPath))
                 {
                     AU.Common.Utility.ZipUtility.Decompress(path, updateTempPath);
                 }
@@ -82,79 +121,24 @@ namespace AuClient
                 {
                     //验证是否最新
                 }
-                //更新
-                auUpdater = new AppUpdater(systemPath, updateTempPath, AppConfig.GetAuBackupPath(subsystem), systemPath);
-                auUpdater.Notify += Au_Notify;
             }
-            catch
-            {
-                MessageBox.Show("配置文件出错!", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-            //与服务器连接,下载更新配置文件
-            try
-            {
-                AvailableUpdate = auUpdater.CheckForUpdate(out htUpdateFile);
-                if (AvailableUpdate > 0)
-                {
-                    tbUpdateMsg.Text = htUpdateFile.LocalAuList.Description;
-                    lvUpdateList.Items.Clear();
-                    htUpdateFile.LocalAuList.Files.ForEach(d => lvUpdateList.Items.Add(new ListViewItem(
-                        new string[]
-                        {
-                            d.No,d.Version,"",d.WritePath,d.SHA256
-                        })));
-                    //有更新
-                    if (this.WindowState == FormWindowState.Minimized)
-                        this.WindowState = FormWindowState.Normal;
-                    this.Show();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                MessageBox.Show("与服务器连接失败,操作超时!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
+
+            return up;
         }
-
-
         /// <summary>
         /// 显示更新
         /// </summary>
-        public void ShowUpdate(string path)
+        public bool ShowUpdate(string path, string subsystem, string systemPath)
         {
-            if (this.WindowState != FormWindowState.Minimized && this.Visible)
-                return;
-            this.InvalidateControl(false);
-
+            bool result = false;
             try
             {
-                if (System.IO.File.Exists(path) && !System.IO.Directory.Exists(AppConfig.Current.UpdateTempPath))
-                {
-                    AU.Common.Utility.ZipUtility.Decompress(path, AppConfig.Current.UpdateTempPath);
-                }
-                else
-                {
-                    //验证是否最新
-                }
+                if (this.IsShow)
+                    return result;
 
-                auUpdater = new AppUpdater(AppConfig.Current.SystemPath, AppConfig.Current.UpdateTempPath, AppConfig.Current.AuBackupPath, AppConfig.Current.SystemPath);
-                auUpdater.Notify += Au_Notify;
-            }
-            catch
-            {
-                MessageBox.Show("配置文件出错!", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            //与服务器连接,下载更新配置文件
-            try
-            {
-                AvailableUpdate = auUpdater.CheckForUpdate(out htUpdateFile);
+                this.InvalidateControl(false);
+
+                AvailableUpdate = Check(path, subsystem, systemPath);
                 if (AvailableUpdate > 0)
                 {
                     tbUpdateMsg.Text = htUpdateFile.LocalAuList.Description;
@@ -168,19 +152,27 @@ namespace AuClient
                     if (this.WindowState == FormWindowState.Minimized)
                         this.WindowState = FormWindowState.Normal;
                     this.Show();
+                    result = true;
                 }
                 else
                 {
-                    return;
+                    //删除临时目录
+                    if (string.IsNullOrWhiteSpace(path) && System.IO.Directory.Exists(AppConfig.GetUpdateTempPath(subsystem)))
+                        System.IO.Directory.Delete(AppConfig.GetUpdateTempPath(subsystem), true);
                 }
             }
             catch
             {
                 MessageBox.Show("与服务器连接失败,操作超时!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
             }
-        }
+            finally
+            {
+                if (!this.bgw.IsBusy && !result)
+                    this.bgw.RunWorkerAsync();
+            }
 
+            return result;
+        }
         /// <summary>
         /// 系统加载
         /// </summary>
@@ -189,6 +181,7 @@ namespace AuClient
         private void MainForm_Load(object sender, EventArgs e)
         {
             auPublishHelp.Start();
+            bgw.RunWorkerAsync();
         }
         /// <summary>
         /// 消息通知
@@ -226,6 +219,7 @@ namespace AuClient
             });
 
         }
+
         /// <summary>
         /// 执行更新
         /// </summary>
@@ -264,16 +258,10 @@ namespace AuClient
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Hide();
-            string path = string.Empty;
-            if (!IsMainAppRun(out path))
-            {
-                if (System.IO.File.Exists(path))
-                {
-                    System.Diagnostics.Process.Start(path);
-                }
-            }
-
-            this.auPublishHelp.StartUpdateCheck();
+            this.MainAppRun();
+            this.AvailableUpdate = 0;
+            if (!this.bgw.IsBusy)
+                bgw.RunWorkerAsync();
         }
 
 
@@ -311,14 +299,26 @@ namespace AuClient
                 btnCancel.Text = "取消";
             }
         }
+
+        private void MainAppRun()
+        {
+            string path = string.Empty;
+            string args = string.Empty;
+            if (!IsMainAppRun(out path, out args))
+            {
+                if (System.IO.File.Exists(path))
+                {
+                    System.Diagnostics.Process.Start(path, args);
+                }
+            }
+        }
         /// <summary>
         /// 判断主应用程序是否正在运行
         /// </summary>
         /// <returns></returns>
-        private bool IsMainAppRun(out string applicationPath)
+        private bool IsMainAppRun(out string applicationPath, out string args)
         {
-            string name = string.Empty;
-            applicationPath = string.Empty;
+            string name = args = applicationPath = string.Empty;
 
             if (auUpdater.IsUpgrade)
             {
@@ -328,15 +328,32 @@ namespace AuClient
                 }
                 name = htUpdateFile.LocalAuList.Application.EntryPoint.ToLower();
                 applicationPath = auUpdater.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
+                args = htUpdateFile.LocalAuList.Application.StartArgs;
             }
             else
             {
-                if (auUpdater.TargetAuPackage == null || auUpdater.TargetAuPackage.LocalAuList == null || auUpdater.TargetAuPackage.LocalAuList.Application.StartType != 1)
+                if (auUpdater.TargetAuPackage == null)
                     return true;
+                else if (auUpdater.TargetAuPackage.LocalAuList == null)
+                {
+                    if (htUpdateFile != null && htUpdateFile.LocalAuList != null && htUpdateFile.LocalAuList.Application.StartType != 0)
+                    {
+                        name = htUpdateFile.LocalAuList.Application.EntryPoint.ToLower();
+                        applicationPath = auUpdater.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
+                        args = htUpdateFile.LocalAuList.Application.StartArgs;
+                    }
+                    return true;
+                }
+                else if (auUpdater.TargetAuPackage.LocalAuList.Application.StartType != 1)
+                {
+                    return true;
+                }
                 else
                 {
                     name = auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower();
                     applicationPath = auUpdater.SystemPath + "\\" + auUpdater.TargetAuPackage.LocalAuList.Application.Location + "\\" + auUpdater.TargetAuPackage.LocalAuList.Application.EntryPoint;
+
+                    args = auUpdater.TargetAuPackage.LocalAuList.Application.StartArgs;
                 }
             }
             bool isRun = false;
@@ -355,7 +372,54 @@ namespace AuClient
 
         private void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
+            //去通知消息
+            while (true)
+            {
+                UpgradeMessage um;
+                if (!this.auPublishHelp.UpgradeMessageQueue.TryDequeue(out um))
+                {
+                    foreach (var d in this.auPublishHelp.SubSystemDic)
+                    {
+                        if (System.IO.Directory.Exists(AppConfig.GetUpdateTempPath(d.Key)) && !this.IsShow)
+                        {
+                            um = new UpgradeMessage()
+                            {
+                                UpdatePackFile = "",
+                                SubSystem = d.Key,
+                                UpgradePath = d.Value
+                            };
+
+                            break;
+                        }
+                    }
+                }
+                if (um != null)
+                {
+                    if (AppConfig.Current.AllowUI)
+                    {
+                        this.BeginInvoke((MethodInvoker)delegate ()
+                       {
+                           this.ShowUpdate(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
+                       });
+
+                        return;
+                    }
+                    else
+                        this.DoUpgrade(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
+                }
+
+                System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+            }
         }
 
+        private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //没有显示UI
+            if (!this.IsShow && this.AvailableUpdate == 0)
+            {
+                System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                bgw.RunWorkerAsync();
+            }
+        }
     }
 }

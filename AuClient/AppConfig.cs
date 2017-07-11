@@ -100,11 +100,11 @@ namespace AuClient
 
         public static string GetUpdateTempPath(string subsystem)
         {
-            return appConfig.UpdateConfigPath + "\\" + subsystem + "\\autemp\\";
+            return appConfig.UpdateConfigPath + "\\autemp\\" + subsystem;
         }
         public static string GetAuBackupPath(string subsystem)
         {
-            return appConfig.UpdateConfigPath + "\\" + subsystem + "\\aubackup\\";
+            return appConfig.UpdateConfigPath + "\\aubackup\\" + subsystem + "\\backup\\";
         }
 
 

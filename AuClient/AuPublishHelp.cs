@@ -26,15 +26,26 @@ namespace AuClient
         public Dictionary<string, string> SubSystemDic { get; private set; }
 
         private SuperSocket.ClientEngine.EasyClient easyClient = new SuperSocket.ClientEngine.EasyClient();
+        private ConcurrentQueue<AuPublish> AuPublishQueue = new ConcurrentQueue<AuPublish>();
 
         public MainForm UI = null;
+        /// <summary>
+        /// 升级消息
+        /// </summary>
+        public ConcurrentQueue<UpgradeMessage> UpgradeMessageQueue = new ConcurrentQueue<UpgradeMessage>();
+
         AppRemotePublish AppRemotePublishConten { get; set; }
+        /// <summary>
+        /// 本地路径
+        /// </summary>
+        public string LocalPath { get; set; }
         /// <summary>
         /// 构造函数
         /// </summary>
         public AuPublishHelp(MainForm ui)
         {
-            this.AppRemotePublishConten = new AppRemotePublish(AppConfig.Current.PublishAddress, AppConfig.Current.UpdateConfigPath + "\\package\\");
+            this.LocalPath = AppConfig.Current.UpdateConfigPath + "\\package\\";
+            this.AppRemotePublishConten = new AppRemotePublish(AppConfig.Current.PublishAddress, this.LocalPath);
             this.UI = ui;
             if (AppConfig.Current.AllowPublish)
             {
@@ -47,7 +58,7 @@ namespace AuClient
 
             InitSocketClient();
         }
-        private ConcurrentQueue<AuPublish> AuPublishQueue = new ConcurrentQueue<AuPublish>();
+
         private void InitSocketClient()
         {
             easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), (p =>
@@ -157,7 +168,8 @@ namespace AuClient
             this.IsUpdateCheckRun = true;
         }
 
-        public bool IsUpdateCheckRun { get; private set; }
+        private bool IsUpdateCheckRun { get; set; }
+
         /// <summary>
         /// 更新消息到达
         /// </summary>
@@ -173,12 +185,13 @@ namespace AuClient
                     System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                     continue;
                 }
-
+                //通知消息
                 if (!AuPublishQueue.TryDequeue(out a))
                 {
                     System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                     continue;
                 }
+                //识别子系统
                 if (!Enum.IsDefined(typeof(SystemType), a.PublishType))
                 {
                     System.Threading.Thread.Sleep(AppConfig.Current.Interval);
@@ -186,77 +199,50 @@ namespace AuClient
                 }
 
                 string sub = ((SystemType)a.PublishType).ToString();
+                //管理及发布？
                 if (!this.SubSystemDic.ContainsKey(sub) && !AppConfig.Current.AllowPublish)
                 {
                     System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                     continue;
                 }
-                //升级服务
+                AuPublish notify = null;
+                //检查升级包
                 if (this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0)
                 {
-                    //更新
-                    string file = this.AppRemotePublishConten.DownUpdateFile(sub, a, AppConfig.Current.AllowPublish);
-
+                    //获取升级包
+                    string file = this.AppRemotePublishConten.DownUpdateFile(sub, a, out notify, AppConfig.Current.AllowPublish);
+                    //显示升级服务
                     if (this.SubSystemDic.ContainsKey(sub) && System.IO.File.Exists(file))
                     {
-                        this.UI.BeginInvoke((MethodInvoker)delegate ()
+                        //通知消息
+                        UpgradeMessageQueue.Enqueue(new UpgradeMessage()
                         {
-                            if (!this.UI.ShowUpdate(file, sub, this.SubSystemDic[sub]))
-                            {
-                                System.Threading.Thread.Sleep(AppConfig.Current.Interval);
-                                this.IsUpdateCheckRun = true;
-                            }
+                            SubSystem = sub,
+                            UpdatePackFile = file,
+                            UpgradePath = this.SubSystemDic[sub]
                         });
                     }
                 }
+                else
+                {
+                    notify = AppPublish.ReadPackage(this.LocalPath + "\\" + sub + "\\" + AppPublish.PackageName);
+                    //检查服务器和包是否一直
+                    if (notify != null)
+                        UpgradeMessageQueue.Enqueue(new UpgradeMessage()
+                        {
+                            SubSystem = sub,
+                            UpdatePackFile = this.LocalPath + "\\" + sub + "\\" + notify.DownPath,
+                            UpgradePath = this.SubSystemDic[sub]
+                        });
+                }
+                //通知客户端消息
+                if (notify != null)
+                    AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(notify));
                 if (ct.IsCancellationRequested)
                     break;
                 System.Threading.Thread.Sleep(AppConfig.Current.Interval);
             }
             this.IsUpdateCheckRun = false;
-        }
-
-
-        /// <summary>
-        /// 处理引擎
-        /// </summary>
-        private void Engine(System.Threading.CancellationToken ct)
-        {
-            while (true)
-            {
-                try
-                {
-                    AppPublish appPublish = new AppPublish(AppConfig.Current.SubSystem, AppConfig.Current.UpdateConfigPath, AppConfig.Current.PublishAddress);
-                    AuPublish aup = null;
-
-                    if (appPublish.CheckForUpdate(out aup) > 0 && aup != null)
-                    {
-                        if (ct.IsCancellationRequested)
-                            break;
-                        string file = appPublish.DownUpdateFile(aup, true);
-                        if (System.IO.File.Exists(file))
-                        {
-                            this.UI.BeginInvoke((MethodInvoker)delegate ()
-                            {
-                                this.UI.ShowUpdate(file);
-                            });
-                        }
-                    }
-                    if (ct.IsCancellationRequested)
-                        break;
-                    this.UI.BeginInvoke((MethodInvoker)delegate ()
-                    {
-                        this.UI.Check();
-                    });
-                    if (ct.IsCancellationRequested)
-                        break;
-                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
-                }
-                catch (Exception e)
-                {
-                    //log
-                }
-            }
         }
     }
 }

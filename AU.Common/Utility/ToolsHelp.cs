@@ -172,5 +172,115 @@ namespace AU.Common.Utility
                 }
             }
         }
+
+        /// <summary>
+        /// 获取指定目录下所有文件
+        /// </summary>
+        /// <param name="rootdir">文件夹</param>
+        /// <param name="recursion">是否递归子文件夹</param>
+        /// <returns></returns>
+
+        public static System.Collections.Specialized.StringCollection GetAllFiles(string rootdir, bool recursion = true)
+        {
+            System.Collections.Specialized.StringCollection result = new System.Collections.Specialized.StringCollection();
+            if (recursion)
+                GetAllFiles(rootdir, result);
+            else
+            {
+                string[] file = Directory.GetFiles(rootdir);
+                for (int i = 0; i < file.Length; i++)
+                    result.Add(file[i]);
+            }
+
+            return result;
+        }
+        /// <summary>
+        /// 递归获取文件
+        /// </summary>
+        /// <param name="parentDir">父文件夹</param>
+        /// <param name="result">结果</param>
+        public static void GetAllFiles(string parentDir, System.Collections.Specialized.StringCollection result)
+        {
+            string[] dir = Directory.GetDirectories(parentDir);
+            for (int i = 0; i < dir.Length; i++)
+                GetAllFiles(dir[i], result);
+            string[] file = Directory.GetFiles(parentDir);
+            for (int i = 0; i < file.Length; i++)
+                result.Add(file[i]);
+        }
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="rootdir"></param>
+        /// <param name="recursion"></param>
+        /// <param name="namefileter"></param>
+        /// <returns></returns>
+        public static bool DeleteFile(string rootdir, bool recursion = true, params string[] namefileter)
+        {
+            try
+            {
+                System.Collections.Specialized.StringCollection file = GetAllFiles(rootdir, recursion);
+                foreach (var f in file)
+                {
+                    if (namefileter != null && namefileter.Length > 0)
+                    {
+                        bool filter = false;
+                        foreach (var n in namefileter)
+                        {
+                            if (f.EndsWith(n, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                filter = true;
+                                break;
+                            }
+                        }
+                        if (filter)
+                            continue;
+                    }
+                    System.IO.File.Delete(f);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// 删除目录
+        /// </summary>
+        /// <param name="rootdir">根目录</param>
+        /// <param name="namefileter">过滤目录</param>
+        /// <returns></returns>
+        public static bool DeleteDirectory(string rootdir, params string[] namefileter)
+        {
+            try
+            {
+                string[] dir = Directory.GetDirectories(rootdir);
+                foreach (var d in dir)
+                {
+                    if (namefileter != null && namefileter.Length > 0)
+                    {
+                        bool filter = false;
+                        foreach (var n in namefileter)
+                        {
+                            if (d.IndexOf(n, StringComparison.InvariantCultureIgnoreCase) > -1)
+                            {
+                                filter = true;
+                                break;
+                            }
+                        }
+                        if (filter)
+                            continue;
+                    }
+                    System.IO.Directory.Delete(d, true);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

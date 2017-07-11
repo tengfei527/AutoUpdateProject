@@ -319,6 +319,7 @@
             // 
             this.bgw.WorkerSupportsCancellation = true;
             this.bgw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgw_DoWork);
+            this.bgw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgw_RunWorkerCompleted);
             // 
             // MainForm
             // 

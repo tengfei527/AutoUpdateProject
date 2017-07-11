@@ -121,6 +121,6 @@ namespace AU.Common.Utility
             uriBuilder.Path = path;
             uriBuilder.Query = queryString;
             return uriBuilder.ToString();
-        }
+        }       
     }
 }

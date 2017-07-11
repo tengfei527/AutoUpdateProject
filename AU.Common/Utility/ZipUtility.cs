@@ -119,7 +119,6 @@ namespace AU.Common.Utility
             {
                 Directory.CreateDirectory(targetPath);
             }
-
             using (var s = new ZipInputStream(File.OpenRead(sourceFile)))
             {
                 //Specify Password
@@ -155,6 +154,44 @@ namespace AU.Common.Utility
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// 解压缩
+        /// </summary>
+        /// <param name="sourceFile">源文件</param>
+        /// <param name="targetPath">目标</param>
+        /// <param name="password">密码</param>
+        /// <returns></returns>
+        public static string DecompressFile(string sourceFile, string targetFile, Encoding en, string password = "")
+        {
+            string result = string.Empty;
+            if (!File.Exists(sourceFile))
+            {
+                throw new FileNotFoundException(string.Format("未能找到文件 '{0}' ", sourceFile));
+            }
+            using (var s = new ZipInputStream(File.OpenRead(sourceFile)))
+            {
+                //Specify Password
+                if (password != null && password.Trim().Length > 0)
+                {
+                    s.Password = password;
+                }
+                ZipEntry theEntry;
+                while ((theEntry = s.GetNextEntry()) != null)
+                {
+                    if (theEntry.IsDirectory || !Path.GetFileName(theEntry.Name).Equals(targetFile, StringComparison.InvariantCultureIgnoreCase)) continue;
+                    StreamReader sr = new StreamReader(s, en);
+                    result = sr.ReadToEnd();
+                    break;
+                    //byte[] buff = new byte[s.Length];
+                    //s.Read(buff, 0, buff.Length);
+
+                    //return buff;
+                }
+            }
+
+            return result;
         }
     }
 }
