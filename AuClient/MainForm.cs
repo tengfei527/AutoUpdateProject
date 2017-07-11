@@ -67,6 +67,7 @@ namespace AuClient
                 this.AvailableUpdate = Check(path, subsystem, systemPath);
                 if (AvailableUpdate > 0)
                 {
+                    IISRest(subsystem);
                     //升级
                     this.auUpdater.Upgrade(htUpdateFile);
                     this.MainAppRun();
@@ -125,6 +126,20 @@ namespace AuClient
 
             return up;
         }
+        private void IISRest(string subsystem)
+        {
+            try
+            {
+                if (subsystem == SystemType.coreserver.ToString() || subsystem == SystemType.managerserver.ToString() || subsystem == SystemType.handsetserver.ToString() || subsystem == SystemType.imageserver.ToString())
+                {
+                    Process.Start("iisreset");
+                }
+            }
+            catch (Exception e)
+            {
+                //log
+            }
+        }
         /// <summary>
         /// 显示更新
         /// </summary>
@@ -141,6 +156,7 @@ namespace AuClient
                 AvailableUpdate = Check(path, subsystem, systemPath);
                 if (AvailableUpdate > 0)
                 {
+                    IISRest(subsystem);
                     tbUpdateMsg.Text = htUpdateFile.LocalAuList.Description;
                     lvUpdateList.Items.Clear();
                     htUpdateFile.LocalAuList.Files.ForEach(d => lvUpdateList.Items.Add(new ListViewItem(

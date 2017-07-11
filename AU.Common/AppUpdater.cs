@@ -193,7 +193,7 @@ namespace AU.Common
                             //防止未关闭进程关闭一次
                             System.Threading.Thread.Sleep(1000);
                             AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint.ToLower());
-                        }
+                        }                        
                     }
                 }
                 //清除备份路径
