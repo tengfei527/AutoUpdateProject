@@ -216,6 +216,10 @@ namespace AuClient
                         break;
                     case NotifyType.StartDown:
                         this.Cursor = Cursors.WaitCursor;
+                        lbState.Text = e.Message;
+                        break;
+                    case NotifyType.Normal:
+                        lbState.Text = e.Message;
                         break;
                     case NotifyType.Process:
                         pbDownFile.Minimum = 0;
@@ -231,6 +235,7 @@ namespace AuClient
                     case NotifyType.StopDown:
                         this.InvalidateControl();
                         this.Cursor = Cursors.Default;
+                        lbState.Text = e.Message;
                         break;
                 }
             });

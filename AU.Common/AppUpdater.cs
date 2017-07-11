@@ -180,7 +180,7 @@ namespace AU.Common
             {
                 AuApplication auapplication = this.TargetAuPackage.LocalAuList != null ? this.TargetAuPackage.LocalAuList.Application : this.UpdateAuPackage.LocalAuList.Application;
 
-                if (auapplication != null&&!string.IsNullOrEmpty(auapplication.EntryPoint))
+                if (auapplication != null && !string.IsNullOrEmpty(auapplication.EntryPoint))
                 {
                     if (auapplication.CloseType == 0)
                         AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint.ToLower());
@@ -193,7 +193,7 @@ namespace AU.Common
                             //防止未关闭进程关闭一次
                             System.Threading.Thread.Sleep(1000);
                             AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint.ToLower());
-                        }                        
+                        }
                     }
                 }
                 //清除备份路径
@@ -203,23 +203,33 @@ namespace AU.Common
                 }
 
                 int index = 0;
-
+                NotifyMessage(new Common.NotifyMessage(NotifyType.Process, "请稍后...", upgradeFiles.LocalAuList.Files.Count));
                 foreach (var m in upgradeFiles.LocalAuList.Files)
                 {
                     try
                     {
-                        NotifyMessage(new Common.NotifyMessage(NotifyType.Process, "正在处理[" + m.No + "]文件,请稍后...", 1));
+                        NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "正在处理[" + m.No + "]文件,请稍后...", upgradeFiles.LocalAuList.Files.Count));
                         //本地路径
                         string path = this.TargetAuPackage.LocalPath + "\\" + m.WritePath;
-                        if (System.IO.File.Exists(path))
-                        {
-                            //备份
-                            string bak = this.AuBackupPath + m.WritePath;
-                            ToolsHelp.CreateDirtory(bak);
-                            System.IO.File.Copy(path, bak, true);
+                        switch (m.FileType)
+                        {//文件类型 0=DLL 1=exe 2=SQL 3=Image 4……
+                            case 2://sql 升级
+                                {
+
+                                }
+                                break;
+                            default:
+                                if (System.IO.File.Exists(path))
+                                {
+                                    //备份
+                                    string bak = this.AuBackupPath + m.WritePath;
+                                    ToolsHelp.CreateDirtory(bak);
+                                    System.IO.File.Copy(path, bak, true);
+                                }
+                                break;
                         }
-                        NotifyMessage(new Common.NotifyMessage(NotifyType.UpProcess, index + ":100%", 1));
                         index++;
+                        NotifyMessage(new Common.NotifyMessage(NotifyType.UpProcess, index + ":100%", index));
                     }
                     catch (WebException ex)
                     {
