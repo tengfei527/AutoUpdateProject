@@ -351,6 +351,15 @@ namespace AuWriter
                         aulist.Application.Location = ".\\Manage\\";
                     }
                 }
+                else if (SubSystem == AU.Common.SystemType.vmsclient.ToString())
+                {
+                    aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.VehicleManageWPF.exe";
+                    aulist.Application.StartType = 1;
+                    aulist.Application.StartArgs = "";
+                    aulist.Application.CloseType = 0;
+                    aulist.Application.CloseArgs = "";
+                    aulist.Application.Location = ".";
+                }
             }
             aulist.Description = tbUpdateMsg.Text;
             aulist.LastUpdateTime = DateTime.Now;
