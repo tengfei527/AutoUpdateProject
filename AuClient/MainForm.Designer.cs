@@ -229,11 +229,10 @@
             // 
             // lbState
             // 
-            this.lbState.AutoSize = true;
             this.lbState.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lbState.Location = new System.Drawing.Point(0, 238);
             this.lbState.Name = "lbState";
-            this.lbState.Size = new System.Drawing.Size(137, 12);
+            this.lbState.Size = new System.Drawing.Size(388, 12);
             this.lbState.TabIndex = 8;
             this.lbState.Text = "点击“下一步”开始更新";
             // 
@@ -345,7 +344,6 @@
             this.tabPageMsg.PerformLayout();
             this.tabPageList.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.tabPageSucess.ResumeLayout(false);
             this.ResumeLayout(false);
 

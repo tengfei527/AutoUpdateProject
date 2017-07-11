@@ -149,6 +149,7 @@ namespace AuClient
                             d.No,d.Version,"",d.WritePath,d.SHA256
                         })));
                     //有更新
+                    this.Text = "【" + SubSystem.Dic[subsystem] + "】自动更新";
                     if (this.WindowState == FormWindowState.Minimized)
                         this.WindowState = FormWindowState.Normal;
                     this.Show();
