@@ -185,7 +185,7 @@ namespace AuWriter
         {
             this.UpdatePackagePath = Application.StartupPath + "\\" + (System.Configuration.ConfigurationManager.AppSettings["VirtualPath"] ?? "package");
             if (System.IO.Directory.Exists(this.UpdatePackagePath))
-                foreach (string f in this.GetAllFiles(this.UpdatePackagePath))
+                foreach (string f in AU.Common.Utility.ToolsHelp.GetAllFiles(this.UpdatePackagePath))
                 {
                     if (f.EndsWith("aupublish.json"))
                     {
@@ -367,7 +367,7 @@ namespace AuWriter
             #endregion [application]
 
             #region [Files]
-            StringCollection strColl = GetAllFiles(dr);
+            StringCollection strColl = AU.Common.Utility.ToolsHelp.GetAllFiles(dr);
 
             this.Invoke((MethodInvoker)delegate ()
             {
@@ -470,7 +470,7 @@ namespace AuWriter
                 this.btnProduce.Text = "生成(&G)";
                 cbPackage.Enabled = true;
                 //发送客户端通知消息
-                AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
                 MessageBox.Show(this, "自动更新文件生成成功:" + mesg, "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (System.IO.Directory.Exists(PackageTempPath))
                     System.IO.Directory.Delete(PackageTempPath, true);
@@ -480,137 +480,7 @@ namespace AuWriter
 
             #endregion [WriterAUPackage]
         }
-        void WriterAUXML()
-        {
-            #region [写AutoUpdaterlist]
-
-            string strEntryPoint = this.txtSrc.Text.Trim().Substring(this.txtSrc.Text.Trim().LastIndexOf(@"\") + 1, this.txtSrc.Text.Trim().Length - this.txtSrc.Text.Trim().LastIndexOf(@"\") - 1);
-            string strFilePath = this.txtDest.Text.Trim();
-
-            FileStream fs = new FileStream(strFilePath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.Default);
-            sw.Write("<?xml version=\"1.0\" encoding=\"gb2312\" ?>");
-            sw.Write("\r\n<AutoUpdater>\r\n");
-
-            #region[description]
-
-            sw.Write("\t<Description>");
-            sw.Write(strEntryPoint.Substring(0, strEntryPoint.LastIndexOf(".")) + " autoUpdate");
-            sw.Write("</Description>\r\n");
-
-            #endregion[description]
-
-            #region [Updater]
-
-            sw.Write("\t<Updater>\r\n");
-
-            sw.Write("\t\t<Url>");
-            sw.Write(this.txtUrl.Text.Trim());
-            sw.Write("</Url>\r\n");
-
-            sw.Write("\t\t<LastUpdateTime>");
-            sw.Write(DateTime.Now.AddDays(-15).ToString("yyyy-MM-dd"));
-            sw.Write("</LastUpdateTime>\r\n");
-
-            sw.Write("\t</Updater>\r\n");
-
-            #endregion [Updater]
-
-            #region [application]
-
-            sw.Write("\t<Application applicationId = \"" + strEntryPoint.Substring(0, strEntryPoint.LastIndexOf(".")) + "\">\r\n");
-
-            sw.Write("\t\t<EntryPoint>");
-            sw.Write(strEntryPoint);
-            sw.Write("</EntryPoint>\r\n");
-
-            sw.Write("\t\t<Location>");
-            sw.Write(".");
-            sw.Write("</Location>\r\n");
-
-            FileVersionInfo _lcObjFVI = FileVersionInfo.GetVersionInfo(this.txtSrc.Text);
-
-            sw.Write("\t\t<Version>");
-            sw.Write(string.Format("{0}.{1}.{2}.{3}", _lcObjFVI.FileMajorPart, _lcObjFVI.FileMinorPart, _lcObjFVI.FileBuildPart, _lcObjFVI.FilePrivatePart));
-            sw.Write("</Version>\r\n");
-
-
-            sw.Write("\t</Application>\r\n");
-
-
-            #endregion [application]
-
-            #region [Files]
-
-            sw.Write("\t<Files>\r\n");
-
-            StringCollection strColl = GetAllFiles(this.txtSrc.Text.Substring(0, this.txtSrc.Text.LastIndexOf(@"\")));
-            this.prbProd.Visible = true;
-            this.prbProd.Minimum = 0;
-            this.prbProd.Maximum = strColl.Count;
-
-            for (int i = 0; i < strColl.Count; i++)
-            {
-                if (!CheckExist(strColl[i].Trim()))
-                {
-
-                    FileVersionInfo m_lcObjFVI = FileVersionInfo.GetVersionInfo(strColl[i].ToString());
-
-                    string rootDir = this.txtSrc.Text.Substring(0, this.txtSrc.Text.LastIndexOf(@"\")) + @"\";
-
-                    //MessageBox.Show( @strColl[i].Replace(@rootDir,""));
-
-                    sw.Write("\t\t<File Ver=\""
-                        + string.Format("{0}.{1}.{2}.{3}", _lcObjFVI.FileMajorPart, _lcObjFVI.FileMinorPart, _lcObjFVI.FileBuildPart, _lcObjFVI.FilePrivatePart)
-                        + "\" Name= \"" + @strColl[i].Replace(@rootDir, "")
-                        + "\" />\r\n");
-                }
-
-                prbProd.Value = i;
-            }
-            #endregion [Files]
-
-            sw.Write("\t</Files>\r\n");
-
-            sw.Write("</AutoUpdater>");
-            sw.Close();
-            fs.Close();
-
-
-            #region [Notification]
-
-            MessageBox.Show(this, "自动更新文件生成成功:" + this.txtDest.Text.Trim(), "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            this.prbProd.Value = 0;
-            this.prbProd.Visible = false;
-
-            #endregion [Notification]
-
-            #endregion [写AutoUpdaterlist]
-        }
-
         #endregion [写AutoUpdaterList]
-
-        #region [遍历子目录]
-
-        private StringCollection GetAllFiles(string rootdir)
-        {
-            StringCollection result = new StringCollection();
-            GetAllFiles(rootdir, result);
-            return result;
-        }
-
-        private void GetAllFiles(string parentDir, StringCollection result)
-        {
-            string[] dir = Directory.GetDirectories(parentDir);
-            for (int i = 0; i < dir.Length; i++)
-                GetAllFiles(dir[i], result);
-            string[] file = Directory.GetFiles(parentDir);
-            for (int i = 0; i < file.Length; i++)
-                result.Add(file[i]);
-        }
-
-        #endregion [遍历子目录]
 
         #region [排除不需要的文件]
 
@@ -664,7 +534,7 @@ namespace AuWriter
         }
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
-            AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+            AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
             Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
 
         }
@@ -677,7 +547,7 @@ namespace AuWriter
         {
             if (string.IsNullOrEmpty(tbMsg.Text))
             {
-                AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
             }
         }
         #region 菜单操作

@@ -32,6 +32,11 @@ namespace AU.Monitor.Server
                 }
             }
         }
+        public static void Send(string key, string body)
+        {
+            string message = key + ":" + body;
+            Send(message);
+        }
         /// <summary>
         /// 初始化
         /// </summary>

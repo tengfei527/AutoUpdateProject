@@ -237,7 +237,7 @@ namespace AuClient
                 }
                 //通知客户端消息
                 if (notify != null)
-                    AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(notify));
+                    AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(notify));
                 if (ct.IsCancellationRequested)
                     break;
                 System.Threading.Thread.Sleep(AppConfig.Current.Interval);
