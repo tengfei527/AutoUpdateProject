@@ -40,9 +40,62 @@ namespace AU.Common.Utility
                     }
                 }
             }
-            catch {}
+            catch { }
 
             return string.Empty;
+        }
+        public static string GetApiDbConnect(string webConfigPath)
+        {
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(webConfigPath);
+                XmlNode node = doc.SelectSingleNode(@"//add[@key='IsCiphertext']");
+                bool IsCiphertext = "true".Equals(((XmlElement)node).GetAttribute("value"));
+                node = doc.SelectSingleNode(@"//add[@key='DbHelperConnectionString']");
+                string DbHelperConnectionString = ((XmlElement)node).GetAttribute("value");
+                if (IsCiphertext)
+                {
+                    DbHelperConnectionString = CryptoHelp.DesDecrypt(DbHelperConnectionString, "ftf");
+                }
+
+                return DbHelperConnectionString;
+            }
+            catch { return ""; }
+        }
+
+
+        /// <summary>
+        /// 获取配置信息
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string GetAddValueFromWebConfig(string webConfigPath, string name)
+        {
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(webConfigPath);
+                XmlNode node = doc.SelectSingleNode(@"//add[@key='" + name + "']");
+                XmlElement ele = (XmlElement)node;
+                return ele.GetAttribute("value");
+            }
+            catch { return ""; }
+        }
+        /// <summary>
+        /// 更新配置文件信息
+        /// </summary>
+        /// <param name="name">配置文件字段名称</param>
+        /// <param name="Xvalue">值</param>
+        public static void UpdateAddValueFromWebConfig(string webConfigPath, string name, string Xvalue)
+        {
+            XmlDocument doc = new XmlDocument();
+
+            doc.Load(webConfigPath);
+            XmlNode node = doc.SelectSingleNode(@"//add[@key='" + name + "']");
+            XmlElement ele = (XmlElement)node;
+            ele.SetAttribute("value", Xvalue);
+            doc.Save(webConfigPath);
         }
     }
 }

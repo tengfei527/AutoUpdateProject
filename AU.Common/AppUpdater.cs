@@ -215,7 +215,13 @@ namespace AU.Common
                         {//文件类型 0=DLL 1=exe 2=SQL 3=Image 4……
                             case 2://sql 升级
                                 {
-
+                                    string config = this.SystemPath + "\\Core\\Web.config";
+                                    if (System.IO.File.Exists(config))
+                                    {
+                                        string con = ConfigUtility.GetApiDbConnect(config);
+                                        if (!string.IsNullOrEmpty(con))
+                                            AuDataBase.RunScript(path, con);
+                                    }
                                 }
                                 break;
                             default:
@@ -228,8 +234,8 @@ namespace AU.Common
                                 }
                                 break;
                         }
-                        index++;
                         NotifyMessage(new Common.NotifyMessage(NotifyType.UpProcess, index + ":100%", index));
+                        index++;
                     }
                     catch (WebException ex)
                     {
@@ -252,7 +258,7 @@ namespace AU.Common
             }
             catch (Exception e)
             {
-                NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "复制文件失败", e));
+                NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "升级失败," + e.Message, e));
 
                 this.IsUpgrade = false;
                 return;
