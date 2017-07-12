@@ -237,7 +237,7 @@ namespace AuWriter
             }
 
             AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed);
-            btnStart_Click(btnStart, EventArgs.Empty);
+            启动服务ToolStripMenuItem_Click(启动服务ToolStripMenuItem, EventArgs.Empty);
         }
         #endregion [主窗体加载]
 
@@ -672,31 +672,6 @@ namespace AuWriter
         {
             Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
         }
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (btnStart.Text == "启动服务")
-                {
-
-                    StartResult result = AU.Monitor.Server.ServerBootstrap.Bootstrap.Start();
-                    Console.WriteLine("Start result: {0}!", result);
-                    if (result != StartResult.Failed)
-                    {
-                        btnStart.Text = "停止服务";
-                    }
-                }
-                else
-                {
-                    AU.Monitor.Server.ServerBootstrap.Stop();
-                    btnStart.Text = "启动服务";
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
 
         private void btnSend_Click(object sender, EventArgs e)
         {
@@ -705,5 +680,17 @@ namespace AuWriter
                 AU.Monitor.Server.ServerBootstrap.Send("AUVERSION:" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
             }
         }
+        #region 菜单操作
+        private void 启动服务ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartResult result = AU.Monitor.Server.ServerBootstrap.Bootstrap.Start();
+            Console.WriteLine("Start result: {0}!", result);
+        }
+
+        private void 停止服务ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AU.Monitor.Server.ServerBootstrap.Stop();
+        }
+        #endregion
     }
 }

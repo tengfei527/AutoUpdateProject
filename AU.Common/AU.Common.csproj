@@ -53,6 +53,7 @@
     <Compile Include="AuFile.cs" />
     <Compile Include="AuPackage.cs" />
     <Compile Include="AuPublish.cs" />
+    <Compile Include="CommandType.cs" />
     <Compile Include="NotifyMessage.cs" />
     <Compile Include="NotifyType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,7 +71,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DAL\" />
+    <Folder Include="Comon\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OneCardSystem.DAL.DBUtility\OneCardSystem.DAL.DBUtility.csproj">
