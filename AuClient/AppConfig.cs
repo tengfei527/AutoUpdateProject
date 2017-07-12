@@ -39,25 +39,9 @@ namespace AuClient
         /// </summary>
         public string PublishAddress { get; set; }
         /// <summary>
-        /// 子系统
-        /// </summary>
-        public string SubSystem { get; set; }
-        /// <summary>
         /// 更新配置路径
         /// </summary>
         public string UpdateConfigPath { get; set; }
-        /// <summary>
-        /// 更新临时路径
-        /// </summary>
-        public string UpdateTempPath { get; set; }
-        /// <summary>
-        /// 备份地址
-        /// </summary>
-        public string AuBackupPath { get; set; }
-        /// <summary>
-        /// 系统路径
-        /// </summary>
-        public string SystemPath { get; set; }
         /// <summary>
         /// 链接地址
         /// </summary>
@@ -85,16 +69,9 @@ namespace AuClient
 
             this.AllowUI = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowUI"], StringComparison.InvariantCultureIgnoreCase);
 
-            this.PublishAddress = System.Configuration.ConfigurationManager.AppSettings["PublishAddress"] ?? "";
-            this.SubSystem = System.Configuration.ConfigurationManager.AppSettings["SubSystem"] ?? "";
-
+            this.PublishAddress = System.Configuration.ConfigurationManager.AppSettings["PublishAddress"] ?? "http://192.168.8.23:54321/";
             this.UpdateConfigPath = Application.StartupPath;
-            this.UpdateTempPath = System.IO.Path.Combine(this.UpdateConfigPath, this.SubSystem + "\\autemp\\");
-
-            this.AuBackupPath = System.IO.Path.Combine(Application.StartupPath, this.SubSystem + "\\aubackup\\");
-            this.SystemPath = System.IO.Path.Combine(Application.StartupPath, System.Configuration.ConfigurationManager.AppSettings["SystemPath"]);
             this.LinkUrl = System.Configuration.ConfigurationManager.AppSettings["LinkUrl"] ?? "";
-
             this.SocketServer = System.Configuration.ConfigurationManager.AppSettings["SocketServer"] ?? "";
         }
 
