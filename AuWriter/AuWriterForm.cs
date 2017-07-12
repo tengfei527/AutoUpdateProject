@@ -228,7 +228,7 @@ namespace AuWriter
             {
                 nancySelfHost.Start();
                 Console.WriteLine("NancySelfHost已启动。。");
-                System.Diagnostics.Process.Start(url);
+                //System.Diagnostics.Process.Start(url);
                 Console.WriteLine("监听地址：" + url);
             }
             catch (Exception ex)

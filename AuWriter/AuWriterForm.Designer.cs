@@ -36,12 +36,12 @@
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbpBase = new System.Windows.Forms.TabPage();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.prbProd = new System.Windows.Forms.ProgressBar();
+            this.btnProduce = new System.Windows.Forms.Button();
             this.tbUpdateMsg = new System.Windows.Forms.TextBox();
             this.tbVersion = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.prbProd = new System.Windows.Forms.ProgressBar();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.btnProduce = new System.Windows.Forms.Button();
             this.cbFilter = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.cbSubSystem = new System.Windows.Forms.ComboBox();
@@ -175,6 +175,36 @@
             this.tbpBase.Text = "※基本信息";
             this.tbpBase.UseVisualStyleBackColor = true;
             // 
+            // btnExit
+            // 
+            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnExit.Location = new System.Drawing.Point(519, 345);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(64, 23);
+            this.btnExit.TabIndex = 1;
+            this.btnExit.Text = "退出(&X)";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // prbProd
+            // 
+            this.prbProd.Location = new System.Drawing.Point(69, 345);
+            this.prbProd.Name = "prbProd";
+            this.prbProd.Size = new System.Drawing.Size(370, 23);
+            this.prbProd.TabIndex = 2;
+            this.prbProd.Visible = false;
+            // 
+            // btnProduce
+            // 
+            this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnProduce.Location = new System.Drawing.Point(453, 345);
+            this.btnProduce.Name = "btnProduce";
+            this.btnProduce.Size = new System.Drawing.Size(60, 23);
+            this.btnProduce.TabIndex = 0;
+            this.btnProduce.Text = "生成(&G)";
+            this.btnProduce.UseVisualStyleBackColor = true;
+            this.btnProduce.Click += new System.EventHandler(this.btnProduce_Click);
+            // 
             // tbUpdateMsg
             // 
             this.tbUpdateMsg.Location = new System.Drawing.Point(69, 263);
@@ -200,36 +230,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(968, 39);
             this.panel2.TabIndex = 4;
-            // 
-            // prbProd
-            // 
-            this.prbProd.Location = new System.Drawing.Point(69, 345);
-            this.prbProd.Name = "prbProd";
-            this.prbProd.Size = new System.Drawing.Size(370, 23);
-            this.prbProd.TabIndex = 2;
-            this.prbProd.Visible = false;
-            // 
-            // btnExit
-            // 
-            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExit.Location = new System.Drawing.Point(519, 345);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(64, 23);
-            this.btnExit.TabIndex = 1;
-            this.btnExit.Text = "退出(&X)";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // btnProduce
-            // 
-            this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnProduce.Location = new System.Drawing.Point(453, 345);
-            this.btnProduce.Name = "btnProduce";
-            this.btnProduce.Size = new System.Drawing.Size(60, 23);
-            this.btnProduce.TabIndex = 0;
-            this.btnProduce.Text = "生成(&G)";
-            this.btnProduce.UseVisualStyleBackColor = true;
-            this.btnProduce.Click += new System.EventHandler(this.btnProduce_Click);
             // 
             // cbFilter
             // 
@@ -420,7 +420,15 @@
             // 
             // comboBox1
             // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "AUVERSION",
+            "TRANSFER",
+            "TRANSFERONE",
+            "TERMINAL",
+            "RESOURCE",
+            "SCRIPT"});
             this.comboBox1.Location = new System.Drawing.Point(6, 13);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 20);
