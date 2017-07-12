@@ -53,12 +53,12 @@
     <Compile Include="AuFile.cs" />
     <Compile Include="AuPackage.cs" />
     <Compile Include="AuPublish.cs" />
-    <Compile Include="CommandType.cs" />
-    <Compile Include="NotifyMessage.cs" />
-    <Compile Include="NotifyType.cs" />
+    <Compile Include="Comon\CommandType.cs" />
+    <Compile Include="Comon\NotifyMessage.cs" />
+    <Compile Include="Comon\NotifyType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AuList.cs" />
-    <Compile Include="SubSystem.cs" />
+    <Compile Include="Comon\SubSystem.cs" />
     <Compile Include="Utility\ConfigUtility.cs" />
     <Compile Include="Utility\CryptoHelp.cs" />
     <Compile Include="Utility\HttpHelper.cs" />
@@ -70,9 +70,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Comon\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\OneCardSystem.DAL.DBUtility\OneCardSystem.DAL.DBUtility.csproj">
       <Project>{cd172b30-c6b5-45cb-8f2e-8ab76a62263a}</Project>
