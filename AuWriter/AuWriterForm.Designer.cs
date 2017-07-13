@@ -80,10 +80,12 @@
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tvTerminal = new System.Windows.Forms.TreeView();
             this.tbpBase.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbpControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -396,6 +398,10 @@
             this.splitContainer1.Location = new System.Drawing.Point(3, 3);
             this.splitContainer1.Name = "splitContainer1";
             // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.tvTerminal);
+            // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl2);
@@ -494,14 +500,14 @@
             // 启动服务ToolStripMenuItem
             // 
             this.启动服务ToolStripMenuItem.Name = "启动服务ToolStripMenuItem";
-            this.启动服务ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.启动服务ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.启动服务ToolStripMenuItem.Text = "启动服务";
             this.启动服务ToolStripMenuItem.Click += new System.EventHandler(this.启动服务ToolStripMenuItem_Click);
             // 
             // 停止服务ToolStripMenuItem
             // 
             this.停止服务ToolStripMenuItem.Name = "停止服务ToolStripMenuItem";
-            this.停止服务ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.停止服务ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.停止服务ToolStripMenuItem.Text = "停止服务";
             this.停止服务ToolStripMenuItem.Click += new System.EventHandler(this.停止服务ToolStripMenuItem_Click);
             // 
@@ -609,6 +615,14 @@
             this.tabPage2.Text = "选择";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // tvTerminal
+            // 
+            this.tvTerminal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvTerminal.Location = new System.Drawing.Point(0, 0);
+            this.tvTerminal.Name = "tvTerminal";
+            this.tvTerminal.Size = new System.Drawing.Size(172, 491);
+            this.tvTerminal.TabIndex = 0;
+            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -625,6 +639,7 @@
             this.tbpBase.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tbpControl.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
@@ -695,6 +710,7 @@
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TreeView tvTerminal;
     }
 }
 
