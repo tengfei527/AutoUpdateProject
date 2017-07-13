@@ -42,7 +42,7 @@ namespace AU.Monitor.Server
         /// </summary>
         /// <param name="SessionConnectedEvent"></param>
         /// <param name="SessionClosedEvent"></param>
-        public static void Init(SessionHandler<MonitorSession> SessionConnectedEvent, SessionHandler<MonitorSession, CloseReason> SessionClosedEvent)
+        public static void Init(SessionHandler<MonitorSession> SessionConnectedEvent, SessionHandler<MonitorSession, CloseReason> SessionClosedEvent, RequestHandler<MonitorSession, SuperSocket.SocketBase.Protocol.StringRequestInfo> NewRequestReceived)
         {
             foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
             {
@@ -53,8 +53,11 @@ namespace AU.Monitor.Server
                     d.NewSessionConnected += SessionConnectedEvent;
                 if (SessionClosedEvent != null)
                     d.SessionClosed += SessionClosedEvent;
+                if (NewRequestReceived != null)
+                    d.NewRequestReceived += NewRequestReceived;
             }
         }
+
         /// <summary>
         /// 启动
         /// </summary>

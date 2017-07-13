@@ -220,7 +220,7 @@ namespace AU.Common
                                     {
                                         string con = ConfigUtility.GetApiDbConnect(config);
                                         if (!string.IsNullOrEmpty(con))
-                                            AuDataBase.RunScript(path, con);
+                                            AuDataBase.RunScriptFile(path, con);
                                     }
                                 }
                                 break;

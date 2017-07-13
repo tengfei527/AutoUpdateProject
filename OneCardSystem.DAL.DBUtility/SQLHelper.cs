@@ -162,7 +162,28 @@ namespace OneCardSystem.DAL.DBUtility
                 throw;
             }
         }
+        /// <summary>
+        /// 获取数据集
+        /// </summary>
+        /// <param name="connection">连接</param>
+        /// <param name="cmdType">SQL类型</param>
+        /// <param name="cmdText">指令</param>
+        /// <param name="commandParameters">参数</param>
+        /// <returns></returns>
+        public static DataSet ExecuteTable(SqlConnection connection, CommandType cmdType, string cmdText, params SqlParameter[] commandParameters)
+        {
 
+            SqlCommand cmd = new SqlCommand();
+            DataSet dt = new DataSet();
+
+            PrepareCommand(cmd, connection, null, cmdType, cmdText, commandParameters);
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            adapter.SelectCommand = cmd;
+
+            adapter.Fill(dt);
+
+            return dt;
+        }
         /// <summary>
         /// 获取数据集
         /// </summary>

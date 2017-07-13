@@ -51,7 +51,7 @@ namespace AuClient
             {
                 nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
                 //Server
-                AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed);
+                AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
                 StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
                 Console.WriteLine("Start result: {0}!", result);
             }
@@ -59,39 +59,88 @@ namespace AuClient
             InitSocketClient();
         }
 
+        public void clienthandler(SuperSocket.ProtoBase.StringPackageInfo p)
+        {
+            string body = p.Body;
+            string key = p.Key;
+            string[] par = p.Parameters;
+            if (key != body)
+                Console.WriteLine("{0}:{1}", key, body);
+            else
+                Console.WriteLine(key);
+            try
+            {
+                switch (key)
+                {
+                    case "AUVERSION":
+                        List<AuPublish> aulist = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AuPublish>>(p.Body);
+                        if (aulist != null)
+                        {
+                            foreach (var a in aulist)
+                                AuPublishQueue.Enqueue(a);
+                        }
+                        break;
+                    case "SCRIPT":
+                        {
+                            if (string.IsNullOrEmpty(p.Body) && !this.SubSystemDic.ContainsKey(SystemType.coreserver.ToString()))
+                                break;
+                            string config = this.SubSystemDic[SystemType.coreserver.ToString()] + "\\Core\\Web.config";
+                            if (System.IO.File.Exists(config))
+                            {
+                                string con = AU.Common.Utility.ConfigUtility.GetApiDbConnect(config);
+                                if (!string.IsNullOrEmpty(con))
+                                {
+                                    var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(p.Body);
+                                    string result = AuDataBase.RunScriptString(con, cp.Key, cp.Body, cp.Parameters);
+
+                                    AU.Monitor.Server.CommandPackage cpackage = new AU.Monitor.Server.CommandPackage()
+                                    {
+                                        Key = cp.Key,
+                                        Body = result,
+                                    };
+
+                                    this.Send(CommandType.SCRIPT, Newtonsoft.Json.JsonConvert.SerializeObject(cpackage));
+
+                                }
+                            }
+                        }
+
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                //log
+                Console.WriteLine(e);
+            }
+        }
+        public string cmdSpilts = "\r\n";
+        private void Send(string key, string body)
+        {
+            string message = (key + ":" + body).Replace(cmdSpilts, "") + cmdSpilts;
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(message);
+            int t = b.Length / 1024;
+            byte[] buff;
+            for (int i = 0; i <= t; i++)
+            {
+                if (i == t)
+                {
+                    buff = new byte[b.Length - i * 1024];
+                    Array.Copy(b, i * 1024, buff, 0, buff.Length);
+                }
+                else
+                {
+                    buff = new byte[1024];
+                    Array.Copy(b, i * 1024, buff, 0, 1024);
+                }
+
+                easyClient.Send(buff);
+            }
+        }
+
         private void InitSocketClient()
         {
-            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), (p =>
-            {
-                string body = p.Body;
-                string key = p.Key;
-                string[] par = p.Parameters;
-                if (key != body)
-                    Console.WriteLine("{0}:{1}", key, body);
-                else
-                    Console.WriteLine(key);
-                try
-                {
-                    switch (key)
-                    {
-                        case "AUVERSION":
-                            List<AuPublish> aulist = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AuPublish>>(p.Body);
-                            if (aulist != null)
-                            {
-                                foreach (var a in aulist)
-                                    AuPublishQueue.Enqueue(a);
-                            }
-                            break;
-                    }
-                }
-                catch (Exception e)
-                {
-                    //log
-                    Console.WriteLine(e);
-                }
-            }));
-
-            //Client            
+            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), clienthandler);
             var ips = AppConfig.Current.SocketServer.Split(':');
             System.Net.IPAddress ip = System.Net.IPAddress.Parse(ips[0]);
             int port = Convert.ToInt32(ips[1]);
@@ -105,6 +154,12 @@ namespace AuClient
                         {
                             var res = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, port));
                             System.Threading.Tasks.Task.WaitAll(res);
+
+                            //推送指令
+                            if (res.Result)
+                            {
+                                //easyClient.Send();
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -130,7 +185,10 @@ namespace AuClient
         {
             Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
         }
-
+        private static void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
+        {
+            Console.WriteLine("Session Message ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + "Key= " + requestInfo.Key + " Message=" + requestInfo.Body);
+        }
         /// <summary>
         /// 启动
         /// </summary>

@@ -4,8 +4,19 @@ using System.Text;
 
 namespace AU.Common
 {
+    /// <summary>
+    /// 命令类别
+    /// </summary>
     public class CommandType
     {
+        /// <summary>
+        /// 登陆
+        /// </summary>
+        public static readonly string LOGIN = "LOGIN";
+        /// <summary>
+        /// 会话
+        /// </summary>
+        public static readonly string SESSION = "SESSION";
         /// <summary>
         /// 服务器更新通知
         /// </summary>

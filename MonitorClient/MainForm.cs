@@ -57,7 +57,25 @@ namespace MonitorClient
         {
             if (easyClient.IsConnected)
             {
-                easyClient.Send(m_Encoding.GetBytes(tbMsg.Text.Trim() + cmdSpilts));
+                byte[] b = m_Encoding.GetBytes(tbMsg.Text.Trim().Replace("\r\n", "") + cmdSpilts);
+                int t = b.Length / 1024;
+                byte[] buff;
+                for (int i = 0; i <= t; i++)
+                {
+                    if (i == t)
+                    {
+                        buff = new byte[b.Length - i * 1024];
+                        Array.Copy(b, i * 1024, buff, 0, buff.Length);
+                    }
+                    else
+                    {
+                        buff = new byte[1024];
+                        Array.Copy(b, i * 1024, buff, 0, 1024);
+                    }
+
+                    easyClient.Send(buff);
+                }
+
             }
         }
     }

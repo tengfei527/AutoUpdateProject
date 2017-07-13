@@ -60,7 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CommandPackage.cs" />
     <Compile Include="Command\ECHO.cs" />
     <Compile Include="MonitorServer.cs" />
     <Compile Include="MonitorSession.cs" />

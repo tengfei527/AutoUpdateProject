@@ -236,7 +236,7 @@ namespace AuWriter
                 Console.WriteLine(ex);
             }
 
-            AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed);
+            AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
             启动服务ToolStripMenuItem_Click(启动服务ToolStripMenuItem, EventArgs.Empty);
         }
         #endregion [主窗体加载]
@@ -535,20 +535,49 @@ namespace AuWriter
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
             AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
-            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
+            Console.WriteLine("New Connected\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString());
 
         }
         private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
         {
-            Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
+            Console.WriteLine("Session Closed\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString() + "\tReason=" + value);
         }
-
+        private static void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
+        {
+            Console.WriteLine("Session Message\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString() + "\tKey=" + requestInfo.Key + "\tMessage=" + requestInfo.Body);
+        }
         private void btnSend_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(tbMsg.Text))
+            if (cmbCmd.SelectedItem == null)
             {
-                AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                if (string.IsNullOrEmpty(tbMsg.Text))
+                {
+                    AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                }
             }
+            else
+            {
+                if (string.IsNullOrEmpty(tbMsg.Text))
+                {
+                    MessageBox.Show("请填写发送指令信息");
+                    return;
+                }
+                else
+                {
+                    AU.Monitor.Server.CommandPackage cp = new AU.Monitor.Server.CommandPackage()
+                    {
+                        Key = tbKey.Text.Trim(),
+                        Body = tbMsg.Text,
+                        Parameters = tbParameter.Text.Split(','),
+                        Attachment = "",
+                    };
+
+                    AU.Monitor.Server.ServerBootstrap.Send(cmbCmd.SelectedItem.ToString(), Newtonsoft.Json.JsonConvert.SerializeObject(cp));
+                    return;
+                }
+            }
+            //原始文本
+            AU.Monitor.Server.ServerBootstrap.Send(tbMsg.Text);
         }
         #region 菜单操作
         private void 启动服务ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -562,5 +591,14 @@ namespace AuWriter
             AU.Monitor.Server.ServerBootstrap.Stop();
         }
         #endregion
+
+        private void lbLog_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbLog.SelectedIndex > -1)
+            {
+                tbContent.Visible = true;
+                tbContent.Text = lbLog.Items[lbLog.SelectedIndex].ToString().Replace("\t", "\r\n");
+            }
+        }
     }
 }

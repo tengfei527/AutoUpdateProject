@@ -10,7 +10,7 @@ namespace AU.Monitor.Server
 {
     public class MonitorServer : AppServer<MonitorSession>
     {
-        public MonitorServer() : base(new SuperSocket.SocketBase.Protocol.CommandLineReceiveFilterFactory(Encoding.UTF8, new BasicRequestInfoParser(":", ",")))
+        public MonitorServer() : base(new SuperSocket.SocketBase.Protocol.CommandLineReceiveFilterFactory(Encoding.UTF8, new BasicRequestInfoParser(":", "&")))
         { }
         protected override bool Setup(IRootConfig rootConfig, IServerConfig config)
         {
