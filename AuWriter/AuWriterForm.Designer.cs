@@ -132,7 +132,7 @@
             // cbPackage
             // 
             this.cbPackage.AutoSize = true;
-            this.cbPackage.Location = new System.Drawing.Point(396, 238);
+            this.cbPackage.Location = new System.Drawing.Point(477, 243);
             this.cbPackage.Name = "cbPackage";
             this.cbPackage.Size = new System.Drawing.Size(48, 16);
             this.cbPackage.TabIndex = 11;
@@ -145,7 +145,7 @@
             this.txtUrl.Location = new System.Drawing.Point(70, 9);
             this.txtUrl.Name = "txtUrl";
             this.txtUrl.ReadOnly = true;
-            this.txtUrl.Size = new System.Drawing.Size(433, 21);
+            this.txtUrl.Size = new System.Drawing.Size(513, 21);
             this.txtUrl.TabIndex = 1;
             // 
             // label5
@@ -192,7 +192,7 @@
             // btnExit
             // 
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExit.Location = new System.Drawing.Point(519, 345);
+            this.btnExit.Location = new System.Drawing.Point(519, 412);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(64, 23);
             this.btnExit.TabIndex = 15;
@@ -202,7 +202,7 @@
             // 
             // prbProd
             // 
-            this.prbProd.Location = new System.Drawing.Point(69, 345);
+            this.prbProd.Location = new System.Drawing.Point(69, 412);
             this.prbProd.Name = "prbProd";
             this.prbProd.Size = new System.Drawing.Size(370, 23);
             this.prbProd.TabIndex = 2;
@@ -211,7 +211,7 @@
             // btnProduce
             // 
             this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnProduce.Location = new System.Drawing.Point(453, 345);
+            this.btnProduce.Location = new System.Drawing.Point(453, 412);
             this.btnProduce.Name = "btnProduce";
             this.btnProduce.Size = new System.Drawing.Size(60, 23);
             this.btnProduce.TabIndex = 14;
@@ -225,15 +225,15 @@
             this.tbUpdateMsg.Multiline = true;
             this.tbUpdateMsg.Name = "tbUpdateMsg";
             this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbUpdateMsg.Size = new System.Drawing.Size(375, 59);
+            this.tbUpdateMsg.Size = new System.Drawing.Size(514, 143);
             this.tbUpdateMsg.TabIndex = 13;
             this.tbUpdateMsg.Text = "更新说明：";
             // 
             // tbVersion
             // 
-            this.tbVersion.Location = new System.Drawing.Point(424, 65);
+            this.tbVersion.Location = new System.Drawing.Point(412, 65);
             this.tbVersion.Name = "tbVersion";
-            this.tbVersion.Size = new System.Drawing.Size(79, 21);
+            this.tbVersion.Size = new System.Drawing.Size(172, 21);
             this.tbVersion.TabIndex = 6;
             this.tbVersion.TextChanged += new System.EventHandler(this.tbVersion_TextChanged);
             // 
@@ -272,13 +272,13 @@
             this.cbSubSystem.FormattingEnabled = true;
             this.cbSubSystem.Location = new System.Drawing.Point(70, 37);
             this.cbSubSystem.Name = "cbSubSystem";
-            this.cbSubSystem.Size = new System.Drawing.Size(263, 20);
+            this.cbSubSystem.Size = new System.Drawing.Size(336, 20);
             this.cbSubSystem.TabIndex = 2;
             // 
             // btnExpt
             // 
             this.btnExpt.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExpt.Location = new System.Drawing.Point(450, 209);
+            this.btnExpt.Location = new System.Drawing.Point(531, 111);
             this.btnExpt.Name = "btnExpt";
             this.btnExpt.Size = new System.Drawing.Size(53, 21);
             this.btnExpt.TabIndex = 9;
@@ -292,7 +292,7 @@
             this.txtExpt.Multiline = true;
             this.txtExpt.Name = "txtExpt";
             this.txtExpt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtExpt.Size = new System.Drawing.Size(374, 119);
+            this.txtExpt.Size = new System.Drawing.Size(455, 124);
             this.txtExpt.TabIndex = 8;
             // 
             // label4
@@ -307,7 +307,7 @@
             // btnDest
             // 
             this.btnDest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDest.Location = new System.Drawing.Point(450, 235);
+            this.btnDest.Location = new System.Drawing.Point(531, 240);
             this.btnDest.Name = "btnDest";
             this.btnDest.Size = new System.Drawing.Size(52, 21);
             this.btnDest.TabIndex = 12;
@@ -319,7 +319,7 @@
             // 
             this.txtDest.Location = new System.Drawing.Point(69, 236);
             this.txtDest.Name = "txtDest";
-            this.txtDest.Size = new System.Drawing.Size(321, 21);
+            this.txtDest.Size = new System.Drawing.Size(402, 21);
             this.txtDest.TabIndex = 10;
             // 
             // label3
@@ -334,7 +334,7 @@
             // btnDir
             // 
             this.btnDir.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDir.Location = new System.Drawing.Point(424, 36);
+            this.btnDir.Location = new System.Drawing.Point(504, 36);
             this.btnDir.Name = "btnDir";
             this.btnDir.Size = new System.Drawing.Size(79, 21);
             this.btnDir.TabIndex = 4;
@@ -345,7 +345,7 @@
             // btnSrc
             // 
             this.btnSrc.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSrc.Location = new System.Drawing.Point(339, 36);
+            this.btnSrc.Location = new System.Drawing.Point(419, 36);
             this.btnSrc.Name = "btnSrc";
             this.btnSrc.Size = new System.Drawing.Size(79, 21);
             this.btnSrc.TabIndex = 3;
@@ -357,7 +357,7 @@
             // 
             this.txtSrc.Location = new System.Drawing.Point(70, 65);
             this.txtSrc.Name = "txtSrc";
-            this.txtSrc.Size = new System.Drawing.Size(347, 21);
+            this.txtSrc.Size = new System.Drawing.Size(336, 21);
             this.txtSrc.TabIndex = 5;
             // 
             // label2

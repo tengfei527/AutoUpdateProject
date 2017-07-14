@@ -474,7 +474,7 @@ namespace AuWriter
                 this.btnProduce.Text = "生成(&G)";
                 cbPackage.Enabled = true;
                 //发送客户端通知消息
-                AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                AU.Monitor.Server.ServerBootstrap.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
                 MessageBox.Show(this, "自动更新文件生成成功:" + mesg, "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (System.IO.Directory.Exists(PackageTempPath))
                     System.IO.Directory.Delete(PackageTempPath, true);

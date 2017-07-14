@@ -220,7 +220,8 @@ namespace AU.Common
                         case 2://sql 升级
                             {
                                 string config = this.SystemPath + "\\Core\\Web.config";
-                                if (System.IO.File.Exists(config))
+                                //单独处理服务器防止执行初始化脚本
+                                if (System.IO.File.Exists(config) && !m.WritePath.Contains("Core\\bin\\db\\"))
                                 {
                                     string con = ConfigUtility.GetApiDbConnect(config);
                                     if (!string.IsNullOrEmpty(con))

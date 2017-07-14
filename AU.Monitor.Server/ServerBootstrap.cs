@@ -22,6 +22,11 @@ namespace AU.Monitor.Server
                 return lazyBootstrap.Value;
             }
         }
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="sessionid">会话编号</param>
+        /// <param name="Message">消息体</param>
         public static void Send(string sessionid, string Message)
         {
             foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
@@ -39,6 +44,12 @@ namespace AU.Monitor.Server
                 }
             }
         }
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="sessionid">会话编号</param>
+        /// <param name="key">命令</param>
+        /// <param name="body">命令内容</param>
         public static void Send(string sessionid, string key, string body)
         {
             string message = key + ":" + body;
