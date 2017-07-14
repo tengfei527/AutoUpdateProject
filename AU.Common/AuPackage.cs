@@ -14,29 +14,36 @@ namespace AU.Common
         /// <summary>
         /// 本地配置路径
         /// </summary>
-        public string LocalPath { get; private set; }
+        public string LocalPath { get; protected set; }
         /// <summary>
         /// 本地包路径
         /// </summary>
-        public string PackagePath { get; private set; }
+        public string PackagePath { get; protected set; }
         /// <summary>
         /// 本地包配置
         /// </summary>
-        public AuList LocalAuList { get; private set; }
+        public AuList LocalAuList { get; protected set; }
+        /// <summary>
+        /// 子系统
+        /// </summary>
+        public string SubSystem { get; protected set; }
         /// <summary>
         /// 初始化本地路径
         /// </summary>
         /// <param name="localPath">本地配置目录</param>
-        public AuPackage(string localPath)
+        public AuPackage(string localPath, string subsystem)
         {
+            this.SubSystem = subsystem;
             this.LocalPath = localPath;
             this.PackagePath = System.IO.Path.Combine(this.LocalPath, PackageName);
 
             this.LocalAuList = ReadPackage(this.PackagePath);
         }
 
-        public void SetPackage(AuList au)
+        public void SetPackage(AuList au, string subsystem)
         {
+            this.SubSystem = subsystem;
+
             this.LocalAuList = au;
         }
         /// <summary>

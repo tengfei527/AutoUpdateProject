@@ -67,7 +67,7 @@ namespace AuClient
                 this.AvailableUpdate = Check(path, subsystem, systemPath);
                 if (AvailableUpdate > 0)
                 {
-                    IISRest(subsystem);
+                    iisOperate(subsystem, false);
                     //升级
                     this.auUpdater.Upgrade(htUpdateFile);
                     this.MainAppRun();
@@ -90,8 +90,7 @@ namespace AuClient
             }
             finally
             {
-                if (!this.bgw.IsBusy)
-                    this.bgw.RunWorkerAsync();
+                iisOperate(subsystem, true);
             }
 
             return false;
@@ -101,16 +100,16 @@ namespace AuClient
         {
             string updateTempPath = AppConfig.GetUpdateTempPath(subsystem);
             //更新
-            auUpdater = new AppUpdater(systemPath, updateTempPath, AppConfig.GetAuBackupPath(subsystem), systemPath);
+            auUpdater = new AppUpdater(systemPath, updateTempPath, AppConfig.GetAuBackupPath(subsystem), systemPath, subsystem);
             if (auUpdater.UpdateAuPackage.LocalAuList == null && System.IO.File.Exists(path))
             {
                 //解压一个文件
                 string temp = AU.Common.Utility.ZipUtility.DecompressFile(path, AuPackage.PackageName, System.Text.Encoding.UTF8);
                 AuList a = Newtonsoft.Json.JsonConvert.DeserializeObject<AuList>(temp);
-                auUpdater.UpdateAuPackage.SetPackage(a);
+                auUpdater.UpdateAuPackage.SetPackage(a, subsystem);
             }
             auUpdater.Notify += Au_Notify;
-            int up = auUpdater.CheckForUpdate(out htUpdateFile);
+            int up = auUpdater.CheckForUpdate(subsystem, out htUpdateFile);
             if (up > 0)
             {
                 //解压临时包
@@ -126,13 +125,16 @@ namespace AuClient
 
             return up;
         }
-        private void IISRest(string subsystem)
+        private void iisOperate(string subsystem, bool start = true)
         {
             try
             {
                 if (subsystem == SystemType.coreserver.ToString() || subsystem == SystemType.managerserver.ToString() || subsystem == SystemType.handsetserver.ToString() || subsystem == SystemType.imageserver.ToString())
                 {
-                    Process.Start("iisreset");
+                    if (start)
+                        Process.Start("iisreset", "/start");
+                    else
+                        Process.Start("iisreset", "/stop");
                 }
             }
             catch (Exception e)
@@ -156,7 +158,7 @@ namespace AuClient
                 AvailableUpdate = Check(path, subsystem, systemPath);
                 if (AvailableUpdate > 0)
                 {
-                    IISRest(subsystem);
+                    btnNext.Tag = subsystem;
                     tbUpdateMsg.Text = htUpdateFile.LocalAuList.Description;
                     lvUpdateList.Items.Clear();
                     htUpdateFile.LocalAuList.Files.ForEach(d => lvUpdateList.Items.Add(new ListViewItem(
@@ -184,8 +186,6 @@ namespace AuClient
             }
             finally
             {
-                if (!this.bgw.IsBusy && !result)
-                    this.bgw.RunWorkerAsync();
             }
 
             return result;
@@ -258,6 +258,7 @@ namespace AuClient
             }
             if (AvailableUpdate > 0)
             {
+                iisOperate(btnNext.Tag.ToString(), false);
                 Thread threadDown = new Thread(new ParameterizedThreadStart(auUpdater.Upgrade));
                 threadDown.IsBackground = true;
                 threadDown.Start(htUpdateFile);
@@ -279,6 +280,7 @@ namespace AuClient
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            iisOperate(btnNext.Tag.ToString(), true);
             this.Hide();
             this.MainAppRun();
             this.AvailableUpdate = 0;
@@ -397,6 +399,9 @@ namespace AuClient
             //去通知消息
             while (true)
             {
+                if (this.IsShow)
+                    return;
+
                 UpgradeMessage um;
                 if (!this.auPublishHelp.UpgradeMessageQueue.TryDequeue(out um))
                 {
@@ -423,8 +428,6 @@ namespace AuClient
                        {
                            this.ShowUpdate(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
                        });
-
-                        return;
                     }
                     else
                         this.DoUpgrade(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
@@ -437,7 +440,7 @@ namespace AuClient
         private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //没有显示UI
-            if (!this.IsShow && this.AvailableUpdate == 0)
+            if (!this.IsShow)
             {
                 System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                 bgw.RunWorkerAsync();

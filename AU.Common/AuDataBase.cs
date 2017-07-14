@@ -21,32 +21,47 @@ namespace AU.Common
 
             string sql = "";
             string temp = "";
-            //Trans tr = dbHelper.InnerCreatTrans();
-            using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(constr))
+            try
             {
-                FileStream fs = new FileStream(scriptPath, FileMode.Open);
-                StreamReader sr = new StreamReader(fs, System.Text.Encoding.Default);
-                conn.Open();
-                //事务级别
-                System.Data.SqlClient.SqlTransaction tran = conn.BeginTransaction();
-                bool isCommit = false;
-                while (sr.Peek() > -1)
+                //Trans tr = dbHelper.InnerCreatTrans();
+                using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(constr))
                 {
-                    temp = sr.ReadLine();
-                    if (temp.ToLower() != "go")
-                        sql += temp + "\r\n";
-                    else if (!string.IsNullOrEmpty(sql))
+                    FileStream fs = new FileStream(scriptPath, FileMode.Open);
+                    StreamReader sr = new StreamReader(fs, System.Text.Encoding.Default);
+                    conn.Open();
+                    //事务级别
+                    System.Data.SqlClient.SqlTransaction tran = conn.BeginTransaction();
+                    bool isCommit = false;
+                    while (sr.Peek() > -1)
+                    {
+                        temp = sr.ReadLine().Trim(new char[] { '\r', '\n', '\t', ' ' });
+                        if (temp.StartsWith("--"))
+                            continue;
+                        if (temp.ToLower() != "go")
+                            sql += temp + "\r\n";
+                        else if (!string.IsNullOrEmpty(sql))
+                        {
+                            OneCardSystem.DAL.DBUtility.SqlHelper.ExecuteNonQuery(tran, System.Data.CommandType.Text, sql);
+                            isCommit = true;
+                            sql = "";
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(sql))
                     {
                         OneCardSystem.DAL.DBUtility.SqlHelper.ExecuteNonQuery(tran, System.Data.CommandType.Text, sql);
                         isCommit = true;
                         sql = "";
                     }
+                    sr.Close();
+                    fs.Close();
+                    if (isCommit)
+                        tran.Commit();
+                    conn.Close();
                 }
-                sr.Close();
-                fs.Close();
-                if (isCommit)
-                    tran.Commit();
-                conn.Close();
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
 
             return true;

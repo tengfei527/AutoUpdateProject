@@ -56,7 +56,9 @@ namespace AuWriter
         public AuWriterForm()
         {
             InitializeComponent();
-
+            //自已绘制  
+            this.tvTerminal.DrawMode = TreeViewDrawMode.OwnerDrawText;
+            this.tvTerminal.DrawNode += new DrawTreeNodeEventHandler(tvTerminal_DrawNode);
             Console.SetOut(new Monitor.Common.ListTextWriter(this.lbLog));
         }
         #region [选择主程序]
@@ -361,6 +363,8 @@ namespace AuWriter
                     aulist.Application.Location = ".";
                 }
             }
+
+            aulist.No = Guid.NewGuid().ToString();
             aulist.Description = tbUpdateMsg.Text;
             aulist.LastUpdateTime = DateTime.Now;
 
@@ -534,25 +538,88 @@ namespace AuWriter
         }
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
-            AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+            this.AddTreeView(session, null);
+
+            session.Send(AU.Common.CommandType.AUVERSION + ":" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+
             Console.WriteLine("New Connected\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString());
 
         }
-        private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
+        private void AddTreeView(AU.Monitor.Server.MonitorSession session, List<AU.Common.SessionModel> sms)
         {
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                if (!tvTerminal.Nodes.ContainsKey(session.SessionID))
+                {
+                    tvTerminal.Nodes.Add(new TreeNode()
+                    {
+                        Name = session.SessionID,
+                        Text = session.SessionID,
+                        ToolTipText = session.RemoteEndPoint.ToString() + " " + session.StartTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                    });
+                }
+                if (sms == null)
+                    return;
+                tvTerminal.Nodes[session.SessionID].Nodes.Clear();
+                foreach (var s in sms)
+                {
+                    tvTerminal.Nodes[session.SessionID].Nodes.Add(
+                        new TreeNode()
+                        {
+                            Name = s.SessionId,
+                            Text = s.Name + "(" + s.Version + ")",
+                            ToolTipText = session.RemoteEndPoint.ToString() + " " + session.StartTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                        });
+                }
+            });
+        }
+
+        private void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
+        {
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                tvTerminal.Nodes.RemoveByKey(session.SessionID);
+            });
+
             Console.WriteLine("Session Closed\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString() + "\tReason=" + value);
         }
-        private static void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
+        private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
+            switch (requestInfo.Key)
+            {
+                case "SESSION":
+                    {
+                        var au = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AU.Common.SessionModel>>(requestInfo.Body);
+                        this.AddTreeView(session, au);
+                    }
+                    break;
+            }
             Console.WriteLine("Session Message\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString() + "\tKey=" + requestInfo.Key + "\tMessage=" + requestInfo.Body);
+        }
+
+        private string GetTreeViewRoute(TreeNode nowNode, ref string route)
+        {
+            if (nowNode == null)
+            {
+                return "";
+            }
+            if (nowNode.Parent == null)
+                return nowNode.Name;
+            else
+            {
+                route += nowNode.Name + "\\";
+                return GetTreeViewRoute(nowNode.Parent, ref route);
+            }
         }
         private void btnSend_Click(object sender, EventArgs e)
         {
+            string route = string.Empty;
+            string session = GetTreeViewRoute(tvTerminal.SelectedNode, ref route);
             if (cmbCmd.SelectedItem == null)
             {
                 if (string.IsNullOrEmpty(tbMsg.Text))
                 {
-                    AU.Monitor.Server.ServerBootstrap.Send(AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                    AU.Monitor.Server.ServerBootstrap.Send(session, AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
                 }
             }
             else
@@ -570,14 +637,16 @@ namespace AuWriter
                         Body = tbMsg.Text,
                         Parameters = tbParameter.Text.Split(','),
                         Attachment = "",
+                        Route = route,
                     };
 
-                    AU.Monitor.Server.ServerBootstrap.Send(cmbCmd.SelectedItem.ToString(), Newtonsoft.Json.JsonConvert.SerializeObject(cp));
+                    AU.Monitor.Server.ServerBootstrap.Send(session, cmbCmd.SelectedItem.ToString(), Newtonsoft.Json.JsonConvert.SerializeObject(cp));
                     return;
                 }
             }
             //原始文本
-            AU.Monitor.Server.ServerBootstrap.Send(tbMsg.Text);
+            AU.Monitor.Server.ServerBootstrap.Send(session, tbMsg.Text);
+
         }
         #region 菜单操作
         private void 启动服务ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -598,6 +667,40 @@ namespace AuWriter
             {
                 tbContent.Visible = true;
                 tbContent.Text = lbLog.Items[lbLog.SelectedIndex].ToString().Replace("\t", "\r\n");
+            }
+        }
+
+
+        //在绘制节点事件中，按自已想的绘制  
+        private void tvTerminal_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        {
+            e.DrawDefault = true; //我这里用默认颜色即可，只需要在TreeView失去焦点时选中节点仍然突显  
+            return;
+            //or  自定义颜色  
+            if ((e.State & TreeNodeStates.Selected) != 0)
+            {
+                //演示为绿底白字  
+                e.Graphics.FillRectangle(Brushes.DarkBlue, e.Node.Bounds);
+
+                Font nodeFont = e.Node.NodeFont;
+                if (nodeFont == null) nodeFont = ((TreeView)sender).Font;
+                e.Graphics.DrawString(e.Node.Text, nodeFont, Brushes.White, Rectangle.Inflate(e.Bounds, 2, 0));
+            }
+            else
+            {
+                e.DrawDefault = true;
+            }
+
+            if ((e.State & TreeNodeStates.Focused) != 0)
+            {
+                using (Pen focusPen = new Pen(Color.Black))
+                {
+                    focusPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                    Rectangle focusBounds = e.Node.Bounds;
+                    focusBounds.Size = new Size(focusBounds.Width - 1,
+                    focusBounds.Height - 1);
+                    e.Graphics.DrawRectangle(focusPen, focusBounds);
+                }
             }
         }
     }

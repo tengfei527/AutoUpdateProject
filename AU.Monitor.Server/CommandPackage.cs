@@ -35,5 +35,9 @@ namespace AU.Monitor.Server
         /// 附加内容
         /// </summary>
         public string Attachment { get; set; }
+        /// <summary>
+        /// 路由 >
+        /// </summary>
+        public string Route { get; set; }
     }
 }

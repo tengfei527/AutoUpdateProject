@@ -54,7 +54,9 @@ namespace AU.Common.Utility
             RegistryKey myKey = root.OpenSubKey(subkey, true);
             if (myKey != null)
             {
-                registData = myKey.GetValue(name).ToString();
+                var v = myKey.GetValue(name);
+                if (v != null)
+                    registData = v.ToString();
             }
 
             return registData;
@@ -67,8 +69,15 @@ namespace AU.Common.Utility
         /// <param name="tovalue"></param> 
         public static void SetRegistryData(RegistryKey root, string subkey, string name, string value)
         {
-            RegistryKey aimdir = root.CreateSubKey(subkey);
-            aimdir.SetValue(name, value);
+            try
+            {
+                RegistryKey aimdir = root.CreateSubKey(subkey);
+                aimdir.SetValue(name, value);
+            }
+            catch
+            {
+
+            }
         }
 
         /// <summary>
@@ -77,14 +86,19 @@ namespace AU.Common.Utility
         /// <param name="name"></param>
         public static void DeleteRegist(RegistryKey root, string subkey, string name)
         {
-            string[] subkeyNames;
-            RegistryKey myKey = root.OpenSubKey(subkey, true);
-            subkeyNames = myKey.GetSubKeyNames();
-            foreach (string aimKey in subkeyNames)
+            try
             {
-                if (aimKey == name)
-                    myKey.DeleteSubKeyTree(name);
+                string[] subkeyNames;
+                RegistryKey myKey = root.OpenSubKey(subkey, true);
+                subkeyNames = myKey.GetSubKeyNames();
+                foreach (string aimKey in subkeyNames)
+                {
+                    if (aimKey == name)
+                        myKey.DeleteSubKeyTree(name);
+                }
             }
+
+            catch { }
         }
 
         /// <summary>

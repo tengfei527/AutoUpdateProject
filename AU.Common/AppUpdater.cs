@@ -50,14 +50,14 @@ namespace AU.Common
         /// </summary>
         /// <param name="targetPath">待升级包信息</param>
         /// <param name="updatePath">新版本包信息</param>
-        public AppUpdater(string targetPath, string updatePath, string aubackupPath, string systemPath)
+        public AppUpdater(string targetPath, string updatePath, string aubackupPath, string systemPath, string subsystem)
         {
             this.SystemPath = systemPath;
             this.AuBackupPath = aubackupPath;
             //this.handle = handle;
-            this.UpdateAuPackage = new AuPackage(updatePath);
+            this.UpdateAuPackage = new AuPackage(updatePath, subsystem);
 
-            this.TargetAuPackage = new AuPackage(targetPath);
+            this.TargetAuPackage = new AuPackage(targetPath, subsystem);
         }
         /// <summary>
         /// 销毁
@@ -100,7 +100,7 @@ namespace AU.Common
         /// <param name="localXmlFile"></param>
         /// <param name="updateFileList"></param>
         /// <returns></returns>
-        public int CheckForUpdate(out AuPackage updatePackage)
+        public int CheckForUpdate(string subsystem, out AuPackage updatePackage)
         {
             updatePackage = null;
             if (this.UpdateAuPackage.LocalAuList == null)
@@ -110,6 +110,11 @@ namespace AU.Common
                 updatePackage = this.UpdateAuPackage;
                 return updatePackage.LocalAuList.Files.Count;
             }
+            //比较错误节点
+            var no = AU.Common.Utility.RegistryHelper.GetRegistryData(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7\\AuError\\", subsystem);
+            if (this.UpdateAuPackage.LocalAuList.No == no)
+                return -1;
+
             int k = 0;
             List<AuFile> updateFileList = new List<AuFile>();
             //新增 修改
@@ -206,43 +211,36 @@ namespace AU.Common
                 NotifyMessage(new Common.NotifyMessage(NotifyType.Process, "请稍后...", upgradeFiles.LocalAuList.Files.Count));
                 foreach (var m in upgradeFiles.LocalAuList.Files)
                 {
-                    try
-                    {
-                        NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "正在处理[" + m.No + "]文件,请稍后...", upgradeFiles.LocalAuList.Files.Count));
-                        //本地路径
-                        string path = this.TargetAuPackage.LocalPath + "\\" + m.WritePath;
-                        switch (m.FileType)
-                        {//文件类型 0=DLL 1=exe 2=SQL 3=Image 4……
-                            case 2://sql 升级
+
+                    NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "正在处理[" + m.No + "]文件,请稍后...", upgradeFiles.LocalAuList.Files.Count));
+                    //本地路径
+                    string path = this.TargetAuPackage.LocalPath + "\\" + m.WritePath;
+                    switch (m.FileType)
+                    {//文件类型 0=DLL 1=exe 2=SQL 3=Image 4……
+                        case 2://sql 升级
+                            {
+                                string config = this.SystemPath + "\\Core\\Web.config";
+                                if (System.IO.File.Exists(config))
                                 {
-                                    string config = this.SystemPath + "\\Core\\Web.config";
-                                    if (System.IO.File.Exists(config))
-                                    {
-                                        string con = ConfigUtility.GetApiDbConnect(config);
-                                        if (!string.IsNullOrEmpty(con))
-                                            AuDataBase.RunScriptFile(path, con);
-                                    }
+                                    string con = ConfigUtility.GetApiDbConnect(config);
+                                    if (!string.IsNullOrEmpty(con))
+                                        AuDataBase.RunScriptFile(path, con);
                                 }
-                                break;
-                            default:
-                                if (System.IO.File.Exists(path))
-                                {
-                                    //备份
-                                    string bak = this.AuBackupPath + m.WritePath;
-                                    ToolsHelp.CreateDirtory(bak);
-                                    System.IO.File.Copy(path, bak, true);
-                                }
-                                break;
-                        }
-                        NotifyMessage(new Common.NotifyMessage(NotifyType.UpProcess, index + ":100%", index));
-                        index++;
+                            }
+                            break;
+                        default:
+                            if (System.IO.File.Exists(path))
+                            {
+                                //备份
+                                string bak = this.AuBackupPath + m.WritePath;
+                                ToolsHelp.CreateDirtory(bak);
+                                System.IO.File.Copy(path, bak, true);
+                            }
+                            break;
                     }
-                    catch (WebException ex)
-                    {
-                        NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "更新文件下载失败", ex));
-                        this.IsUpgrade = false;
-                        return;
-                    }
+                    NotifyMessage(new Common.NotifyMessage(NotifyType.UpProcess, index + ":100%", index));
+                    index++;
+
                 }
                 //备份目标包信息
                 if (System.IO.File.Exists(this.TargetAuPackage.PackagePath))
@@ -251,15 +249,27 @@ namespace AU.Common
                     System.IO.File.Copy(this.TargetAuPackage.PackagePath, this.AuBackupPath + "\\" + AuPackage.PackageName, true);
                 }
                 //升级 根据文件类型选择升级？
-                AU.Common.Utility.ToolsHelp.CopyFile(upgradeFiles.LocalPath, this.SystemPath);
+                try
+                {
+                    AU.Common.Utility.ToolsHelp.CopyFile(upgradeFiles.LocalPath, this.SystemPath);
+                }
+                catch (Exception e)
+                {
+                    NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "复制文件失败," + e.Message, e));
+                    //还原
+                    this.Rollback();
+                    throw e;
+                }
                 System.IO.Directory.Delete(upgradeFiles.LocalPath, true);
-
                 this.IsUpgrade = true;
+                //如果有错误标识删除错误标识
+                AU.Common.Utility.RegistryHelper.DeleteRegist(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7\\AuError\\", upgradeFiles.SubSystem);
             }
             catch (Exception e)
             {
                 NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "升级失败," + e.Message, e));
-
+                //写错误标识
+                AU.Common.Utility.RegistryHelper.SetRegistryData(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7\\AuError\\", upgradeFiles.SubSystem, upgradeFiles.LocalAuList.No);
                 this.IsUpgrade = false;
                 return;
             }
@@ -267,6 +277,7 @@ namespace AU.Common
             {
                 NotifyMessage(new Common.NotifyMessage(NotifyType.StopDown, "更新完成"));
             }
+
             return;
         }
         /// <summary>

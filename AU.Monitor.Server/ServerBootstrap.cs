@@ -22,20 +22,27 @@ namespace AU.Monitor.Server
                 return lazyBootstrap.Value;
             }
         }
-        public static void Send(string Message)
+        public static void Send(string sessionid, string Message)
         {
             foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
             {
-                foreach (var s in d.GetAllSessions())
+                if (string.IsNullOrEmpty(sessionid))
+                    foreach (var s in d.GetAllSessions())
+                    {
+                        s.Send(Message.Replace("\r\n", ""));
+                    }
+                else
                 {
-                    s.Send(Message.Replace("\r\n", ""));
+                    var s = d.GetSessionByID(sessionid);
+                    if (s != null)
+                        s.Send(Message.Replace("\r\n", ""));
                 }
             }
         }
-        public static void Send(string key, string body)
+        public static void Send(string sessionid, string key, string body)
         {
             string message = key + ":" + body;
-            Send(message);
+            Send(sessionid, message);
         }
         /// <summary>
         /// 初始化

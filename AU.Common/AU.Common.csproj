@@ -56,6 +56,7 @@
     <Compile Include="Comon\CommandType.cs" />
     <Compile Include="Comon\NotifyMessage.cs" />
     <Compile Include="Comon\NotifyType.cs" />
+    <Compile Include="Comon\SessionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AuList.cs" />
     <Compile Include="Comon\SubSystem.cs" />

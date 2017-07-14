@@ -58,8 +58,18 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tbpControl = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.tvTerminal = new System.Windows.Forms.TreeView();
+            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lbLog = new System.Windows.Forms.ListBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tbContent = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tbKey = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tbParameter = new System.Windows.Forms.TextBox();
             this.cmbCmd = new System.Windows.Forms.ComboBox();
             this.tbMsg = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
@@ -71,16 +81,6 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.tbParameter = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.tbKey = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.tbContent = new System.Windows.Forms.TextBox();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tvTerminal = new System.Windows.Forms.TreeView();
             this.tbpBase.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbpControl.SuspendLayout();
@@ -88,11 +88,11 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -410,6 +410,39 @@
             this.splitContainer1.SplitterDistance = 172;
             this.splitContainer1.TabIndex = 9;
             // 
+            // tvTerminal
+            // 
+            this.tvTerminal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvTerminal.HideSelection = false;
+            this.tvTerminal.HotTracking = true;
+            this.tvTerminal.Location = new System.Drawing.Point(0, 0);
+            this.tvTerminal.Name = "tvTerminal";
+            this.tvTerminal.ShowNodeToolTips = true;
+            this.tvTerminal.Size = new System.Drawing.Size(172, 491);
+            this.tvTerminal.TabIndex = 0;
+            // 
+            // tabControl2
+            // 
+            this.tabControl2.Controls.Add(this.tabPage1);
+            this.tabControl2.Controls.Add(this.tabPage2);
+            this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl2.Location = new System.Drawing.Point(0, 127);
+            this.tabControl2.Name = "tabControl2";
+            this.tabControl2.SelectedIndex = 0;
+            this.tabControl2.Size = new System.Drawing.Size(792, 364);
+            this.tabControl2.TabIndex = 8;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.lbLog);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(784, 338);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "日志";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
             // lbLog
             // 
             this.lbLog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
@@ -424,6 +457,27 @@
             this.lbLog.Size = new System.Drawing.Size(778, 332);
             this.lbLog.TabIndex = 6;
             this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.tbContent);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(784, 338);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "选择";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tbContent
+            // 
+            this.tbContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbContent.Location = new System.Drawing.Point(3, 3);
+            this.tbContent.Multiline = true;
+            this.tbContent.Name = "tbContent";
+            this.tbContent.Size = new System.Drawing.Size(778, 332);
+            this.tbContent.TabIndex = 7;
+            this.tbContent.Visible = false;
             // 
             // groupBox2
             // 
@@ -441,6 +495,47 @@
             this.groupBox2.Size = new System.Drawing.Size(792, 127);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(173, 15);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(23, 12);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "KEY";
+            // 
+            // tbKey
+            // 
+            this.tbKey.Location = new System.Drawing.Point(202, 11);
+            this.tbKey.Name = "tbKey";
+            this.tbKey.Size = new System.Drawing.Size(74, 21);
+            this.tbKey.TabIndex = 2;
+            // 
+            // label7
+            // 
+            this.label7.Location = new System.Drawing.Point(8, 41);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(35, 48);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "参数:以\",\"分割";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 12);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "指令:";
+            // 
+            // tbParameter
+            // 
+            this.tbParameter.Location = new System.Drawing.Point(49, 41);
+            this.tbParameter.Multiline = true;
+            this.tbParameter.Name = "tbParameter";
+            this.tbParameter.Size = new System.Drawing.Size(227, 36);
+            this.tbParameter.TabIndex = 4;
             // 
             // cmbCmd
             // 
@@ -500,14 +595,14 @@
             // 启动服务ToolStripMenuItem
             // 
             this.启动服务ToolStripMenuItem.Name = "启动服务ToolStripMenuItem";
-            this.启动服务ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.启动服务ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.启动服务ToolStripMenuItem.Text = "启动服务";
             this.启动服务ToolStripMenuItem.Click += new System.EventHandler(this.启动服务ToolStripMenuItem_Click);
             // 
             // 停止服务ToolStripMenuItem
             // 
             this.停止服务ToolStripMenuItem.Name = "停止服务ToolStripMenuItem";
-            this.停止服务ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.停止服务ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.停止服务ToolStripMenuItem.Text = "停止服务";
             this.停止服务ToolStripMenuItem.Click += new System.EventHandler(this.停止服务ToolStripMenuItem_Click);
             // 
@@ -531,98 +626,6 @@
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // tbParameter
-            // 
-            this.tbParameter.Location = new System.Drawing.Point(49, 41);
-            this.tbParameter.Multiline = true;
-            this.tbParameter.Name = "tbParameter";
-            this.tbParameter.Size = new System.Drawing.Size(227, 36);
-            this.tbParameter.TabIndex = 4;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 12);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "指令:";
-            // 
-            // label7
-            // 
-            this.label7.Location = new System.Drawing.Point(8, 41);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 48);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "参数:以\",\"分割";
-            // 
-            // tbKey
-            // 
-            this.tbKey.Location = new System.Drawing.Point(202, 11);
-            this.tbKey.Name = "tbKey";
-            this.tbKey.Size = new System.Drawing.Size(74, 21);
-            this.tbKey.TabIndex = 2;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(173, 15);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(23, 12);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "KEY";
-            // 
-            // tbContent
-            // 
-            this.tbContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbContent.Location = new System.Drawing.Point(3, 3);
-            this.tbContent.Multiline = true;
-            this.tbContent.Name = "tbContent";
-            this.tbContent.Size = new System.Drawing.Size(778, 332);
-            this.tbContent.TabIndex = 7;
-            this.tbContent.Visible = false;
-            // 
-            // tabControl2
-            // 
-            this.tabControl2.Controls.Add(this.tabPage1);
-            this.tabControl2.Controls.Add(this.tabPage2);
-            this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl2.Location = new System.Drawing.Point(0, 127);
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(792, 364);
-            this.tabControl2.TabIndex = 8;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.lbLog);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(784, 338);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "日志";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.tbContent);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(784, 338);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "选择";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // tvTerminal
-            // 
-            this.tvTerminal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvTerminal.Location = new System.Drawing.Point(0, 0);
-            this.tvTerminal.Name = "tvTerminal";
-            this.tvTerminal.Size = new System.Drawing.Size(172, 491);
-            this.tvTerminal.TabIndex = 0;
-            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -643,14 +646,14 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.tabControl2.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

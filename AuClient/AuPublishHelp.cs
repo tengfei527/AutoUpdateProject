@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using SuperSocket.SocketBase;
 using System.Collections.Concurrent;
+using System.Collections;
 
 namespace AuClient
 {
@@ -36,6 +37,10 @@ namespace AuClient
 
         AppRemotePublish AppRemotePublishConten { get; set; }
         /// <summary>
+        /// 客户端
+        /// </summary>
+        public Hashtable SessionTable { get; set; }
+        /// <summary>
         /// 本地路径
         /// </summary>
         public string LocalPath { get; set; }
@@ -54,8 +59,9 @@ namespace AuClient
                 AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
                 StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
                 Console.WriteLine("Start result: {0}!", result);
-            }
+                SessionTable = new Hashtable();
 
+            }
             InitSocketClient();
         }
 
@@ -104,7 +110,18 @@ namespace AuClient
                                 }
                             }
                         }
+                        break;
+                    case "TRANSFER"://通知当前客户端
+                        {
 
+
+                        }
+                        break;
+                    case "TRANSFERONE"://通知指定客户端
+                        {
+                            this.Transfer(p.Body);
+
+                        }
                         break;
                 }
             }
@@ -114,6 +131,13 @@ namespace AuClient
                 Console.WriteLine(e);
             }
         }
+
+        private void Transfer(string pp)
+        {
+
+        }
+
+
         public string cmdSpilts = "\r\n";
         private void Send(string key, string body)
         {
@@ -158,7 +182,8 @@ namespace AuClient
                             //推送指令
                             if (res.Result)
                             {
-                                //easyClient.Send();
+                                //通知当前客户端版本
+                                SessionOper(-1, null);
                             }
                         }
                     }
@@ -172,6 +197,23 @@ namespace AuClient
             });
             client.Start();
         }
+        private void SessionOper(int oper, AU.Monitor.Server.MonitorSession session, AU.Common.SessionModel sm = null)
+        {
+            if (oper == 0)
+            {
+                if (SessionTable.ContainsKey(session.SessionID))
+                    SessionTable.Remove(session.SessionID);
+            }
+            else if (oper == 1)
+            {
+                if (SessionTable.ContainsKey(session.SessionID))
+                    SessionTable[session.SessionID] = sm;
+                else
+                    SessionTable.Add(session.SessionID, sm);
+            }
+            //通知服务器
+            this.Send(AU.Common.CommandType.SESSION, Newtonsoft.Json.JsonConvert.SerializeObject(SessionTable.Values));
+        }
         /// <summary>
         /// 新客户端连接
         /// </summary>
@@ -179,13 +221,22 @@ namespace AuClient
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
             Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
+            this.SessionOper(1, session, new SessionModel()
+            {
+                SessionId = session.SessionID,
+                RemoteEndPoint = session.RemoteEndPoint.ToString(),
+                Name = "客户端",
+                Version = "0.0.0.0",
+            });
+
             session.Send("Welcome to AuClient Socket Server");
         }
-        private static void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
+        private void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
         {
+            this.SessionOper(0, session);
             Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
         }
-        private static void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
+        private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
             Console.WriteLine("Session Message ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + "Key= " + requestInfo.Key + " Message=" + requestInfo.Body);
         }
