@@ -38,18 +38,29 @@ namespace MonitorClient
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            System.Net.IPAddress ip;
-            if (System.Net.IPAddress.TryParse(tbIP.Text.Trim(), out ip))
+            if (btnConnect.Text == "连接")
             {
-                Task<bool> result = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, (int)numericUpDown1.Value));
-                Task.WaitAll(result);
-                btnConnect.Enabled = !result.Result;
+                System.Net.IPAddress ip;
+                if (System.Net.IPAddress.TryParse(tbIP.Text.Trim(), out ip))
+                {
+                    Task<bool> result = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, (int)numericUpDown1.Value));
+                    Task.WaitAll(result);
+                    if (result.Result)
+                        btnConnect.Text = "断开";
+                }
+                else
+                {
+                    string msg = "服务器地址为空，请填写服务器地址";
+                    Console.WriteLine(msg);
+                    MessageBox.Show(msg);
+                }
             }
             else
             {
-                string msg = "服务器地址为空，请填写服务器地址";
-                Console.WriteLine(msg);
-                MessageBox.Show(msg);
+                Task<bool> result = easyClient.Close();
+                Task.WaitAll(result);
+                if (result.Result)
+                    btnConnect.Text = "连接";
             }
         }
 

@@ -114,12 +114,11 @@ namespace AuClient
                     case "TRANSFER"://通知当前客户端
                         {
 
-
                         }
                         break;
                     case "TRANSFERONE"://通知指定客户端
                         {
-                            this.Transfer(p.Body);
+                            this.Transfer(p);
 
                         }
                         break;
@@ -132,9 +131,20 @@ namespace AuClient
             }
         }
 
-        private void Transfer(string pp)
+        private void Transfer(SuperSocket.ProtoBase.StringPackageInfo p)
         {
-
+            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(p.Body);
+            //中转
+            var c = cp.Route.Split(new char[] { '\\' }, 1, StringSplitOptions.RemoveEmptyEntries);
+            if (c != null && c.Length > 0)
+            {
+                cp.Route = cp.Route.Remove(0, c[0].Length);
+                AU.Monitor.Server.ServerBootstrap.Send(c[0], p.Key, Newtonsoft.Json.JsonConvert.SerializeObject(cp));
+            }
+            else
+            {
+                clienthandler(new SuperSocket.ProtoBase.StringPackageInfo(cp.Key, cp.Body, cp.Parameters));
+            }
         }
 
 

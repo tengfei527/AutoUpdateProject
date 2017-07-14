@@ -637,7 +637,7 @@ namespace AuWriter
                         Body = tbMsg.Text,
                         Parameters = tbParameter.Text.Split(','),
                         Attachment = "",
-                        Route = route,
+                        Route = route.Trim('\\'),
                     };
 
                     AU.Monitor.Server.ServerBootstrap.Send(session, cmbCmd.SelectedItem.ToString(), Newtonsoft.Json.JsonConvert.SerializeObject(cp));

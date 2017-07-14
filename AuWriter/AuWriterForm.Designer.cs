@@ -59,20 +59,23 @@
             this.tbpControl = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tvTerminal = new System.Windows.Forms.TreeView();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tbMsg = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tbKey = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tbParameter = new System.Windows.Forms.TextBox();
+            this.cmbCmdType = new System.Windows.Forms.ComboBox();
+            this.cmbCmd = new System.Windows.Forms.ComboBox();
+            this.btnSend = new System.Windows.Forms.Button();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lbLog = new System.Windows.Forms.ListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tbContent = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.tbKey = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tbParameter = new System.Windows.Forms.TextBox();
-            this.cmbCmd = new System.Windows.Forms.ComboBox();
-            this.tbMsg = new System.Windows.Forms.TextBox();
-            this.btnSend = new System.Windows.Forms.Button();
             this.fbdSrc = new System.Windows.Forms.FolderBrowserDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.系统ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,10 +91,14 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -404,8 +411,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl2);
-            this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(968, 491);
             this.splitContainer1.SplitterDistance = 172;
             this.splitContainer1.TabIndex = 9;
@@ -421,15 +427,153 @@
             this.tvTerminal.Size = new System.Drawing.Size(172, 491);
             this.tvTerminal.TabIndex = 0;
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.tbMsg);
+            this.splitContainer2.Panel1.Controls.Add(this.groupBox2);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.tabControl2);
+            this.splitContainer2.Size = new System.Drawing.Size(792, 491);
+            this.splitContainer2.SplitterDistance = 144;
+            this.splitContainer2.TabIndex = 1;
+            // 
+            // tbMsg
+            // 
+            this.tbMsg.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbMsg.Location = new System.Drawing.Point(0, 64);
+            this.tbMsg.Multiline = true;
+            this.tbMsg.Name = "tbMsg";
+            this.tbMsg.Size = new System.Drawing.Size(792, 80);
+            this.tbMsg.TabIndex = 3;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.tbKey);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.tbParameter);
+            this.groupBox2.Controls.Add(this.cmbCmdType);
+            this.groupBox2.Controls.Add(this.cmbCmd);
+            this.groupBox2.Controls.Add(this.btnSend);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(792, 64);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(328, 18);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(23, 12);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "KEY";
+            // 
+            // tbKey
+            // 
+            this.tbKey.Location = new System.Drawing.Point(357, 12);
+            this.tbKey.Name = "tbKey";
+            this.tbKey.Size = new System.Drawing.Size(85, 21);
+            this.tbKey.TabIndex = 2;
+            // 
+            // label7
+            // 
+            this.label7.Location = new System.Drawing.Point(448, 15);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(94, 16);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "参数:以\",\"分割";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(3, 18);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(35, 12);
+            this.label9.TabIndex = 7;
+            this.label9.Text = "类别:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(166, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 12);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "指令:";
+            // 
+            // tbParameter
+            // 
+            this.tbParameter.Location = new System.Drawing.Point(567, 12);
+            this.tbParameter.Multiline = true;
+            this.tbParameter.Name = "tbParameter";
+            this.tbParameter.Size = new System.Drawing.Size(206, 21);
+            this.tbParameter.TabIndex = 4;
+            // 
+            // cmbCmdType
+            // 
+            this.cmbCmdType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCmdType.FormattingEnabled = true;
+            this.cmbCmdType.Items.AddRange(new object[] {
+            "AUVERSION",
+            "TRANSFER",
+            "TRANSFERONE",
+            "TERMINAL",
+            "RESOURCE",
+            "SCRIPT"});
+            this.cmbCmdType.Location = new System.Drawing.Point(39, 15);
+            this.cmbCmdType.Name = "cmbCmdType";
+            this.cmbCmdType.Size = new System.Drawing.Size(121, 20);
+            this.cmbCmdType.TabIndex = 1;
+            // 
+            // cmbCmd
+            // 
+            this.cmbCmd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCmd.FormattingEnabled = true;
+            this.cmbCmd.Items.AddRange(new object[] {
+            "AUVERSION",
+            "TRANSFER",
+            "TRANSFERONE",
+            "TERMINAL",
+            "RESOURCE",
+            "SCRIPT"});
+            this.cmbCmd.Location = new System.Drawing.Point(201, 14);
+            this.cmbCmd.Name = "cmbCmd";
+            this.cmbCmd.Size = new System.Drawing.Size(121, 20);
+            this.cmbCmd.TabIndex = 1;
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(357, 39);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(85, 20);
+            this.btnSend.TabIndex = 5;
+            this.btnSend.Text = "发送";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            // 
             // tabControl2
             // 
             this.tabControl2.Controls.Add(this.tabPage1);
             this.tabControl2.Controls.Add(this.tabPage2);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl2.Location = new System.Drawing.Point(0, 127);
+            this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(792, 364);
+            this.tabControl2.Size = new System.Drawing.Size(792, 343);
             this.tabControl2.TabIndex = 8;
             // 
             // tabPage1
@@ -438,7 +582,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(784, 338);
+            this.tabPage1.Size = new System.Drawing.Size(784, 317);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "日志";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -454,7 +598,7 @@
             this.lbLog.Location = new System.Drawing.Point(3, 3);
             this.lbLog.Name = "lbLog";
             this.lbLog.ScrollAlwaysVisible = true;
-            this.lbLog.Size = new System.Drawing.Size(778, 332);
+            this.lbLog.Size = new System.Drawing.Size(778, 311);
             this.lbLog.TabIndex = 6;
             this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
             // 
@@ -464,7 +608,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(784, 338);
+            this.tabPage2.Size = new System.Drawing.Size(784, 317);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "选择";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -475,101 +619,9 @@
             this.tbContent.Location = new System.Drawing.Point(3, 3);
             this.tbContent.Multiline = true;
             this.tbContent.Name = "tbContent";
-            this.tbContent.Size = new System.Drawing.Size(778, 332);
+            this.tbContent.Size = new System.Drawing.Size(778, 311);
             this.tbContent.TabIndex = 7;
             this.tbContent.Visible = false;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.tbKey);
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.tbParameter);
-            this.groupBox2.Controls.Add(this.cmbCmd);
-            this.groupBox2.Controls.Add(this.tbMsg);
-            this.groupBox2.Controls.Add(this.btnSend);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 0);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(792, 127);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(173, 15);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(23, 12);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "KEY";
-            // 
-            // tbKey
-            // 
-            this.tbKey.Location = new System.Drawing.Point(202, 11);
-            this.tbKey.Name = "tbKey";
-            this.tbKey.Size = new System.Drawing.Size(74, 21);
-            this.tbKey.TabIndex = 2;
-            // 
-            // label7
-            // 
-            this.label7.Location = new System.Drawing.Point(8, 41);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(35, 48);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "参数:以\",\"分割";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 12);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "指令:";
-            // 
-            // tbParameter
-            // 
-            this.tbParameter.Location = new System.Drawing.Point(49, 41);
-            this.tbParameter.Multiline = true;
-            this.tbParameter.Name = "tbParameter";
-            this.tbParameter.Size = new System.Drawing.Size(227, 36);
-            this.tbParameter.TabIndex = 4;
-            // 
-            // cmbCmd
-            // 
-            this.cmbCmd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbCmd.FormattingEnabled = true;
-            this.cmbCmd.Items.AddRange(new object[] {
-            "AUVERSION",
-            "TRANSFER",
-            "TRANSFERONE",
-            "TERMINAL",
-            "RESOURCE",
-            "SCRIPT"});
-            this.cmbCmd.Location = new System.Drawing.Point(49, 12);
-            this.cmbCmd.Name = "cmbCmd";
-            this.cmbCmd.Size = new System.Drawing.Size(121, 20);
-            this.cmbCmd.TabIndex = 1;
-            // 
-            // tbMsg
-            // 
-            this.tbMsg.Location = new System.Drawing.Point(282, 13);
-            this.tbMsg.Multiline = true;
-            this.tbMsg.Name = "tbMsg";
-            this.tbMsg.Size = new System.Drawing.Size(504, 108);
-            this.tbMsg.TabIndex = 3;
-            // 
-            // btnSend
-            // 
-            this.btnSend.Location = new System.Drawing.Point(49, 83);
-            this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(227, 38);
-            this.btnSend.TabIndex = 5;
-            this.btnSend.Text = "发送";
-            this.btnSend.UseVisualStyleBackColor = true;
-            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // menuStrip1
             // 
@@ -646,12 +698,17 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.tabControl2.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -714,6 +771,9 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TreeView tvTerminal;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cmbCmdType;
+        private System.Windows.Forms.SplitContainer splitContainer2;
     }
 }
 
