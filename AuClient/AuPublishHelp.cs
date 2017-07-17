@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SuperSocket.SocketBase;
 using System.Collections.Concurrent;
 using System.Collections;
+using AU.Common.Utility;
 
 namespace AuClient
 {
@@ -121,6 +122,40 @@ namespace AuClient
                             this.Transfer(p);
 
                         }
+                        break;
+                    case "RESOURCE":
+                        {
+                            if (string.IsNullOrEmpty(p.Body))
+                                break;
+                            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(p.Body);
+                            string result = string.Empty;
+
+                            switch (cp.Key)
+                            {
+                                case "SEND_DISKS":
+                                    AU.Common.Codes.DisksCode diskcode = IO.GetDisks();
+                                    result = Newtonsoft.Json.JsonConvert.SerializeObject(diskcode);
+
+                                    break;
+                                case "GET_DIRECTORY_DETIAL":
+                                    AU.Common.Codes.ExplorerCode explorer = new AU.Common.Codes.ExplorerCode();
+                                    explorer.Enter(cp.Body);
+                                    result = Newtonsoft.Json.JsonConvert.SerializeObject(explorer);
+                                    break;
+                                case "GET_FILE_DETIAL":
+                                    result = AU.Common.Utility.IO.GetFileDetial(cp.Body);
+                                    break;
+                            }
+
+                            AU.Monitor.Server.CommandPackage cpackage = new AU.Monitor.Server.CommandPackage()
+                            {
+                                Key = cp.Key,
+                                Body = result,
+                            };
+
+                            this.Send(CommandType.RESOURCE, Newtonsoft.Json.JsonConvert.SerializeObject(cpackage));
+                        }
+
                         break;
                 }
             }

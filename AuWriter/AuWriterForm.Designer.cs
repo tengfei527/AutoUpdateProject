@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuWriterForm));
             this.ofdExpt = new System.Windows.Forms.OpenFileDialog();
             this.ofdSrc = new System.Windows.Forms.OpenFileDialog();
             this.tbpOpt = new System.Windows.Forms.TabPage();
@@ -55,15 +57,15 @@
             this.btnSrc = new System.Windows.Forms.Button();
             this.txtSrc = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tbpControl = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tvTerminal = new System.Windows.Forms.TreeView();
+            this.tabControlCmd = new System.Windows.Forms.TabControl();
+            this.tbpCmd = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tbMsg = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.tbKey = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -71,11 +73,21 @@
             this.cmbCmdType = new System.Windows.Forms.ComboBox();
             this.cmbCmd = new System.Windows.Forms.ComboBox();
             this.btnSend = new System.Windows.Forms.Button();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabControlLog = new System.Windows.Forms.TabControl();
+            this.tbpLog = new System.Windows.Forms.TabPage();
             this.lbLog = new System.Windows.Forms.ListBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tbpLogSelect = new System.Windows.Forms.TabPage();
             this.tbContent = new System.Windows.Forms.TextBox();
+            this.tbpRes = new System.Windows.Forms.TabPage();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.lvRemoteDisk = new System.Windows.Forms.ListView();
+            this.iml_ExplorerImages = new System.Windows.Forms.ImageList(this.components);
+            this.tvRemoteDisk = new System.Windows.Forms.TreeView();
+            this.gbRemoteDisk = new System.Windows.Forms.GroupBox();
+            this.lvLocalDisk = new System.Windows.Forms.ListView();
+            this.tvLocalDisk = new System.Windows.Forms.TreeView();
+            this.gbLocalDisk = new System.Windows.Forms.GroupBox();
+            this.txt_myexplorer = new System.Windows.Forms.TextBox();
             this.fbdSrc = new System.Windows.Forms.FolderBrowserDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.系统ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,22 +96,34 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lbl_Display = new System.Windows.Forms.ToolStripStatusLabel();
+            this.txt_remoteexplorer = new System.Windows.Forms.TextBox();
             this.tbpBase.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabControlMain.SuspendLayout();
             this.tbpControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.tabControlCmd.SuspendLayout();
+            this.tbpCmd.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.tabControl2.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            this.tabControlLog.SuspendLayout();
+            this.tbpLog.SuspendLayout();
+            this.tbpLogSelect.SuspendLayout();
+            this.tbpRes.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
+            this.gbRemoteDisk.SuspendLayout();
+            this.gbLocalDisk.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -376,17 +400,17 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "主程序:";
             // 
-            // tabControl1
+            // tabControlMain
             // 
-            this.tabControl1.Controls.Add(this.tbpBase);
-            this.tabControl1.Controls.Add(this.tbpOpt);
-            this.tabControl1.Controls.Add(this.tbpControl);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 25);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(982, 523);
-            this.tabControl1.TabIndex = 0;
+            this.tabControlMain.Controls.Add(this.tbpBase);
+            this.tabControlMain.Controls.Add(this.tbpOpt);
+            this.tabControlMain.Controls.Add(this.tbpControl);
+            this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlMain.Location = new System.Drawing.Point(0, 25);
+            this.tabControlMain.Name = "tabControlMain";
+            this.tabControlMain.SelectedIndex = 0;
+            this.tabControlMain.Size = new System.Drawing.Size(982, 523);
+            this.tabControlMain.TabIndex = 0;
             // 
             // tbpControl
             // 
@@ -411,7 +435,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Panel2.Controls.Add(this.tabControlCmd);
             this.splitContainer1.Size = new System.Drawing.Size(968, 491);
             this.splitContainer1.SplitterDistance = 172;
             this.splitContainer1.TabIndex = 9;
@@ -426,11 +450,34 @@
             this.tvTerminal.ShowNodeToolTips = true;
             this.tvTerminal.Size = new System.Drawing.Size(172, 491);
             this.tvTerminal.TabIndex = 0;
+            this.tvTerminal.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvTerminal_NodeMouseClick);
+            // 
+            // tabControlCmd
+            // 
+            this.tabControlCmd.Controls.Add(this.tbpCmd);
+            this.tabControlCmd.Controls.Add(this.tbpRes);
+            this.tabControlCmd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlCmd.Location = new System.Drawing.Point(0, 0);
+            this.tabControlCmd.Name = "tabControlCmd";
+            this.tabControlCmd.SelectedIndex = 0;
+            this.tabControlCmd.Size = new System.Drawing.Size(792, 491);
+            this.tabControlCmd.TabIndex = 2;
+            // 
+            // tbpCmd
+            // 
+            this.tbpCmd.Controls.Add(this.splitContainer2);
+            this.tbpCmd.Location = new System.Drawing.Point(4, 22);
+            this.tbpCmd.Name = "tbpCmd";
+            this.tbpCmd.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpCmd.Size = new System.Drawing.Size(784, 465);
+            this.tbpCmd.TabIndex = 0;
+            this.tbpCmd.Text = "命令交互";
+            this.tbpCmd.UseVisualStyleBackColor = true;
             // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -441,9 +488,9 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.tabControl2);
-            this.splitContainer2.Size = new System.Drawing.Size(792, 491);
-            this.splitContainer2.SplitterDistance = 144;
+            this.splitContainer2.Panel2.Controls.Add(this.tabControlLog);
+            this.splitContainer2.Size = new System.Drawing.Size(778, 459);
+            this.splitContainer2.SplitterDistance = 134;
             this.splitContainer2.TabIndex = 1;
             // 
             // tbMsg
@@ -452,13 +499,11 @@
             this.tbMsg.Location = new System.Drawing.Point(0, 64);
             this.tbMsg.Multiline = true;
             this.tbMsg.Name = "tbMsg";
-            this.tbMsg.Size = new System.Drawing.Size(792, 80);
+            this.tbMsg.Size = new System.Drawing.Size(778, 70);
             this.tbMsg.TabIndex = 3;
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.tbKey);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.label1);
@@ -469,29 +514,13 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(792, 64);
+            this.groupBox2.Size = new System.Drawing.Size(778, 64);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(328, 18);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(23, 12);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "KEY";
-            // 
-            // tbKey
-            // 
-            this.tbKey.Location = new System.Drawing.Point(357, 12);
-            this.tbKey.Name = "tbKey";
-            this.tbKey.Size = new System.Drawing.Size(85, 21);
-            this.tbKey.TabIndex = 2;
-            // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(448, 15);
+            this.label7.Location = new System.Drawing.Point(328, 15);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(94, 16);
             this.label7.TabIndex = 7;
@@ -500,7 +529,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(3, 18);
+            this.label9.Location = new System.Drawing.Point(165, 15);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(35, 12);
             this.label9.TabIndex = 7;
@@ -509,7 +538,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(166, 18);
+            this.label1.Location = new System.Drawing.Point(3, 17);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 12);
             this.label1.TabIndex = 7;
@@ -517,24 +546,17 @@
             // 
             // tbParameter
             // 
-            this.tbParameter.Location = new System.Drawing.Point(567, 12);
+            this.tbParameter.Location = new System.Drawing.Point(447, 12);
             this.tbParameter.Multiline = true;
             this.tbParameter.Name = "tbParameter";
-            this.tbParameter.Size = new System.Drawing.Size(206, 21);
+            this.tbParameter.Size = new System.Drawing.Size(206, 30);
             this.tbParameter.TabIndex = 4;
             // 
             // cmbCmdType
             // 
             this.cmbCmdType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCmdType.FormattingEnabled = true;
-            this.cmbCmdType.Items.AddRange(new object[] {
-            "AUVERSION",
-            "TRANSFER",
-            "TRANSFERONE",
-            "TERMINAL",
-            "RESOURCE",
-            "SCRIPT"});
-            this.cmbCmdType.Location = new System.Drawing.Point(39, 15);
+            this.cmbCmdType.Location = new System.Drawing.Point(201, 12);
             this.cmbCmdType.Name = "cmbCmdType";
             this.cmbCmdType.Size = new System.Drawing.Size(121, 20);
             this.cmbCmdType.TabIndex = 1;
@@ -550,14 +572,15 @@
             "TERMINAL",
             "RESOURCE",
             "SCRIPT"});
-            this.cmbCmd.Location = new System.Drawing.Point(201, 14);
+            this.cmbCmd.Location = new System.Drawing.Point(38, 13);
             this.cmbCmd.Name = "cmbCmd";
             this.cmbCmd.Size = new System.Drawing.Size(121, 20);
             this.cmbCmd.TabIndex = 1;
+            this.cmbCmd.SelectedIndexChanged += new System.EventHandler(this.cmbCmd_SelectedIndexChanged);
             // 
             // btnSend
             // 
-            this.btnSend.Location = new System.Drawing.Point(357, 39);
+            this.btnSend.Location = new System.Drawing.Point(237, 38);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(85, 20);
             this.btnSend.TabIndex = 5;
@@ -565,27 +588,27 @@
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
-            // tabControl2
+            // tabControlLog
             // 
-            this.tabControl2.Controls.Add(this.tabPage1);
-            this.tabControl2.Controls.Add(this.tabPage2);
-            this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl2.Location = new System.Drawing.Point(0, 0);
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(792, 343);
-            this.tabControl2.TabIndex = 8;
+            this.tabControlLog.Controls.Add(this.tbpLog);
+            this.tabControlLog.Controls.Add(this.tbpLogSelect);
+            this.tabControlLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlLog.Location = new System.Drawing.Point(0, 0);
+            this.tabControlLog.Name = "tabControlLog";
+            this.tabControlLog.SelectedIndex = 0;
+            this.tabControlLog.Size = new System.Drawing.Size(778, 321);
+            this.tabControlLog.TabIndex = 8;
             // 
-            // tabPage1
+            // tbpLog
             // 
-            this.tabPage1.Controls.Add(this.lbLog);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(784, 317);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "日志";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tbpLog.Controls.Add(this.lbLog);
+            this.tbpLog.Location = new System.Drawing.Point(4, 22);
+            this.tbpLog.Name = "tbpLog";
+            this.tbpLog.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpLog.Size = new System.Drawing.Size(770, 295);
+            this.tbpLog.TabIndex = 0;
+            this.tbpLog.Text = "日志";
+            this.tbpLog.UseVisualStyleBackColor = true;
             // 
             // lbLog
             // 
@@ -598,20 +621,20 @@
             this.lbLog.Location = new System.Drawing.Point(3, 3);
             this.lbLog.Name = "lbLog";
             this.lbLog.ScrollAlwaysVisible = true;
-            this.lbLog.Size = new System.Drawing.Size(778, 311);
+            this.lbLog.Size = new System.Drawing.Size(764, 289);
             this.lbLog.TabIndex = 6;
             this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
             // 
-            // tabPage2
+            // tbpLogSelect
             // 
-            this.tabPage2.Controls.Add(this.tbContent);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(784, 317);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "选择";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tbpLogSelect.Controls.Add(this.tbContent);
+            this.tbpLogSelect.Location = new System.Drawing.Point(4, 22);
+            this.tbpLogSelect.Name = "tbpLogSelect";
+            this.tbpLogSelect.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpLogSelect.Size = new System.Drawing.Size(770, 295);
+            this.tbpLogSelect.TabIndex = 1;
+            this.tbpLogSelect.Text = "选择";
+            this.tbpLogSelect.UseVisualStyleBackColor = true;
             // 
             // tbContent
             // 
@@ -619,9 +642,192 @@
             this.tbContent.Location = new System.Drawing.Point(3, 3);
             this.tbContent.Multiline = true;
             this.tbContent.Name = "tbContent";
-            this.tbContent.Size = new System.Drawing.Size(778, 311);
+            this.tbContent.Size = new System.Drawing.Size(764, 289);
             this.tbContent.TabIndex = 7;
             this.tbContent.Visible = false;
+            // 
+            // tbpRes
+            // 
+            this.tbpRes.Controls.Add(this.splitContainer3);
+            this.tbpRes.Location = new System.Drawing.Point(4, 22);
+            this.tbpRes.Name = "tbpRes";
+            this.tbpRes.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpRes.Size = new System.Drawing.Size(784, 465);
+            this.tbpRes.TabIndex = 1;
+            this.tbpRes.Text = "资源交互";
+            this.tbpRes.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.lvRemoteDisk);
+            this.splitContainer3.Panel1.Controls.Add(this.tvRemoteDisk);
+            this.splitContainer3.Panel1.Controls.Add(this.gbRemoteDisk);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.lvLocalDisk);
+            this.splitContainer3.Panel2.Controls.Add(this.tvLocalDisk);
+            this.splitContainer3.Panel2.Controls.Add(this.gbLocalDisk);
+            this.splitContainer3.Size = new System.Drawing.Size(778, 459);
+            this.splitContainer3.SplitterDistance = 374;
+            this.splitContainer3.TabIndex = 0;
+            // 
+            // lvRemoteDisk
+            // 
+            this.lvRemoteDisk.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvRemoteDisk.LargeImageList = this.iml_ExplorerImages;
+            this.lvRemoteDisk.Location = new System.Drawing.Point(0, 52);
+            this.lvRemoteDisk.Name = "lvRemoteDisk";
+            this.lvRemoteDisk.Size = new System.Drawing.Size(374, 407);
+            this.lvRemoteDisk.SmallImageList = this.iml_ExplorerImages;
+            this.lvRemoteDisk.StateImageList = this.iml_ExplorerImages;
+            this.lvRemoteDisk.TabIndex = 2;
+            this.lvRemoteDisk.UseCompatibleStateImageBehavior = false;
+            this.lvRemoteDisk.SelectedIndexChanged += new System.EventHandler(this.lvRemoteDisk_SelectedIndexChanged);
+            this.lvRemoteDisk.DoubleClick += new System.EventHandler(this.lvRemoteDisk_DoubleClick);
+            // 
+            // iml_ExplorerImages
+            // 
+            this.iml_ExplorerImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iml_ExplorerImages.ImageStream")));
+            this.iml_ExplorerImages.TransparentColor = System.Drawing.Color.Transparent;
+            this.iml_ExplorerImages.Images.SetKeyName(0, "Disk");
+            this.iml_ExplorerImages.Images.SetKeyName(1, "Directory");
+            this.iml_ExplorerImages.Images.SetKeyName(2, "midi");
+            this.iml_ExplorerImages.Images.SetKeyName(3, "txt");
+            this.iml_ExplorerImages.Images.SetKeyName(4, "css");
+            this.iml_ExplorerImages.Images.SetKeyName(5, "html");
+            this.iml_ExplorerImages.Images.SetKeyName(6, "jpg");
+            this.iml_ExplorerImages.Images.SetKeyName(7, "asa");
+            this.iml_ExplorerImages.Images.SetKeyName(8, "asax");
+            this.iml_ExplorerImages.Images.SetKeyName(9, "asp");
+            this.iml_ExplorerImages.Images.SetKeyName(10, "aspx");
+            this.iml_ExplorerImages.Images.SetKeyName(11, "avi");
+            this.iml_ExplorerImages.Images.SetKeyName(12, "bat");
+            this.iml_ExplorerImages.Images.SetKeyName(13, "bmp");
+            this.iml_ExplorerImages.Images.SetKeyName(14, "c");
+            this.iml_ExplorerImages.Images.SetKeyName(15, "doc");
+            this.iml_ExplorerImages.Images.SetKeyName(16, "chm");
+            this.iml_ExplorerImages.Images.SetKeyName(17, "class");
+            this.iml_ExplorerImages.Images.SetKeyName(18, "config");
+            this.iml_ExplorerImages.Images.SetKeyName(19, "cpp");
+            this.iml_ExplorerImages.Images.SetKeyName(20, "cs");
+            this.iml_ExplorerImages.Images.SetKeyName(21, "dll");
+            this.iml_ExplorerImages.Images.SetKeyName(22, "h");
+            this.iml_ExplorerImages.Images.SetKeyName(23, "dsw");
+            this.iml_ExplorerImages.Images.SetKeyName(24, "dvd");
+            this.iml_ExplorerImages.Images.SetKeyName(25, "exe");
+            this.iml_ExplorerImages.Images.SetKeyName(26, "fon");
+            this.iml_ExplorerImages.Images.SetKeyName(27, "gif");
+            this.iml_ExplorerImages.Images.SetKeyName(28, "htm");
+            this.iml_ExplorerImages.Images.SetKeyName(29, "hlp");
+            this.iml_ExplorerImages.Images.SetKeyName(30, "hpp");
+            this.iml_ExplorerImages.Images.SetKeyName(31, "ico");
+            this.iml_ExplorerImages.Images.SetKeyName(32, "ima");
+            this.iml_ExplorerImages.Images.SetKeyName(33, "iso");
+            this.iml_ExplorerImages.Images.SetKeyName(34, "java");
+            this.iml_ExplorerImages.Images.SetKeyName(35, "png");
+            this.iml_ExplorerImages.Images.SetKeyName(36, "jpg");
+            this.iml_ExplorerImages.Images.SetKeyName(37, "js");
+            this.iml_ExplorerImages.Images.SetKeyName(38, "jsl");
+            this.iml_ExplorerImages.Images.SetKeyName(39, "lnk");
+            this.iml_ExplorerImages.Images.SetKeyName(40, "mdb");
+            this.iml_ExplorerImages.Images.SetKeyName(41, "mdf");
+            this.iml_ExplorerImages.Images.SetKeyName(42, "mht");
+            this.iml_ExplorerImages.Images.SetKeyName(43, "mkv");
+            this.iml_ExplorerImages.Images.SetKeyName(44, "mov");
+            this.iml_ExplorerImages.Images.SetKeyName(45, "mp3");
+            this.iml_ExplorerImages.Images.SetKeyName(46, "mp4");
+            this.iml_ExplorerImages.Images.SetKeyName(47, "mpg");
+            this.iml_ExplorerImages.Images.SetKeyName(48, "obj");
+            this.iml_ExplorerImages.Images.SetKeyName(49, "ogm");
+            this.iml_ExplorerImages.Images.SetKeyName(50, "png");
+            this.iml_ExplorerImages.Images.SetKeyName(51, "user");
+            this.iml_ExplorerImages.Images.SetKeyName(52, "ppt");
+            this.iml_ExplorerImages.Images.SetKeyName(53, "psd");
+            this.iml_ExplorerImages.Images.SetKeyName(54, "rar");
+            this.iml_ExplorerImages.Images.SetKeyName(55, "rc");
+            this.iml_ExplorerImages.Images.SetKeyName(56, "reg");
+            this.iml_ExplorerImages.Images.SetKeyName(57, "res");
+            this.iml_ExplorerImages.Images.SetKeyName(58, "rm");
+            this.iml_ExplorerImages.Images.SetKeyName(59, "sln");
+            this.iml_ExplorerImages.Images.SetKeyName(60, "sql");
+            this.iml_ExplorerImages.Images.SetKeyName(61, "swf");
+            this.iml_ExplorerImages.Images.SetKeyName(62, "tif");
+            this.iml_ExplorerImages.Images.SetKeyName(63, "ttf");
+            this.iml_ExplorerImages.Images.SetKeyName(64, "txt");
+            this.iml_ExplorerImages.Images.SetKeyName(65, "url");
+            this.iml_ExplorerImages.Images.SetKeyName(66, "user");
+            this.iml_ExplorerImages.Images.SetKeyName(67, "vb");
+            this.iml_ExplorerImages.Images.SetKeyName(68, "vbs");
+            this.iml_ExplorerImages.Images.SetKeyName(69, "wav");
+            this.iml_ExplorerImages.Images.SetKeyName(70, "wma");
+            this.iml_ExplorerImages.Images.SetKeyName(71, "wmv");
+            this.iml_ExplorerImages.Images.SetKeyName(72, "LastPath");
+            this.iml_ExplorerImages.Images.SetKeyName(73, "xls");
+            this.iml_ExplorerImages.Images.SetKeyName(74, "xml");
+            this.iml_ExplorerImages.Images.SetKeyName(75, "Unknown");
+            this.iml_ExplorerImages.Images.SetKeyName(76, "zip");
+            // 
+            // tvRemoteDisk
+            // 
+            this.tvRemoteDisk.Location = new System.Drawing.Point(0, 395);
+            this.tvRemoteDisk.Name = "tvRemoteDisk";
+            this.tvRemoteDisk.Size = new System.Drawing.Size(374, 64);
+            this.tvRemoteDisk.TabIndex = 1;
+            // 
+            // gbRemoteDisk
+            // 
+            this.gbRemoteDisk.Controls.Add(this.txt_remoteexplorer);
+            this.gbRemoteDisk.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbRemoteDisk.Location = new System.Drawing.Point(0, 0);
+            this.gbRemoteDisk.Name = "gbRemoteDisk";
+            this.gbRemoteDisk.Size = new System.Drawing.Size(374, 52);
+            this.gbRemoteDisk.TabIndex = 0;
+            this.gbRemoteDisk.TabStop = false;
+            // 
+            // lvLocalDisk
+            // 
+            this.lvLocalDisk.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvLocalDisk.LargeImageList = this.iml_ExplorerImages;
+            this.lvLocalDisk.Location = new System.Drawing.Point(0, 52);
+            this.lvLocalDisk.Name = "lvLocalDisk";
+            this.lvLocalDisk.Size = new System.Drawing.Size(400, 407);
+            this.lvLocalDisk.SmallImageList = this.iml_ExplorerImages;
+            this.lvLocalDisk.StateImageList = this.iml_ExplorerImages;
+            this.lvLocalDisk.TabIndex = 2;
+            this.lvLocalDisk.UseCompatibleStateImageBehavior = false;
+            this.lvLocalDisk.SelectedIndexChanged += new System.EventHandler(this.lvLocalDisk_SelectedIndexChanged);
+            this.lvLocalDisk.DoubleClick += new System.EventHandler(this.lvLocalDisk_DoubleClick);
+            // 
+            // tvLocalDisk
+            // 
+            this.tvLocalDisk.Location = new System.Drawing.Point(0, 395);
+            this.tvLocalDisk.Name = "tvLocalDisk";
+            this.tvLocalDisk.Size = new System.Drawing.Size(400, 64);
+            this.tvLocalDisk.TabIndex = 0;
+            // 
+            // gbLocalDisk
+            // 
+            this.gbLocalDisk.Controls.Add(this.txt_myexplorer);
+            this.gbLocalDisk.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbLocalDisk.Location = new System.Drawing.Point(0, 0);
+            this.gbLocalDisk.Name = "gbLocalDisk";
+            this.gbLocalDisk.Size = new System.Drawing.Size(400, 52);
+            this.gbLocalDisk.TabIndex = 1;
+            this.gbLocalDisk.TabStop = false;
+            // 
+            // txt_myexplorer
+            // 
+            this.txt_myexplorer.Location = new System.Drawing.Point(6, 20);
+            this.txt_myexplorer.Name = "txt_myexplorer";
+            this.txt_myexplorer.Size = new System.Drawing.Size(371, 21);
+            this.txt_myexplorer.TabIndex = 0;
             // 
             // menuStrip1
             // 
@@ -672,18 +878,32 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lbl_Display});
             this.statusStrip1.Location = new System.Drawing.Point(0, 548);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(982, 22);
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // lbl_Display
+            // 
+            this.lbl_Display.Name = "lbl_Display";
+            this.lbl_Display.Size = new System.Drawing.Size(0, 17);
+            // 
+            // txt_remoteexplorer
+            // 
+            this.txt_remoteexplorer.Location = new System.Drawing.Point(0, 20);
+            this.txt_remoteexplorer.Name = "txt_remoteexplorer";
+            this.txt_remoteexplorer.Size = new System.Drawing.Size(371, 21);
+            this.txt_remoteexplorer.TabIndex = 0;
+            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 570);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -692,12 +912,14 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tbpBase.ResumeLayout(false);
             this.tbpBase.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
+            this.tabControlMain.ResumeLayout(false);
             this.tbpControl.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.tabControlCmd.ResumeLayout(false);
+            this.tbpCmd.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
@@ -705,12 +927,23 @@
             this.splitContainer2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.tabControl2.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
+            this.tabControlLog.ResumeLayout(false);
+            this.tbpLog.ResumeLayout(false);
+            this.tbpLogSelect.ResumeLayout(false);
+            this.tbpLogSelect.PerformLayout();
+            this.tbpRes.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
+            this.gbRemoteDisk.ResumeLayout(false);
+            this.gbRemoteDisk.PerformLayout();
+            this.gbLocalDisk.ResumeLayout(false);
+            this.gbLocalDisk.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -735,7 +968,7 @@
         private System.Windows.Forms.Button btnSrc;
         private System.Windows.Forms.TextBox txtSrc;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.ProgressBar prbProd;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnProduce;
@@ -764,16 +997,28 @@
         private System.Windows.Forms.TextBox tbParameter;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox tbKey;
         private System.Windows.Forms.TextBox tbContent;
-        private System.Windows.Forms.TabControl tabControl2;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabControl tabControlLog;
+        private System.Windows.Forms.TabPage tbpLog;
+        private System.Windows.Forms.TabPage tbpLogSelect;
         private System.Windows.Forms.TreeView tvTerminal;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cmbCmdType;
         private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.TabControl tabControlCmd;
+        private System.Windows.Forms.TabPage tbpCmd;
+        private System.Windows.Forms.TabPage tbpRes;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.TreeView tvLocalDisk;
+        private System.Windows.Forms.GroupBox gbLocalDisk;
+        private System.Windows.Forms.GroupBox gbRemoteDisk;
+        private System.Windows.Forms.TreeView tvRemoteDisk;
+        private System.Windows.Forms.ListView lvLocalDisk;
+        private System.Windows.Forms.ListView lvRemoteDisk;
+        private System.Windows.Forms.TextBox txt_myexplorer;
+        private System.Windows.Forms.ToolStripStatusLabel lbl_Display;
+        private System.Windows.Forms.ImageList iml_ExplorerImages;
+        private System.Windows.Forms.TextBox txt_remoteexplorer;
     }
 }
 

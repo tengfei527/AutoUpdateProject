@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Linq;
 using SuperSocket.SocketBase;
+using AU.Common.Utility;
 
 namespace AuWriter
 {
@@ -45,10 +46,21 @@ namespace AuWriter
         /// 子系统
         /// </summary>
         public string SubSystem;
+
         /// <summary>
-        /// 
+        /// 版本发布
         /// </summary>
         List<AU.Common.AuPublish> AuPublishs = new List<AU.Common.AuPublish>();
+        /// <summary>
+        /// 指令字典
+        /// </summary>
+        Dictionary<string, List<string>> DicCmdType = new Dictionary<string, List<string>>() {
+            { "",new List<string>(){ ""} },
+            {"AUVERSION",new List<string>(){ ""} },
+            {"TERMINAL",new List<string>(){ ""} },
+            {"RESOURCE",new List<string>(){"SEND_DISKS","GET_DIRECTORY_DETIAL"}},
+            {"SCRIPT",new List<string>(){"select","insert","update","delete","other"}},
+        };
         #endregion
         /// <summary>
         /// 构造函数
@@ -215,6 +227,8 @@ namespace AuWriter
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
+            cmbCmd.DataSource = DicCmdType.Keys.ToList();
+
             BindingSource bs = new BindingSource();
             bs.DataSource = AU.Common.SubSystem.Dic;
             this.cbSubSystem.DataSource = bs;
@@ -240,6 +254,15 @@ namespace AuWriter
 
             AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
             启动服务ToolStripMenuItem_Click(启动服务ToolStripMenuItem, EventArgs.Empty);
+
+
+            imageKey = new System.Collections.Hashtable();
+            System.Collections.Specialized.StringCollection keyCol = iml_ExplorerImages.Images.Keys;
+            for (int i = 0; i < keyCol.Count; i++)
+                if (!imageKey.Contains(keyCol[i]))
+                    imageKey.Add(keyCol[i], keyCol[i]);
+
+            IO.OpenRoot(lvLocalDisk, imageKey);
         }
         #endregion [主窗体加载]
 
@@ -585,14 +608,57 @@ namespace AuWriter
         }
         private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
-            switch (requestInfo.Key)
+            try
             {
-                case "SESSION":
-                    {
-                        var au = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AU.Common.SessionModel>>(requestInfo.Body);
-                        this.AddTreeView(session, au);
-                    }
-                    break;
+                switch (requestInfo.Key)
+                {
+                    case "SESSION":
+                        {
+                            var au = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AU.Common.SessionModel>>(requestInfo.Body);
+                            this.AddTreeView(session, au);
+                        }
+                        break;
+                    case "RESOURCE":
+                        {
+                            if (string.IsNullOrEmpty(requestInfo.Body))
+                                break;
+                            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(requestInfo.Body);
+                            string result = string.Empty;
+
+                            switch (cp.Key)
+                            {
+                                case "SEND_DISKS":
+                                    AU.Common.Codes.DisksCode diskcode = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Common.Codes.DisksCode>(cp.Body);
+                                    this.BeginInvoke((MethodInvoker)delegate
+                                    {
+                                        IO.ShowDisks(diskcode, lvRemoteDisk, imageKey, false);
+                                    });
+
+                                    break;
+                                case "GET_DIRECTORY_DETIAL":
+                                    AU.Common.Codes.ExplorerCode explorer = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Common.Codes.ExplorerCode>(cp.Body);
+                                    this.BeginInvoke((MethodInvoker)delegate
+                                    {
+                                        IO.ShowHostDirectory(explorer, lvRemoteDisk, imageKey);
+                                    });
+
+                                    break;
+                                case "GET_FILE_DETIAL":
+                                    this.BeginInvoke((MethodInvoker)delegate
+                                    {
+                                        txt_remoteexplorer.Text = cp.Body;
+                                    });
+
+                                    break;
+                            }
+                        }
+
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
             Console.WriteLine("Session Message\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString() + "\tKey=" + requestInfo.Key + "\tMessage=" + requestInfo.Body);
         }
@@ -614,12 +680,20 @@ namespace AuWriter
         private void btnSend_Click(object sender, EventArgs e)
         {
             string route = string.Empty;
-            string session = GetTreeViewRoute(tvTerminal.SelectedNode, ref route);
-            if (cmbCmd.SelectedItem == null)
+            string session = string.Empty;
+            if (tvTerminal.Tag != null)
+            {
+                var t = tvTerminal.Tag.ToString().Split(':');
+                session = t[0];
+                route = t[1];
+            }
+            if (cmbCmd.SelectedIndex == 0)
             {
                 if (string.IsNullOrEmpty(tbMsg.Text))
                 {
-                    AU.Monitor.Server.ServerBootstrap.Send(session, AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                    string msg = Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs);
+                    AU.Monitor.Server.ServerBootstrap.Send(session, AU.Common.CommandType.AUVERSION, msg);
+                    Console.WriteLine("{0}:\t{1}", AU.Common.CommandType.AUVERSION, msg);
                 }
             }
             else
@@ -631,23 +705,49 @@ namespace AuWriter
                 }
                 else
                 {
-                    AU.Monitor.Server.CommandPackage cp = new AU.Monitor.Server.CommandPackage()
-                    {
-                        Key = tbKey.Text.Trim(),
-                        Body = tbMsg.Text,
-                        Parameters = tbParameter.Text.Split(','),
-                        Attachment = "",
-                        Route = route.Trim('\\'),
-                    };
+                    SendMessage(session, route, cmbCmd.SelectedItem.ToString(), cmbCmdType.SelectedValue.ToString(), tbMsg.Text, "", tbParameter.Text.Split(','));
 
-                    AU.Monitor.Server.ServerBootstrap.Send(session, cmbCmd.SelectedItem.ToString(), Newtonsoft.Json.JsonConvert.SerializeObject(cp));
                     return;
                 }
             }
             //原始文本
             AU.Monitor.Server.ServerBootstrap.Send(session, tbMsg.Text);
 
+            Console.WriteLine(tbMsg.Text);
         }
+        private void SendMessage(string cmd, string key, string body, string attach = "", params string[] par)
+        {
+            string route = string.Empty;
+            string session = string.Empty;
+
+            if (tvTerminal.Tag != null)
+            {
+                var t = tvTerminal.Tag.ToString().Split(':');
+                session = t[0];
+                route = t[1];
+            }
+            else
+            {
+                MessageBox.Show("请选择接收终端！");
+            }
+
+            SendMessage(session, route, cmd, key, body, attach, par);
+        }
+        private void SendMessage(string session, string route, string cmd, string key, string body, string attach = "", params string[] par)
+        {
+            AU.Monitor.Server.CommandPackage cp = new AU.Monitor.Server.CommandPackage()
+            {
+                Key = key,
+                Body = body,
+                Parameters = par,
+                Attachment = attach,
+                Route = route.Trim('\\'),
+            };
+            string msg = Newtonsoft.Json.JsonConvert.SerializeObject(cp);
+            AU.Monitor.Server.ServerBootstrap.Send(session, cmd, msg);
+            Console.WriteLine("{0}:\t{1}", cmd, msg);
+        }
+
         #region 菜单操作
         private void 启动服务ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -702,6 +802,114 @@ namespace AuWriter
                     e.Graphics.DrawRectangle(focusPen, focusBounds);
                 }
             }
+        }
+
+        private void cmbCmd_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbCmd.SelectedIndex > -1)
+            {
+                cmbCmdType.DataSource = DicCmdType[cmbCmd.SelectedValue.ToString()];
+            }
+        }
+
+        private void lvLocalDisk_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvLocalDisk.FocusedItem != null)
+            {
+                AU.Common.Codes.BaseFile basefile = lvLocalDisk.FocusedItem.Tag as AU.Common.Codes.BaseFile;
+                if (basefile != null)
+                    if (basefile.Flag == AU.Common.Codes.FileFlag.Directory)
+                        txt_myexplorer.Text = basefile.Name;
+                    else if (basefile.Flag == AU.Common.Codes.FileFlag.File)
+                        txt_myexplorer.Text = AU.Common.Utility.IO.GetFileDetial(basefile.Name);
+            }
+        }
+        /// <summary>
+        /// 哈希表(Key=文件后缀名,value=图片列表的Key)
+        /// 例如:后缀名A=exe,则imageKey[A]="exe",而imageKey[A]则是对应的文件图标Key值.
+        /// </summary>
+        private System.Collections.Hashtable imageKey;
+        private void lvLocalDisk_DoubleClick(object sender, EventArgs e)
+        {
+            ListViewItem selectItem = null;
+            AU.Common.Codes.BaseFile basefile = null;
+            try
+            {
+                selectItem = lvLocalDisk.FocusedItem;
+                if (selectItem != null)
+                {
+                    basefile = selectItem.Tag as AU.Common.Codes.BaseFile;
+                    if (basefile != null)
+                        if (basefile.Flag != AU.Common.Codes.FileFlag.File)
+                        {
+                            string path = (basefile.Flag == AU.Common.Codes.FileFlag.Directory ? basefile.Name : basefile.Name + @"\");
+                            txt_myexplorer.Text = path;
+                            AU.Common.Utility.IO.OpenDirectory(path, lvLocalDisk, imageKey);
+                            lbl_Display.Text = path;
+                        }
+                }
+                else
+                {
+                    MessageBox.Show(" 请选择一个文件夹！");
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void lvRemoteDisk_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvRemoteDisk.FocusedItem != null)
+            {
+                AU.Common.Codes.BaseFile basefile = lvRemoteDisk.FocusedItem.Tag as AU.Common.Codes.BaseFile;
+                if (basefile != null)
+                    if (basefile.Flag == AU.Common.Codes.FileFlag.Directory)
+                        txt_remoteexplorer.Text = basefile.Name;
+                    else if (basefile.Flag == AU.Common.Codes.FileFlag.File)
+                    {
+                        SendMessage(AU.Common.CommandType.RESOURCE, "GET_FILE_DETIAL", basefile.Name);
+                    }
+                //AU.Common.Utility.IO.GetFileDetial(basefile.Name);
+            }
+        }
+
+        private void lvRemoteDisk_DoubleClick(object sender, EventArgs e)
+        {
+            ListViewItem selectItem = null;
+            AU.Common.Codes.BaseFile basefile = null;
+            try
+            {
+                selectItem = lvRemoteDisk.FocusedItem;
+                if (selectItem != null)
+                {
+                    basefile = selectItem.Tag as AU.Common.Codes.BaseFile;
+                    if (basefile != null)
+                        if (basefile.Flag != AU.Common.Codes.FileFlag.File)
+                        {
+                            string path = (basefile.Flag == AU.Common.Codes.FileFlag.Directory ? basefile.Name : basefile.Name + @"\");
+                            txt_remoteexplorer.Text = path;
+                            //AU.Common.Utility.IO.OpenDirectory(path, lvLocalDisk, imageKey);
+                            lbl_Display.Text = path;
+                            SendMessage(AU.Common.CommandType.RESOURCE, string.IsNullOrEmpty(path) ? "SEND_DISKS" : "GET_DIRECTORY_DETIAL", path);
+                        }
+                }
+                else
+                {
+                    MessageBox.Show(" 请选择一个文件夹！");
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void tvTerminal_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            tvTerminal.SelectedNode = e.Node;
+            string route = string.Empty; ;
+            string session = GetTreeViewRoute(tvTerminal.SelectedNode, ref route);
+            tvTerminal.Tag = session + ":" + route;
         }
     }
 }
