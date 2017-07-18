@@ -1,13 +1,7 @@
-/*----------------------------------------------------------------
-        // Copyright (C) 2007 L3'Studio
-        // 版权所有。 
-        // 开发者：L3'Studio团队
-        // 文件名：DoubleCode.cs
-        // 文件功能描述：继承了BaseCode。
-//----------------------------------------------------------------*/
-
 using System;
-
+/// <summary>
+/// 文件功能描述：继承了BaseCode。
+/// </summary>
 namespace AU.Common.Codes
 {
     /// <summary>
