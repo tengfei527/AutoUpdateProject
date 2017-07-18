@@ -98,6 +98,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbl_Display = new System.Windows.Forms.ToolStripStatusLabel();
             this.txt_remoteexplorer = new System.Windows.Forms.TextBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmRemoteResource = new System.Windows.Forms.ToolStripMenuItem();
             this.tbpBase.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tbpControl.SuspendLayout();
@@ -124,6 +126,7 @@
             this.gbLocalDisk.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -898,6 +901,20 @@
             this.txt_remoteexplorer.Size = new System.Drawing.Size(371, 21);
             this.txt_remoteexplorer.TabIndex = 0;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmRemoteResource});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 26);
+            // 
+            // tsmRemoteResource
+            // 
+            this.tsmRemoteResource.Name = "tsmRemoteResource";
+            this.tsmRemoteResource.Size = new System.Drawing.Size(152, 22);
+            this.tsmRemoteResource.Text = "浏览资源";
+            this.tsmRemoteResource.Click += new System.EventHandler(this.tsmRemoteResource_Click);
+            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -944,6 +961,7 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1019,6 +1037,8 @@
         private System.Windows.Forms.ToolStripStatusLabel lbl_Display;
         private System.Windows.Forms.ImageList iml_ExplorerImages;
         private System.Windows.Forms.TextBox txt_remoteexplorer;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem tsmRemoteResource;
     }
 }
 

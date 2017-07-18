@@ -579,6 +579,7 @@ namespace AuWriter
                         Name = session.SessionID,
                         Text = session.SessionID,
                         ToolTipText = session.RemoteEndPoint.ToString() + " " + session.StartTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                        ContextMenuStrip = contextMenuStrip1,
                     });
                 }
                 if (sms == null)
@@ -592,6 +593,7 @@ namespace AuWriter
                             Name = s.SessionId,
                             Text = s.Name + "(" + s.Version + ")",
                             ToolTipText = session.RemoteEndPoint.ToString() + " " + session.StartTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                            ContextMenuStrip = contextMenuStrip1,
                         });
                 }
             });
@@ -910,6 +912,11 @@ namespace AuWriter
             string route = string.Empty; ;
             string session = GetTreeViewRoute(tvTerminal.SelectedNode, ref route);
             tvTerminal.Tag = session + ":" + route;
+        }
+
+        private void tsmRemoteResource_Click(object sender, EventArgs e)
+        {
+            SendMessage(AU.Common.CommandType.RESOURCE, "SEND_DISKS", "");
         }
     }
 }
