@@ -84,6 +84,8 @@
             this.iml_ExplorerImages = new System.Windows.Forms.ImageList(this.components);
             this.tvRemoteDisk = new System.Windows.Forms.TreeView();
             this.gbRemoteDisk = new System.Windows.Forms.GroupBox();
+            this.btnUpload = new System.Windows.Forms.Button();
+            this.txt_remoteexplorer = new System.Windows.Forms.TextBox();
             this.lvLocalDisk = new System.Windows.Forms.ListView();
             this.tvLocalDisk = new System.Windows.Forms.TreeView();
             this.gbLocalDisk = new System.Windows.Forms.GroupBox();
@@ -97,7 +99,7 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbl_Display = new System.Windows.Forms.ToolStripStatusLabel();
-            this.txt_remoteexplorer = new System.Windows.Forms.TextBox();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmRemoteResource = new System.Windows.Forms.ToolStripMenuItem();
             this.tbpBase.SuspendLayout();
@@ -685,9 +687,9 @@
             // 
             this.lvRemoteDisk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvRemoteDisk.LargeImageList = this.iml_ExplorerImages;
-            this.lvRemoteDisk.Location = new System.Drawing.Point(0, 52);
+            this.lvRemoteDisk.Location = new System.Drawing.Point(0, 78);
             this.lvRemoteDisk.Name = "lvRemoteDisk";
-            this.lvRemoteDisk.Size = new System.Drawing.Size(374, 407);
+            this.lvRemoteDisk.Size = new System.Drawing.Size(374, 381);
             this.lvRemoteDisk.SmallImageList = this.iml_ExplorerImages;
             this.lvRemoteDisk.StateImageList = this.iml_ExplorerImages;
             this.lvRemoteDisk.TabIndex = 2;
@@ -786,21 +788,41 @@
             // 
             // gbRemoteDisk
             // 
+            this.gbRemoteDisk.Controls.Add(this.btnUpload);
             this.gbRemoteDisk.Controls.Add(this.txt_remoteexplorer);
             this.gbRemoteDisk.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbRemoteDisk.Location = new System.Drawing.Point(0, 0);
             this.gbRemoteDisk.Name = "gbRemoteDisk";
-            this.gbRemoteDisk.Size = new System.Drawing.Size(374, 52);
+            this.gbRemoteDisk.Size = new System.Drawing.Size(374, 78);
             this.gbRemoteDisk.TabIndex = 0;
             this.gbRemoteDisk.TabStop = false;
+            this.gbRemoteDisk.Text = "远程磁盘";
+            // 
+            // btnUpload
+            // 
+            this.btnUpload.Location = new System.Drawing.Point(6, 47);
+            this.btnUpload.Name = "btnUpload";
+            this.btnUpload.Size = new System.Drawing.Size(75, 23);
+            this.btnUpload.TabIndex = 1;
+            this.btnUpload.Text = "上传";
+            this.btnUpload.UseVisualStyleBackColor = true;
+            this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
+            // 
+            // txt_remoteexplorer
+            // 
+            this.txt_remoteexplorer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txt_remoteexplorer.Location = new System.Drawing.Point(3, 17);
+            this.txt_remoteexplorer.Name = "txt_remoteexplorer";
+            this.txt_remoteexplorer.Size = new System.Drawing.Size(368, 21);
+            this.txt_remoteexplorer.TabIndex = 0;
             // 
             // lvLocalDisk
             // 
             this.lvLocalDisk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvLocalDisk.LargeImageList = this.iml_ExplorerImages;
-            this.lvLocalDisk.Location = new System.Drawing.Point(0, 52);
+            this.lvLocalDisk.Location = new System.Drawing.Point(0, 78);
             this.lvLocalDisk.Name = "lvLocalDisk";
-            this.lvLocalDisk.Size = new System.Drawing.Size(400, 407);
+            this.lvLocalDisk.Size = new System.Drawing.Size(400, 381);
             this.lvLocalDisk.SmallImageList = this.iml_ExplorerImages;
             this.lvLocalDisk.StateImageList = this.iml_ExplorerImages;
             this.lvLocalDisk.TabIndex = 2;
@@ -821,15 +843,17 @@
             this.gbLocalDisk.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbLocalDisk.Location = new System.Drawing.Point(0, 0);
             this.gbLocalDisk.Name = "gbLocalDisk";
-            this.gbLocalDisk.Size = new System.Drawing.Size(400, 52);
+            this.gbLocalDisk.Size = new System.Drawing.Size(400, 78);
             this.gbLocalDisk.TabIndex = 1;
             this.gbLocalDisk.TabStop = false;
+            this.gbLocalDisk.Text = "本地磁盘";
             // 
             // txt_myexplorer
             // 
-            this.txt_myexplorer.Location = new System.Drawing.Point(6, 20);
+            this.txt_myexplorer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txt_myexplorer.Location = new System.Drawing.Point(3, 17);
             this.txt_myexplorer.Name = "txt_myexplorer";
-            this.txt_myexplorer.Size = new System.Drawing.Size(371, 21);
+            this.txt_myexplorer.Size = new System.Drawing.Size(394, 21);
             this.txt_myexplorer.TabIndex = 0;
             // 
             // menuStrip1
@@ -882,7 +906,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lbl_Display});
+            this.lbl_Display,
+            this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 548);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(982, 22);
@@ -894,12 +919,10 @@
             this.lbl_Display.Name = "lbl_Display";
             this.lbl_Display.Size = new System.Drawing.Size(0, 17);
             // 
-            // txt_remoteexplorer
+            // toolStripStatusLabel1
             // 
-            this.txt_remoteexplorer.Location = new System.Drawing.Point(0, 20);
-            this.txt_remoteexplorer.Name = "txt_remoteexplorer";
-            this.txt_remoteexplorer.Size = new System.Drawing.Size(371, 21);
-            this.txt_remoteexplorer.TabIndex = 0;
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
             // contextMenuStrip1
             // 
@@ -911,7 +934,7 @@
             // tsmRemoteResource
             // 
             this.tsmRemoteResource.Name = "tsmRemoteResource";
-            this.tsmRemoteResource.Size = new System.Drawing.Size(152, 22);
+            this.tsmRemoteResource.Size = new System.Drawing.Size(124, 22);
             this.tsmRemoteResource.Text = "浏览资源";
             this.tsmRemoteResource.Click += new System.EventHandler(this.tsmRemoteResource_Click);
             // 
@@ -1039,6 +1062,8 @@
         private System.Windows.Forms.TextBox txt_remoteexplorer;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem tsmRemoteResource;
+        private System.Windows.Forms.Button btnUpload;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
 

@@ -145,6 +145,9 @@ namespace AuClient
                                 case "GET_FILE_DETIAL":
                                     result = AU.Common.Utility.IO.GetFileDetial(cp.Body);
                                     break;
+                                case "GET_FILE":
+                                    SendFile(cp.Body);
+                                    return;
                             }
 
                             AU.Monitor.Server.CommandPackage cpackage = new AU.Monitor.Server.CommandPackage()
@@ -184,27 +187,106 @@ namespace AuClient
 
 
         public string cmdSpilts = "\r\n";
+        //单线程操作
+        private void SendFile(string path)
+        {
+            try
+            {
+                if (!System.IO.File.Exists(path))
+                    return;
+                byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
+                easyClient.Send(System.Text.Encoding.UTF8.GetBytes("F:" + System.IO.Path.GetFileName(path) + cmdSpilts));
+                using (System.IO.FileStream f = System.IO.File.Open(path, System.IO.FileMode.Open))
+                {
+                    byte[] head = System.Text.Encoding.UTF8.GetBytes("FS:");
+                    int len = 1024;
+                    byte[] buff = new byte[len];
+                    int count = 0;
+                    do
+                    {
+                        count = f.Read(buff, 0, len);
+                        if (count == len)
+                        {
+                            var temp = Encoding.UTF8.GetBytes(AU.Common.Utility.ToolsHelp.ByteToHexString(buff));
+                            byte[] send = new byte[head.Length + temp.Length + sp.Length];
+                            //head
+                            Array.Copy(head, 0, send, 0, head.Length);
+                            //msg
+                            Array.Copy(temp, 0, send, head.Length, temp.Length);
+                            //sp
+                            Array.Copy(sp, 0, send, head.Length + temp.Length, sp.Length);
+                            //发送消息
+                            easyClient.Send(send);
+                        }
+                        else if (count > 0)
+                        {
+                            //ArraySegment<byte> b = new ArraySegment<byte>(buff, 0, count);
+                            byte[] b = new byte[count];
+                            Array.Copy(buff, 0, b, 0, count);
+                            var temp = Encoding.UTF8.GetBytes(AU.Common.Utility.ToolsHelp.ByteToHexString(b));
+                            byte[] send = new byte[head.Length + temp.Length + sp.Length];
+                            //head
+                            Array.Copy(head, 0, send, 0, head.Length);
+                            //msg
+                            Array.Copy(temp, 0, send, head.Length, temp.Length);
+                            //sp
+                            Array.Copy(sp, 0, send, head.Length + temp.Length, sp.Length);
+                            //发送消息
+                            easyClient.Send(send);
+                        }
+                    } while (count != 0);
+                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:传输完成" + cmdSpilts));
+                }
+            }
+            catch (Exception e)
+            {
+                easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:传输失败详情," + e.Message + cmdSpilts));
+            }
+        }
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="key">命令</param>
+        /// <param name="body">消息</param>
         private void Send(string key, string body)
         {
-            string message = (key + ":" + body).Replace(cmdSpilts, "") + cmdSpilts;
+            byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
+            string id = Guid.NewGuid().ToString();
+            string par = "P:" + id + "&";
+            string message = (key + ":" + body).Replace(cmdSpilts, "");
             byte[] b = System.Text.Encoding.UTF8.GetBytes(message);
             int t = b.Length / 1024;
-            byte[] buff;
-            for (int i = 0; i <= t; i++)
+            if (t > 0)
             {
-                if (i == t)
+                byte[] buff;
+                //easyClient.Send(System.Text.Encoding.UTF8.GetBytes(("PS:" + id + cmdSpilts)));
+                for (int i = 0; i <= t; i++)
                 {
-                    buff = new byte[b.Length - i * 1024];
-                    Array.Copy(b, i * 1024, buff, 0, buff.Length);
-                }
-                else
-                {
-                    buff = new byte[1024];
-                    Array.Copy(b, i * 1024, buff, 0, 1024);
-                }
+                    byte[] head = System.Text.Encoding.UTF8.GetBytes(par + i.ToString() + "&");
+                    if (i == t)
+                    {
+                        buff = new byte[head.Length + b.Length - i * 1024 + sp.Length];
+                        //head
+                        Array.Copy(head, 0, buff, 0, head.Length);
+                        //消息体
+                        Array.Copy(b, i * 1024, buff, head.Length, buff.Length - sp.Length - head.Length);
+                        Array.Copy(sp, 0, buff, buff.Length - sp.Length, sp.Length);
+                    }
+                    else
+                    {
+                        buff = new byte[head.Length + 1024 + sp.Length];
+                        Array.Copy(head, 0, buff, 0, head.Length);
+                        Array.Copy(b, i * 1024, buff, head.Length, 1024);
+                        Array.Copy(sp, 0, buff, buff.Length - sp.Length, sp.Length);
+                    }
 
-                easyClient.Send(buff);
+                    easyClient.Send(buff);
+                }
+                //发送分包结束
+                easyClient.Send(System.Text.Encoding.UTF8.GetBytes(("PE:" + id + cmdSpilts)));
             }
+            else
+                easyClient.Send(System.Text.Encoding.UTF8.GetBytes(message + cmdSpilts));
         }
 
         private void InitSocketClient()

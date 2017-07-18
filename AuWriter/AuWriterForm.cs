@@ -601,6 +601,9 @@ namespace AuWriter
 
         private void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
         {
+            if (PartPackage.ContainsKey(session.SessionID))
+                PartPackage.Remove(session.SessionID);
+
             this.BeginInvoke((MethodInvoker)delegate
             {
                 tvTerminal.Nodes.RemoveByKey(session.SessionID);
@@ -608,6 +611,9 @@ namespace AuWriter
 
             Console.WriteLine("Session Closed\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString() + "\tReason=" + value);
         }
+
+        private System.Collections.Hashtable PartPackage = new System.Collections.Hashtable();
+        private System.Collections.Hashtable FilePackage = new System.Collections.Hashtable();
         private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
             try
@@ -655,6 +661,130 @@ namespace AuWriter
                             }
                         }
 
+                        break;
+                    case "P":
+                        if (requestInfo.Parameters == null && requestInfo.Parameters.Length < 3)
+                            break;
+                        int number = Convert.ToInt32(requestInfo.Parameters[1]);
+                        if (PartPackage.ContainsKey(session.SessionID))
+                        {
+                            var t = PartPackage[session.SessionID] as System.Collections.Hashtable;
+                            if (t == null)//不应发生
+                            {
+                                PartPackage.Remove(session.SessionID);
+                                break;
+                            }
+                            if (t.ContainsKey(requestInfo.Parameters[0]))
+                            {
+                                var a = t[requestInfo.Parameters[0]] as Dictionary<int, string>;
+                                if (a.ContainsKey(number))//重复消息
+                                    break;
+                                else
+                                    a.Add(number, requestInfo.Parameters[2]);
+
+                            }
+                            else
+                            {
+                                t.Add(requestInfo.Parameters[0], new Dictionary<int, string>() { { number, requestInfo.Parameters[2] } });
+                            }
+                        }
+                        else
+                        {
+                            System.Collections.Hashtable t = new System.Collections.Hashtable();
+                            t.Add(requestInfo.Parameters[0], new Dictionary<int, string>() { { number, requestInfo.Parameters[2] } });
+
+                            PartPackage.Add(session.SessionID, t);
+
+                        }
+
+                        break;
+                    case "PE":
+                        {
+                            if (PartPackage.ContainsKey(session.SessionID))
+                            {
+                                var t = PartPackage[session.SessionID] as System.Collections.Hashtable;
+                                if (t == null)//不应发生
+                                {
+                                    PartPackage.Remove(session.SessionID);
+                                    break;
+                                }
+                                if (t.ContainsKey(requestInfo.Body))
+                                {
+                                    var a = t[requestInfo.Body] as Dictionary<int, string>;
+                                    var key = a.Keys.ToList();
+                                    key.Sort();
+                                    StringBuilder sb = new StringBuilder();
+                                    foreach (var k in key)
+                                    {
+                                        sb.Append(a[k]);
+                                    }
+                                    t.Remove(requestInfo.Body);
+                                    var msg = sb.ToString();
+                                    int i = msg.IndexOf(':');
+                                    if (i > -1)
+                                    {
+                                        var v = msg.Substring(0, i);
+                                        string body = msg.Substring(i + 1);
+                                        Ms_NewRequestReceived(session, new SuperSocket.SocketBase.Protocol.StringRequestInfo(v, body, body.Split('&')));
+                                    }
+                                    else
+                                    {
+                                        Ms_NewRequestReceived(session, new SuperSocket.SocketBase.Protocol.StringRequestInfo(msg, msg, msg.Split('&')));
+                                    }
+
+                                }
+                            }
+                        }
+                        break;
+                    case "F":
+                        {
+                            if (!FilePackage.ContainsKey(session.SessionID))
+                            {
+                                string path = lvLocalDisk.Tag.ToString();
+                                string dst = path == "" ? Application.StartupPath : path + "\\" + requestInfo.Body;
+                                var file = File.Open(dst, FileMode.OpenOrCreate);
+                                FilePackage.Add(session.SessionID, file);
+                            }
+
+                        }
+                        break;
+                    case "FS":
+                        {
+                            if (FilePackage.ContainsKey(session.SessionID))
+                            {
+                                var fs = FilePackage[session.SessionID] as FileStream;
+                                if (fs == null)
+                                {
+                                    FilePackage.Remove(session.SessionID);
+                                    break;
+                                }
+                                //System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
+                                //{
+                                    byte[] buff = AU.Common.Utility.ToolsHelp.HexStringToByte(requestInfo.Body);
+                                    fs.Write(buff, 0, buff.Length);
+                                    fs.Flush();
+                                //});
+                                //t.Start();
+                            }
+                            return;
+                        }
+                    case "FE":
+                        {
+                            if (FilePackage.ContainsKey(session.SessionID))
+                            {
+                                var fs = FilePackage[session.SessionID] as FileStream;
+                                if (fs != null)
+                                {
+                                    fs.Close();
+                                }
+                                FilePackage.Remove(session.SessionID);
+                            }
+                            this.BeginInvoke((MethodInvoker)delegate
+                            {
+                                toolStripStatusLabel1.Text = requestInfo.Body;
+                                btnUpload.Enabled = true;
+                            });
+                        }
                         break;
                 }
             }
@@ -821,9 +951,15 @@ namespace AuWriter
                 AU.Common.Codes.BaseFile basefile = lvLocalDisk.FocusedItem.Tag as AU.Common.Codes.BaseFile;
                 if (basefile != null)
                     if (basefile.Flag == AU.Common.Codes.FileFlag.Directory)
+                    {
                         txt_myexplorer.Text = basefile.Name;
+                        txt_myexplorer.Tag = "";
+                    }
                     else if (basefile.Flag == AU.Common.Codes.FileFlag.File)
+                    {
                         txt_myexplorer.Text = AU.Common.Utility.IO.GetFileDetial(basefile.Name);
+                        txt_myexplorer.Tag = basefile.Name;
+                    }
             }
         }
         /// <summary>
@@ -846,8 +982,13 @@ namespace AuWriter
                         {
                             string path = (basefile.Flag == AU.Common.Codes.FileFlag.Directory ? basefile.Name : basefile.Name + @"\");
                             txt_myexplorer.Text = path;
+                            txt_myexplorer.Tag = "";
                             AU.Common.Utility.IO.OpenDirectory(path, lvLocalDisk, imageKey);
                             lbl_Display.Text = path;
+                        }
+                        else
+                        {
+                            txt_myexplorer.Tag = basefile.Name;
                         }
                 }
                 else
@@ -867,9 +1008,13 @@ namespace AuWriter
                 AU.Common.Codes.BaseFile basefile = lvRemoteDisk.FocusedItem.Tag as AU.Common.Codes.BaseFile;
                 if (basefile != null)
                     if (basefile.Flag == AU.Common.Codes.FileFlag.Directory)
+                    {
+                        txt_remoteexplorer.Tag = "";
                         txt_remoteexplorer.Text = basefile.Name;
+                    }
                     else if (basefile.Flag == AU.Common.Codes.FileFlag.File)
                     {
+                        txt_remoteexplorer.Tag = basefile.Name;
                         SendMessage(AU.Common.CommandType.RESOURCE, "GET_FILE_DETIAL", basefile.Name);
                     }
                 //AU.Common.Utility.IO.GetFileDetial(basefile.Name);
@@ -891,9 +1036,14 @@ namespace AuWriter
                         {
                             string path = (basefile.Flag == AU.Common.Codes.FileFlag.Directory ? basefile.Name : basefile.Name + @"\");
                             txt_remoteexplorer.Text = path;
+                            txt_remoteexplorer.Tag = "";
                             //AU.Common.Utility.IO.OpenDirectory(path, lvLocalDisk, imageKey);
                             lbl_Display.Text = path;
                             SendMessage(AU.Common.CommandType.RESOURCE, string.IsNullOrEmpty(path) ? "SEND_DISKS" : "GET_DIRECTORY_DETIAL", path);
+                        }
+                        else
+                        {
+                            txt_remoteexplorer.Tag = basefile.Name;
                         }
                 }
                 else
@@ -917,6 +1067,27 @@ namespace AuWriter
         private void tsmRemoteResource_Click(object sender, EventArgs e)
         {
             SendMessage(AU.Common.CommandType.RESOURCE, "SEND_DISKS", "");
+        }
+        /// <summary>
+        /// 上传
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnUpload_Click(object sender, EventArgs e)
+        {
+            if (txt_remoteexplorer.Tag == null || txt_remoteexplorer.Tag.ToString() == "")
+            {
+                MessageBox.Show("请选择远程磁盘待上传文件");
+                return;
+            }
+            if (lvLocalDisk.Tag == null || lvLocalDisk.Tag.ToString() == "")
+            {
+                MessageBox.Show("请选择待本地磁盘目录");
+                return;
+            }
+
+            SendMessage(AU.Common.CommandType.RESOURCE, "GET_FILE", txt_remoteexplorer.Tag.ToString());
+            btnUpload.Enabled = false;
         }
     }
 }
