@@ -55,6 +55,7 @@ namespace AU.Monitor.Server
             string message = key + ":" + body;
             Send(sessionid, message);
         }
+
         /// <summary>
         /// 初始化
         /// </summary>

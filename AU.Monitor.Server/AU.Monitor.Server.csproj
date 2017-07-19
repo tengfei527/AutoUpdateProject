@@ -66,6 +66,7 @@
     <Compile Include="MonitorSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerBootstrap.cs" />
+    <Compile Include="TransferPackage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Config\log4net.config" />

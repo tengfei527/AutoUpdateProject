@@ -614,6 +614,7 @@ namespace AuWriter
 
         private System.Collections.Hashtable PartPackage = new System.Collections.Hashtable();
         private System.Collections.Hashtable FilePackage = new System.Collections.Hashtable();
+        private NetworkSpeed Ns = new NetworkSpeed();
         private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
             try
@@ -775,9 +776,10 @@ namespace AuWriter
                                 fs.Flush();
                                 this.BeginInvoke((MethodInvoker)delegate
                                 {
+                                    Ns.Increment(1024);
                                     if (this.pgbUpLoad.Value < this.pgbUpLoad.Maximum)
                                         this.pgbUpLoad.Value += 1;
-                                    this.lbUpload.Text = ((float)this.pgbUpLoad.Value / this.pgbUpLoad.Maximum * 100) + "%";
+                                    this.lbUpload.Text = ((float)this.pgbUpLoad.Value / this.pgbUpLoad.Maximum * 100) + "%" + "\t" + Ns.GetSpeed();
                                 });
                                 //});
                                 //t.Start();
@@ -834,6 +836,7 @@ namespace AuWriter
         {
             string route = string.Empty;
             string session = string.Empty;
+            string msg = tbMsg.Text;
             if (tvTerminal.Tag != null)
             {
                 var t = tvTerminal.Tag.ToString().Split(':');
@@ -842,16 +845,22 @@ namespace AuWriter
             }
             if (cmbCmd.SelectedIndex == 0)
             {
-                if (string.IsNullOrEmpty(tbMsg.Text))
+                if (string.IsNullOrEmpty(msg))
                 {
-                    string msg = Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs);
+                    msg = Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs);
                     AU.Monitor.Server.ServerBootstrap.Send(session, AU.Common.CommandType.AUVERSION, msg);
                     Console.WriteLine("{0}:\t{1}", AU.Common.CommandType.AUVERSION, msg);
                 }
+                else
+                {
+                    AU.Monitor.Server.ServerBootstrap.Send(session, msg);
+                }
+                //原始文本
+                Console.WriteLine(msg);
             }
             else
             {
-                if (string.IsNullOrEmpty(tbMsg.Text))
+                if (string.IsNullOrEmpty(msg))
                 {
                     MessageBox.Show("请填写发送指令信息");
                     return;
@@ -859,14 +868,8 @@ namespace AuWriter
                 else
                 {
                     SendMessage(session, route, cmbCmd.SelectedItem.ToString(), cmbCmdType.SelectedValue.ToString(), tbMsg.Text, "", tbParameter.Text.Split(','));
-
-                    return;
                 }
             }
-            //原始文本
-            AU.Monitor.Server.ServerBootstrap.Send(session, tbMsg.Text);
-
-            Console.WriteLine(tbMsg.Text);
         }
         private void SendMessage(string cmd, string key, string body, string attach = "", params string[] par)
         {
@@ -894,10 +897,28 @@ namespace AuWriter
                 Body = body,
                 Parameters = par,
                 Attachment = attach,
-                Route = route.Trim('\\'),
             };
+            var routes = route.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
             string msg = Newtonsoft.Json.JsonConvert.SerializeObject(cp);
-            AU.Monitor.Server.ServerBootstrap.Send(session, cmd, msg);
+            if (routes == null || routes.Length == 0)
+            {
+                AU.Monitor.Server.ServerBootstrap.Send(session, cmd, msg);
+            }
+            else
+            {
+                AU.Monitor.Server.TransferPackage tp = new AU.Monitor.Server.TransferPackage()
+                {
+                    Route = routes,
+                    RouteIndex = -1,
+                    Cmd = cmd,
+                    Message = msg,
+                };
+                msg = Newtonsoft.Json.JsonConvert.SerializeObject(tp);
+                //msg = cp.Route.Replace('\\', '&') + cmd + ":" + msg;
+
+                AU.Monitor.Server.ServerBootstrap.Send(session, AU.Common.CommandType.TRANSFER, msg);
+            }
+
             Console.WriteLine("{0}:\t{1}", cmd, msg);
         }
 
@@ -1080,7 +1101,7 @@ namespace AuWriter
         private void tvTerminal_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             tvTerminal.SelectedNode = e.Node;
-            string route = string.Empty; ;
+            string route = string.Empty;
             string session = GetTreeViewRoute(tvTerminal.SelectedNode, ref route);
             tvTerminal.Tag = session + ":" + route;
         }

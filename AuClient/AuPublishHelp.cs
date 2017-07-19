@@ -114,7 +114,7 @@ namespace AuClient
                         break;
                     case "TRANSFER"://通知当前客户端
                         {
-
+                            this.Transfer(p);
                         }
                         break;
                     case "TRANSFERONE"://通知指定客户端
@@ -171,17 +171,16 @@ namespace AuClient
 
         private void Transfer(SuperSocket.ProtoBase.StringPackageInfo p)
         {
-            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(p.Body);
+            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.TransferPackage>(p.Body);
             //中转
-            var c = cp.Route.Split(new char[] { '\\' }, 1, StringSplitOptions.RemoveEmptyEntries);
-            if (c != null && c.Length > 0)
+            if (cp.Route != null && cp.Route.Length > 0 && cp.RouteIndex < cp.Route.Length - 1)
             {
-                cp.Route = cp.Route.Remove(0, c[0].Length);
-                AU.Monitor.Server.ServerBootstrap.Send(c[0], p.Key, Newtonsoft.Json.JsonConvert.SerializeObject(cp));
+                cp.RouteIndex++;
+                AU.Monitor.Server.ServerBootstrap.Send(cp.Route[cp.RouteIndex], p.Key, Newtonsoft.Json.JsonConvert.SerializeObject(cp));
             }
             else
             {
-                clienthandler(new SuperSocket.ProtoBase.StringPackageInfo(cp.Key, cp.Body, cp.Parameters));
+                clienthandler(new SuperSocket.ProtoBase.StringPackageInfo(cp.Cmd, cp.Message, cp.Message.Split('&')));
             }
         }
 
@@ -253,43 +252,50 @@ namespace AuClient
         /// <param name="body">消息</param>
         private void Send(string key, string body)
         {
-            byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
-            string id = Guid.NewGuid().ToString();
-            string par = "P:" + id + "&";
-            string message = (key + ":" + body).Replace(cmdSpilts, "");
-            byte[] b = System.Text.Encoding.UTF8.GetBytes(message);
-            int t = b.Length / 1024;
-            if (t > 0)
+            try
             {
-                byte[] buff;
-                //easyClient.Send(System.Text.Encoding.UTF8.GetBytes(("PS:" + id + cmdSpilts)));
-                for (int i = 0; i <= t; i++)
+                byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
+                string id = Guid.NewGuid().ToString();
+                string par = "P:" + id + "&";
+                string message = (key + ":" + body).Replace(cmdSpilts, "");
+                byte[] b = System.Text.Encoding.UTF8.GetBytes(message);
+                int t = b.Length / 1024;
+                if (t > 0)
                 {
-                    byte[] head = System.Text.Encoding.UTF8.GetBytes(par + i.ToString() + "&");
-                    if (i == t)
+                    byte[] buff;
+                    //easyClient.Send(System.Text.Encoding.UTF8.GetBytes(("PS:" + id + cmdSpilts)));
+                    for (int i = 0; i <= t; i++)
                     {
-                        buff = new byte[head.Length + b.Length - i * 1024 + sp.Length];
-                        //head
-                        Array.Copy(head, 0, buff, 0, head.Length);
-                        //消息体
-                        Array.Copy(b, i * 1024, buff, head.Length, buff.Length - sp.Length - head.Length);
-                        Array.Copy(sp, 0, buff, buff.Length - sp.Length, sp.Length);
-                    }
-                    else
-                    {
-                        buff = new byte[head.Length + 1024 + sp.Length];
-                        Array.Copy(head, 0, buff, 0, head.Length);
-                        Array.Copy(b, i * 1024, buff, head.Length, 1024);
-                        Array.Copy(sp, 0, buff, buff.Length - sp.Length, sp.Length);
-                    }
+                        byte[] head = System.Text.Encoding.UTF8.GetBytes(par + i.ToString() + "&");
+                        if (i == t)
+                        {
+                            buff = new byte[head.Length + b.Length - i * 1024 + sp.Length];
+                            //head
+                            Array.Copy(head, 0, buff, 0, head.Length);
+                            //消息体
+                            Array.Copy(b, i * 1024, buff, head.Length, buff.Length - sp.Length - head.Length);
+                            Array.Copy(sp, 0, buff, buff.Length - sp.Length, sp.Length);
+                        }
+                        else
+                        {
+                            buff = new byte[head.Length + 1024 + sp.Length];
+                            Array.Copy(head, 0, buff, 0, head.Length);
+                            Array.Copy(b, i * 1024, buff, head.Length, 1024);
+                            Array.Copy(sp, 0, buff, buff.Length - sp.Length, sp.Length);
+                        }
 
-                    easyClient.Send(buff);
+                        easyClient.Send(buff);
+                    }
+                    //发送分包结束
+                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes(("PE:" + id + cmdSpilts)));
                 }
-                //发送分包结束
-                easyClient.Send(System.Text.Encoding.UTF8.GetBytes(("PE:" + id + cmdSpilts)));
+                else
+                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes(message + cmdSpilts));
             }
-            else
-                easyClient.Send(System.Text.Encoding.UTF8.GetBytes(message + cmdSpilts));
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private void InitSocketClient()
@@ -368,7 +374,23 @@ namespace AuClient
         }
         private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
-            Console.WriteLine("Session Message ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + "Key= " + requestInfo.Key + " Message=" + requestInfo.Body);
+            //中转
+            //发送分包结束
+            switch (requestInfo.Key)
+            {
+                case "SESSION":
+                    break;
+                case "P":
+                case "F":
+                case "FE":
+                case "FS":
+                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes(requestInfo.Key + ":" + requestInfo.Body + cmdSpilts));
+                    break;
+                default:
+                    this.Send(requestInfo.Key, requestInfo.Body);
+                    break;
+            }
+            //Console.WriteLine("Session Message ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + "Key= " + requestInfo.Key + " Message=" + requestInfo.Body);
         }
         /// <summary>
         /// 启动

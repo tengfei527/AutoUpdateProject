@@ -14,7 +14,7 @@ namespace AuClient
         {
             bool isRuned;
             System.Threading.Mutex mutex = new System.Threading.Mutex(true, typeof(MainForm).FullName, out isRuned);
-            if (isRuned)
+            if (true || isRuned)
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
