@@ -741,7 +741,17 @@ namespace AuWriter
                             if (!FilePackage.ContainsKey(session.SessionID))
                             {
                                 string path = lvLocalDisk.Tag.ToString();
-                                string dst = path == "" ? Application.StartupPath : path + "\\" + requestInfo.Body;
+                                string dst = path == "" ? Application.StartupPath : path + "\\" + requestInfo.Parameters[1];
+                                this.BeginInvoke((MethodInvoker)delegate
+                                {
+                                    this.lbl_Display.Text = dst;
+                                    this.toolStripStatusLabel1.ForeColor = Color.Black;
+                                    this.toolStripStatusLabel1.Text = "开始上传:" + requestInfo.Parameters[1];
+                                    this.panelUpload.Visible = true;
+                                    this.pgbUpLoad.Value = 0;
+                                    this.pgbUpLoad.Maximum = Convert.ToInt32(requestInfo.Parameters[0]);
+                                    this.lbUpload.Text = "0%";
+                                });
                                 var file = File.Open(dst, FileMode.OpenOrCreate);
                                 FilePackage.Add(session.SessionID, file);
                             }
@@ -760,9 +770,15 @@ namespace AuWriter
                                 }
                                 //System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
                                 //{
-                                    byte[] buff = AU.Common.Utility.ToolsHelp.HexStringToByte(requestInfo.Body);
-                                    fs.Write(buff, 0, buff.Length);
-                                    fs.Flush();
+                                byte[] buff = AU.Common.Utility.ToolsHelp.HexStringToByte(requestInfo.Body);
+                                fs.Write(buff, 0, buff.Length);
+                                fs.Flush();
+                                this.BeginInvoke((MethodInvoker)delegate
+                                {
+                                    if (this.pgbUpLoad.Value < this.pgbUpLoad.Maximum)
+                                        this.pgbUpLoad.Value += 1;
+                                    this.lbUpload.Text = ((float)this.pgbUpLoad.Value / this.pgbUpLoad.Maximum * 100) + "%";
+                                });
                                 //});
                                 //t.Start();
                             }
@@ -776,13 +792,18 @@ namespace AuWriter
                                 if (fs != null)
                                 {
                                     fs.Close();
+                                    fs.Dispose();
                                 }
                                 FilePackage.Remove(session.SessionID);
                             }
                             this.BeginInvoke((MethodInvoker)delegate
                             {
-                                toolStripStatusLabel1.Text = requestInfo.Body;
-                                btnUpload.Enabled = true;
+                                AU.Common.Utility.IO.OpenDirectory(lvLocalDisk.Tag.ToString(), lvLocalDisk, imageKey);
+                                this.panelUpload.Visible = false;
+                                this.pgbUpLoad.Value = this.pgbUpLoad.Maximum;
+                                this.toolStripStatusLabel1.ForeColor = requestInfo.Parameters[0].Equals("1") ? Color.Green : Color.Red;
+                                this.toolStripStatusLabel1.Text = requestInfo.Parameters[1];
+                                this.btnUpload.Enabled = true;
                             });
                         }
                         break;
@@ -1066,7 +1087,15 @@ namespace AuWriter
 
         private void tsmRemoteResource_Click(object sender, EventArgs e)
         {
-            SendMessage(AU.Common.CommandType.RESOURCE, "SEND_DISKS", "");
+            if (btnUpload.Enabled == true)
+            {
+                this.tabControlCmd.SelectedTab = tbpRes;
+                SendMessage(AU.Common.CommandType.RESOURCE, "SEND_DISKS", "");
+            }
+            else
+            {
+                MessageBox.Show("正在上传文件，请等待文件传输完成！");
+            }
         }
         /// <summary>
         /// 上传
@@ -1088,6 +1117,15 @@ namespace AuWriter
 
             SendMessage(AU.Common.CommandType.RESOURCE, "GET_FILE", txt_remoteexplorer.Tag.ToString());
             btnUpload.Enabled = false;
+        }
+
+        private void 断开连接ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode tn = tvTerminal.SelectedNode;
+            if (tn != null)
+            {
+                //tn.Name
+            }
         }
     }
 }

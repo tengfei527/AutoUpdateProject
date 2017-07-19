@@ -195,9 +195,10 @@ namespace AuClient
                 if (!System.IO.File.Exists(path))
                     return;
                 byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
-                easyClient.Send(System.Text.Encoding.UTF8.GetBytes("F:" + System.IO.Path.GetFileName(path) + cmdSpilts));
                 using (System.IO.FileStream f = System.IO.File.Open(path, System.IO.FileMode.Open))
                 {
+                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes("F:" + f.Length / 1024 + "&" + System.IO.Path.GetFileName(path) + cmdSpilts));
+
                     byte[] head = System.Text.Encoding.UTF8.GetBytes("FS:");
                     int len = 1024;
                     byte[] buff = new byte[len];
@@ -206,7 +207,7 @@ namespace AuClient
                     {
                         count = f.Read(buff, 0, len);
                         if (count == len)
-                        {
+                        {//分片包编号后期扩展
                             var temp = Encoding.UTF8.GetBytes(AU.Common.Utility.ToolsHelp.ByteToHexString(buff));
                             byte[] send = new byte[head.Length + temp.Length + sp.Length];
                             //head
@@ -235,12 +236,14 @@ namespace AuClient
                             easyClient.Send(send);
                         }
                     } while (count != 0);
-                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:传输完成" + cmdSpilts));
+                    f.Close();
+                    f.Dispose();
+                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:1&传输完成" + cmdSpilts));
                 }
             }
             catch (Exception e)
             {
-                easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:传输失败详情," + e.Message + cmdSpilts));
+                easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:0&传输失败详情," + e.Message + cmdSpilts));
             }
         }
         /// <summary>
