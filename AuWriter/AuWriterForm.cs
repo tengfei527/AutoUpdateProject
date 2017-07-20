@@ -614,7 +614,19 @@ namespace AuWriter
 
         private System.Collections.Hashtable PartPackage = new System.Collections.Hashtable();
         private System.Collections.Hashtable FilePackage = new System.Collections.Hashtable();
-        private NetworkSpeed Ns = new NetworkSpeed();
+        /// <summary>
+        /// 上传速度
+        /// </summary>
+        private NetworkSpeed nsUpload = new NetworkSpeed();
+        /// <summary>
+        /// 下载速度
+        /// </summary>
+        private NetworkSpeed nsDownload = new NetworkSpeed();
+        /// <summary>
+        /// 消息分发
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="requestInfo"></param>
         private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
             try
@@ -656,6 +668,16 @@ namespace AuWriter
                                     this.BeginInvoke((MethodInvoker)delegate
                                     {
                                         txt_remoteexplorer.Text = cp.Body;
+                                    });
+
+                                    break;
+                                case "DELETE_FILE":
+                                    this.BeginInvoke((MethodInvoker)delegate
+                                    {
+                                        this.toolStripStatusLabel1.ForeColor = (cp.Parameters != null && "1".Equals(cp.Parameters[0])) ? Color.Green : Color.Red;
+                                        this.toolStripStatusLabel1.Text = cp.Body;
+                                        string rpath = lvRemoteDisk.Tag.ToString();
+                                        SendMessage(AU.Common.CommandType.RESOURCE, string.IsNullOrEmpty(rpath) ? "SEND_DISKS" : "GET_DIRECTORY_DETIAL", rpath);
                                     });
 
                                     break;
@@ -776,10 +798,10 @@ namespace AuWriter
                                 fs.Flush();
                                 this.BeginInvoke((MethodInvoker)delegate
                                 {
-                                    Ns.Increment(1024);
+                                    nsUpload.Increment(1024);
                                     if (this.pgbUpLoad.Value < this.pgbUpLoad.Maximum)
                                         this.pgbUpLoad.Value += 1;
-                                    this.lbUpload.Text = ((float)this.pgbUpLoad.Value / this.pgbUpLoad.Maximum * 100) + "%" + "\t" + Ns.GetSpeed();
+                                    this.lbUpload.Text = ((float)this.pgbUpLoad.Value / this.pgbUpLoad.Maximum * 100) + "%" + " 上传速度: " + nsUpload.GetSpeed();
                                 });
                                 //});
                                 //t.Start();
@@ -805,9 +827,12 @@ namespace AuWriter
                                 this.pgbUpLoad.Value = this.pgbUpLoad.Maximum;
                                 this.toolStripStatusLabel1.ForeColor = requestInfo.Parameters[0].Equals("1") ? Color.Green : Color.Red;
                                 this.toolStripStatusLabel1.Text = requestInfo.Parameters[1];
-                                this.btnUpload.Enabled = true;
+                                this.UploadToolStripMenuItem.Enabled = true;
                             });
                         }
+                        break;
+                    case "FACK":
+
                         break;
                 }
             }
@@ -871,35 +896,37 @@ namespace AuWriter
                 }
             }
         }
+
+        private bool GetSession(out string session, out string route)
+        {
+            route = string.Empty;
+            session = string.Empty;
+            if (tvTerminal.Tag == null)
+                return false;
+
+            var t = tvTerminal.Tag.ToString().Split(':');
+            session = t[0];
+            route = t[1];
+
+            return true;
+        }
+
         private void SendMessage(string cmd, string key, string body, string attach = "", params string[] par)
         {
             string route = string.Empty;
             string session = string.Empty;
 
-            if (tvTerminal.Tag != null)
-            {
-                var t = tvTerminal.Tag.ToString().Split(':');
-                session = t[0];
-                route = t[1];
-            }
-            else
+            if (!GetSession(out session, out route))
             {
                 MessageBox.Show("请选择接收终端！");
+                return;
             }
 
             SendMessage(session, route, cmd, key, body, attach, par);
         }
-        private void SendMessage(string session, string route, string cmd, string key, string body, string attach = "", params string[] par)
+        private void SendMessage(string session, string route, string cmd, string msg)
         {
-            AU.Monitor.Server.CommandPackage cp = new AU.Monitor.Server.CommandPackage()
-            {
-                Key = key,
-                Body = body,
-                Parameters = par,
-                Attachment = attach,
-            };
             var routes = route.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
-            string msg = Newtonsoft.Json.JsonConvert.SerializeObject(cp);
             if (routes == null || routes.Length == 0)
             {
                 AU.Monitor.Server.ServerBootstrap.Send(session, cmd, msg);
@@ -918,7 +945,20 @@ namespace AuWriter
 
                 AU.Monitor.Server.ServerBootstrap.Send(session, AU.Common.CommandType.TRANSFER, msg);
             }
+        }
+        private void SendMessage(string session, string route, string cmd, string key, string body, string attach = "", params string[] par)
+        {
+            AU.Monitor.Server.CommandPackage cp = new AU.Monitor.Server.CommandPackage()
+            {
+                Key = key,
+                Body = body,
+                Parameters = par,
+                Attachment = attach,
+            };
 
+            string msg = Newtonsoft.Json.JsonConvert.SerializeObject(cp);
+
+            SendMessage(session, route, cmd, msg);
             Console.WriteLine("{0}:\t{1}", cmd, msg);
         }
 
@@ -986,12 +1026,50 @@ namespace AuWriter
             }
         }
 
+        private void SetDiskContextMenuStrip(AU.Common.Codes.FileFlag? flag, bool serverDisk)
+        {
+            cms_Disk.Tag = serverDisk;
+            if (flag == null)
+            {
+                DownloadToolStripMenuItem.Visible = false;
+                UploadToolStripMenuItem.Visible = false;
+                DeleteToolStripMenuItem.Visible = false;
+                BrowseToolStripMenuItem.Visible = false;
+
+                return;
+            }
+            switch (flag.Value)
+            {
+                case AU.Common.Codes.FileFlag.Disk:
+                    DownloadToolStripMenuItem.Visible = false;
+                    UploadToolStripMenuItem.Visible = false;
+                    DeleteToolStripMenuItem.Visible = false;
+                    BrowseToolStripMenuItem.Visible = true;
+                    break;
+                case AU.Common.Codes.FileFlag.Directory:
+                    DownloadToolStripMenuItem.Visible = false;
+                    UploadToolStripMenuItem.Visible = false;
+                    DeleteToolStripMenuItem.Visible = false;
+                    BrowseToolStripMenuItem.Visible = true;
+                    break;
+                case AU.Common.Codes.FileFlag.File:
+                    DownloadToolStripMenuItem.Visible = !serverDisk;
+                    UploadToolStripMenuItem.Visible = serverDisk;
+                    DeleteToolStripMenuItem.Visible = true;
+                    BrowseToolStripMenuItem.Visible = false;
+                    break;
+            }
+        }
+
         private void lvLocalDisk_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lvLocalDisk.FocusedItem != null)
             {
+                lvLocalDisk.ContextMenuStrip = cms_Disk;
                 AU.Common.Codes.BaseFile basefile = lvLocalDisk.FocusedItem.Tag as AU.Common.Codes.BaseFile;
                 if (basefile != null)
+                {
+                    SetDiskContextMenuStrip(basefile.Flag, false);
                     if (basefile.Flag == AU.Common.Codes.FileFlag.Directory)
                     {
                         txt_myexplorer.Text = basefile.Name;
@@ -1002,6 +1080,10 @@ namespace AuWriter
                         txt_myexplorer.Text = AU.Common.Utility.IO.GetFileDetial(basefile.Name);
                         txt_myexplorer.Tag = basefile.Name;
                     }
+                }
+                else
+                    SetDiskContextMenuStrip(null, false);
+
             }
         }
         /// <summary>
@@ -1047,8 +1129,11 @@ namespace AuWriter
         {
             if (lvRemoteDisk.FocusedItem != null)
             {
+                lvRemoteDisk.ContextMenuStrip = cms_Disk;
                 AU.Common.Codes.BaseFile basefile = lvRemoteDisk.FocusedItem.Tag as AU.Common.Codes.BaseFile;
                 if (basefile != null)
+                {
+                    SetDiskContextMenuStrip(basefile.Flag, true);
                     if (basefile.Flag == AU.Common.Codes.FileFlag.Directory)
                     {
                         txt_remoteexplorer.Tag = "";
@@ -1059,6 +1144,9 @@ namespace AuWriter
                         txt_remoteexplorer.Tag = basefile.Name;
                         SendMessage(AU.Common.CommandType.RESOURCE, "GET_FILE_DETIAL", basefile.Name);
                     }
+                }
+                else
+                    SetDiskContextMenuStrip(null, true);
                 //AU.Common.Utility.IO.GetFileDetial(basefile.Name);
             }
         }
@@ -1108,14 +1196,15 @@ namespace AuWriter
 
         private void tsmRemoteResource_Click(object sender, EventArgs e)
         {
-            if (btnUpload.Enabled == true)
+            if (UploadToolStripMenuItem.Enabled == true && DownloadToolStripMenuItem.Enabled == true)
             {
                 this.tabControlCmd.SelectedTab = tbpRes;
+                this.gbRemoteDisk.Text = "远程磁盘>>" + this.tvTerminal.SelectedNode.Text;
                 SendMessage(AU.Common.CommandType.RESOURCE, "SEND_DISKS", "");
             }
             else
             {
-                MessageBox.Show("正在上传文件，请等待文件传输完成！");
+                MessageBox.Show("正在上传/下载中文件，请等待文件传输完成！");
             }
         }
         /// <summary>
@@ -1137,7 +1226,6 @@ namespace AuWriter
             }
 
             SendMessage(AU.Common.CommandType.RESOURCE, "GET_FILE", txt_remoteexplorer.Tag.ToString());
-            btnUpload.Enabled = false;
         }
 
         private void 断开连接ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1147,6 +1235,224 @@ namespace AuWriter
             {
                 //tn.Name
             }
+        }
+
+        private void lvLocalDisk_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ListViewItem item = this.lvLocalDisk.GetItemAt(e.X, e.Y);
+
+                if (item == null)
+                {
+                    SetDiskContextMenuStrip(null, false);
+                }
+            }
+        }
+
+        private void lvRemoteDisk_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ListViewItem item = this.lvRemoteDisk.GetItemAt(e.X, e.Y);
+
+                if (item == null)
+                {
+                    SetDiskContextMenuStrip(null, true);
+                }
+            }
+        }
+
+        private void SendFile(string session, string route, string file, string path)
+        {
+            new System.Threading.Tasks.Task(() =>
+             {
+                 bool rs = false;
+                 string m = string.Empty;
+                 try
+                 {
+                     using (System.IO.FileStream f = System.IO.File.Open(file, System.IO.FileMode.Open))
+                     {
+                         string name = System.IO.Path.GetFileName(file);
+                         this.SendMessage(session, route, "F", path + "\\" + name);
+
+                         this.BeginInvoke((MethodInvoker)delegate
+                         {
+                             this.lbl_Display.Text = System.IO.Path.Combine(path + name);
+                             this.toolStripStatusLabel1.ForeColor = Color.Black;
+                             this.toolStripStatusLabel1.Text = "开始下载:" + name;
+
+                             this.panelDownload.Visible = true;
+                             this.pgbDownload.Value = 0;
+                             this.pgbDownload.Maximum = (int)(f.Length / 1024);
+                             this.lbDownload.Text = "0%";
+                         });
+
+                         int len = 1024;
+                         byte[] buff = new byte[len];
+                         int count = 0;
+                         do
+                         {
+                             count = f.Read(buff, 0, len);
+                             if (count == len)
+                             {//分片包编号后期扩展
+                                 var temp = AU.Common.Utility.ToolsHelp.ByteToHexString(buff);
+                                 //发送消息
+                                 this.SendMessage(session, route, "FS", temp);
+                             }
+                             else if (count > 0)
+                             {
+                                 byte[] b = new byte[count];
+                                 Array.Copy(buff, 0, b, 0, count);
+                                 var temp = AU.Common.Utility.ToolsHelp.ByteToHexString(b);
+                                 //发送消息
+                                 this.SendMessage(session, route, "FS", temp);
+                             }
+                             this.BeginInvoke((MethodInvoker)delegate
+                             {
+                                 nsDownload.Increment(1024);
+                                 if (this.pgbDownload.Value < this.pgbDownload.Maximum)
+                                     this.pgbDownload.Value += 1;
+                                 this.lbDownload.Text = ((float)this.pgbDownload.Value / this.pgbDownload.Maximum * 100) + "%" + " 下载速度: " + nsDownload.GetSpeed();
+                             });
+                             System.Threading.Thread.Sleep(1);
+                         } while (count != 0);
+                         f.Close();
+                         f.Dispose();
+                         m = "1&传输完成";
+                         this.SendMessage(session, route, "FE", m);
+                         rs = true;
+                     }
+                 }
+                 catch (Exception e)
+                 {
+                     m = "0&传输失败详情" + e.Message;
+                     this.SendMessage(session, route, "FE", m);
+                 }
+                 finally
+                 {
+                     this.BeginInvoke((MethodInvoker)delegate
+                     {
+                         //服务器刷新
+                         string rpath = lvRemoteDisk.Tag.ToString();
+                         SendMessage(AU.Common.CommandType.RESOURCE, string.IsNullOrEmpty(rpath) ? "SEND_DISKS" : "GET_DIRECTORY_DETIAL", rpath);
+                         this.panelDownload.Visible = false;
+                         this.pgbDownload.Value = this.pgbDownload.Maximum;
+                         this.toolStripStatusLabel1.ForeColor = rs ? Color.Green : Color.Red;
+                         this.toolStripStatusLabel1.Text = m;
+                         this.DownloadToolStripMenuItem.Enabled = true;
+                     });
+                 }
+             }).Start();
+        }
+
+
+        private void DownloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (false.Equals(cms_Disk.Tag))
+            {
+                if (txt_myexplorer.Tag == null || !System.IO.File.Exists(txt_myexplorer.Tag.ToString()))
+                {
+                    MessageBox.Show("请选择本地磁盘待下载文件");
+                    return;
+                }
+                if (lvRemoteDisk.Tag == null || lvRemoteDisk.Tag.ToString() == "")
+                {
+                    MessageBox.Show("请选择待远程磁盘目录");
+                    return;
+                }
+                string route = string.Empty;
+                string session = string.Empty;
+
+                if (!GetSession(out session, out route))
+                {
+                    MessageBox.Show("请选择接收终端！");
+                    return;
+                }
+                //发送文件
+                SendFile(session, route, txt_myexplorer.Tag.ToString(), lvRemoteDisk.Tag.ToString());
+
+                DownloadToolStripMenuItem.Enabled = false;
+            }
+
+        }
+
+        private void UploadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (true.Equals(cms_Disk.Tag))
+            {
+                if (txt_remoteexplorer.Tag == null || txt_remoteexplorer.Tag.ToString() == "")
+                {
+                    MessageBox.Show("请选择远程磁盘待上传文件");
+                    return;
+                }
+                if (lvLocalDisk.Tag == null || lvLocalDisk.Tag.ToString() == "")
+                {
+                    MessageBox.Show("请选择待本地磁盘目录");
+                    return;
+                }
+
+                SendMessage(AU.Common.CommandType.RESOURCE, "GET_FILE", txt_remoteexplorer.Tag.ToString());
+                UploadToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (true.Equals(cms_Disk.Tag))
+                {
+                    if (MessageBox.Show("您确定要删除远程磁盘[" + txt_remoteexplorer.Tag + "]文件吗？", "系统提示", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        SendMessage(AU.Common.CommandType.RESOURCE, "DELETE_FILE", txt_remoteexplorer.Tag.ToString());
+                    }
+                }
+                else
+                {
+                    if (!System.IO.File.Exists(txt_myexplorer.Tag.ToString()))
+                        return;
+                    if (MessageBox.Show("您确定要删除本地磁盘[" + txt_myexplorer.Tag + "]文件吗？", "系统提示", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        System.IO.File.Delete(txt_myexplorer.Tag.ToString());
+                        RefreshToolStripMenuItem_Click(sender, e);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        private void BrowseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (true.Equals(cms_Disk.Tag))
+            {
+                lvRemoteDisk_DoubleClick(sender, e);
+            }
+            else
+            {
+                lvLocalDisk_DoubleClick(sender, e);
+            }
+        }
+
+        private void RefreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (true.Equals(cms_Disk.Tag))
+            {
+                string path = lvRemoteDisk.Tag.ToString();
+                SendMessage(AU.Common.CommandType.RESOURCE, string.IsNullOrEmpty(path) ? "SEND_DISKS" : "GET_DIRECTORY_DETIAL", path);
+            }
+            else
+                AU.Common.Utility.IO.OpenDirectory(lvLocalDisk.Tag.ToString(), lvLocalDisk, imageKey);
+        }
+
+        private void lbLog_DoubleClick(object sender, EventArgs e)
+        {
+            if (lbLog.Items.Count > 0)
+                lbLog.Items.Clear();
         }
     }
 }

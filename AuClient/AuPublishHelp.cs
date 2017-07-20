@@ -8,6 +8,7 @@ using SuperSocket.SocketBase;
 using System.Collections.Concurrent;
 using System.Collections;
 using AU.Common.Utility;
+using System.IO;
 
 namespace AuClient
 {
@@ -65,7 +66,8 @@ namespace AuClient
             }
             InitSocketClient();
         }
-
+        private System.Collections.Hashtable FilePackage = new System.Collections.Hashtable();
+        private FileStream Fs;
         public void clienthandler(SuperSocket.ProtoBase.StringPackageInfo p)
         {
             string body = p.Body;
@@ -125,6 +127,7 @@ namespace AuClient
                         break;
                     case "RESOURCE":
                         {
+                            string[] Parameters = null;
                             if (string.IsNullOrEmpty(p.Body))
                                 break;
                             var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(p.Body);
@@ -135,7 +138,6 @@ namespace AuClient
                                 case "SEND_DISKS":
                                     AU.Common.Codes.DisksCode diskcode = IO.GetDisks();
                                     result = Newtonsoft.Json.JsonConvert.SerializeObject(diskcode);
-
                                     break;
                                 case "GET_DIRECTORY_DETIAL":
                                     AU.Common.Codes.ExplorerCode explorer = new AU.Common.Codes.ExplorerCode();
@@ -148,15 +150,65 @@ namespace AuClient
                                 case "GET_FILE":
                                     SendFile(cp.Body);
                                     return;
+                                case "DELETE_FILE":
+                                    try
+                                    {
+                                        if (System.IO.File.Exists(cp.Body))
+                                            System.IO.File.Delete(cp.Body);
+                                        Parameters = new string[] { "1" };
+                                        result = "已删除";
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        result = e.Message;
+                                        Parameters = new string[] { "0" };
+                                    }
+                                    break;
                             }
 
                             AU.Monitor.Server.CommandPackage cpackage = new AU.Monitor.Server.CommandPackage()
                             {
                                 Key = cp.Key,
                                 Body = result,
+                                Parameters = Parameters,
                             };
 
                             this.Send(CommandType.RESOURCE, Newtonsoft.Json.JsonConvert.SerializeObject(cpackage));
+                        }
+
+                        break;
+                    case "F":
+                        {
+                            if (Fs == null)
+                            {
+                                string path = p.Body;
+                                Fs = File.Open(path, FileMode.OpenOrCreate);
+                                //发送通知消息
+                            }
+                        }
+                        break;
+                    case "FS":
+                        {
+                            if (Fs != null)
+                            {
+                                byte[] buff = AU.Common.Utility.ToolsHelp.HexStringToByte(p.Body);
+                                Fs.Write(buff, 0, buff.Length);
+                                Fs.Flush();
+                            }
+                            //发送通知消息
+
+                        }
+                        return;
+                    case "FE":
+                        {
+
+                            if (Fs != null)
+                            {
+                                Fs.Close();
+                                Fs.Dispose();
+                                Fs = null;
+                            }
+
                         }
 
                         break;
@@ -189,61 +241,66 @@ namespace AuClient
         //单线程操作
         private void SendFile(string path)
         {
-            try
+            new System.Threading.Tasks.Task(() =>
             {
-                if (!System.IO.File.Exists(path))
-                    return;
-                byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
-                using (System.IO.FileStream f = System.IO.File.Open(path, System.IO.FileMode.Open))
+                try
                 {
-                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes("F:" + f.Length / 1024 + "&" + System.IO.Path.GetFileName(path) + cmdSpilts));
-
-                    byte[] head = System.Text.Encoding.UTF8.GetBytes("FS:");
-                    int len = 1024;
-                    byte[] buff = new byte[len];
-                    int count = 0;
-                    do
+                    if (!System.IO.File.Exists(path))
+                        return;
+                    byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
+                    using (System.IO.FileStream f = System.IO.File.Open(path, System.IO.FileMode.Open))
                     {
-                        count = f.Read(buff, 0, len);
-                        if (count == len)
-                        {//分片包编号后期扩展
-                            var temp = Encoding.UTF8.GetBytes(AU.Common.Utility.ToolsHelp.ByteToHexString(buff));
-                            byte[] send = new byte[head.Length + temp.Length + sp.Length];
-                            //head
-                            Array.Copy(head, 0, send, 0, head.Length);
-                            //msg
-                            Array.Copy(temp, 0, send, head.Length, temp.Length);
-                            //sp
-                            Array.Copy(sp, 0, send, head.Length + temp.Length, sp.Length);
-                            //发送消息
-                            easyClient.Send(send);
-                        }
-                        else if (count > 0)
+                        easyClient.Send(System.Text.Encoding.UTF8.GetBytes("F:" + f.Length / 1024 + "&" + System.IO.Path.GetFileName(path) + cmdSpilts));
+
+                        byte[] head = System.Text.Encoding.UTF8.GetBytes("FS:");
+                        int len = 1024;
+                        byte[] buff = new byte[len];
+                        int count = 0;
+                        do
                         {
-                            //ArraySegment<byte> b = new ArraySegment<byte>(buff, 0, count);
-                            byte[] b = new byte[count];
-                            Array.Copy(buff, 0, b, 0, count);
-                            var temp = Encoding.UTF8.GetBytes(AU.Common.Utility.ToolsHelp.ByteToHexString(b));
-                            byte[] send = new byte[head.Length + temp.Length + sp.Length];
-                            //head
-                            Array.Copy(head, 0, send, 0, head.Length);
-                            //msg
-                            Array.Copy(temp, 0, send, head.Length, temp.Length);
-                            //sp
-                            Array.Copy(sp, 0, send, head.Length + temp.Length, sp.Length);
-                            //发送消息
-                            easyClient.Send(send);
-                        }
-                    } while (count != 0);
-                    f.Close();
-                    f.Dispose();
-                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:1&传输完成" + cmdSpilts));
+                            count = f.Read(buff, 0, len);
+                            if (count == len)
+                            {//分片包编号后期扩展
+                                var temp = Encoding.UTF8.GetBytes(AU.Common.Utility.ToolsHelp.ByteToHexString(buff));
+                                byte[] send = new byte[head.Length + temp.Length + sp.Length];
+                                //head
+                                Array.Copy(head, 0, send, 0, head.Length);
+                                //msg
+                                Array.Copy(temp, 0, send, head.Length, temp.Length);
+                                //sp
+                                Array.Copy(sp, 0, send, head.Length + temp.Length, sp.Length);
+                                //发送消息
+                                easyClient.Send(send);
+                            }
+                            else if (count > 0)
+                            {
+                                //ArraySegment<byte> b = new ArraySegment<byte>(buff, 0, count);
+                                byte[] b = new byte[count];
+                                Array.Copy(buff, 0, b, 0, count);
+                                var temp = Encoding.UTF8.GetBytes(AU.Common.Utility.ToolsHelp.ByteToHexString(b));
+                                byte[] send = new byte[head.Length + temp.Length + sp.Length];
+                                //head
+                                Array.Copy(head, 0, send, 0, head.Length);
+                                //msg
+                                Array.Copy(temp, 0, send, head.Length, temp.Length);
+                                //sp
+                                Array.Copy(sp, 0, send, head.Length + temp.Length, sp.Length);
+                                //发送消息
+                                easyClient.Send(send);
+                            }
+                            System.Threading.Thread.Sleep(1);
+                        } while (count != 0);
+                        f.Close();
+                        f.Dispose();
+                        easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:1&传输完成" + cmdSpilts));
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:0&传输失败详情," + e.Message + cmdSpilts));
-            }
+                catch (Exception e)
+                {
+                    easyClient.Send(System.Text.Encoding.UTF8.GetBytes("FE:0&传输失败详情," + e.Message + cmdSpilts));
+                }
+
+            }).Start();
         }
         /// <summary>
         /// 发送消息

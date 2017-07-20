@@ -29,19 +29,26 @@ namespace AU.Monitor.Server
         /// <param name="Message">消息体</param>
         public static void Send(string sessionid, string Message)
         {
-            foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
+            try
             {
-                if (string.IsNullOrEmpty(sessionid))
-                    foreach (var s in d.GetAllSessions())
-                    {
-                        s.Send(Message.Replace("\r\n", ""));
-                    }
-                else
+                foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
                 {
-                    var s = d.GetSessionByID(sessionid);
-                    if (s != null)
-                        s.Send(Message.Replace("\r\n", ""));
+                    if (string.IsNullOrEmpty(sessionid))
+                        foreach (var s in d.GetAllSessions())
+                        {
+                            s.Send(Message.Replace("\r\n", ""));
+                        }
+                    else
+                    {
+                        var s = d.GetSessionByID(sessionid);
+                        if (s != null)
+                            s.Send(Message.Replace("\r\n", ""));
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
         /// <summary>

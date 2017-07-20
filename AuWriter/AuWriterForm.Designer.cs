@@ -83,10 +83,19 @@
             this.lvRemoteDisk = new System.Windows.Forms.ListView();
             this.iml_ExplorerImages = new System.Windows.Forms.ImageList(this.components);
             this.gbRemoteDisk = new System.Windows.Forms.GroupBox();
-            this.btnUpload = new System.Windows.Forms.Button();
+            this.panelUpload = new System.Windows.Forms.Panel();
+            this.btnUploadCancle = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.lbUpload = new System.Windows.Forms.Label();
+            this.pgbUpLoad = new System.Windows.Forms.ProgressBar();
             this.txt_remoteexplorer = new System.Windows.Forms.TextBox();
             this.lvLocalDisk = new System.Windows.Forms.ListView();
             this.gbLocalDisk = new System.Windows.Forms.GroupBox();
+            this.panelDownload = new System.Windows.Forms.Panel();
+            this.btnDownloadCancle = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.lbDownload = new System.Windows.Forms.Label();
+            this.pgbDownload = new System.Windows.Forms.ProgressBar();
             this.txt_myexplorer = new System.Windows.Forms.TextBox();
             this.fbdSrc = new System.Windows.Forms.FolderBrowserDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -100,10 +109,13 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmRemoteResource = new System.Windows.Forms.ToolStripMenuItem();
-            this.pgbUpLoad = new System.Windows.Forms.ProgressBar();
-            this.lbUpload = new System.Windows.Forms.Label();
-            this.panelUpload = new System.Windows.Forms.Panel();
             this.断开连接ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cms_Disk = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.DownloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.UploadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbpBase.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tbpControl.SuspendLayout();
@@ -127,11 +139,13 @@
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
             this.gbRemoteDisk.SuspendLayout();
+            this.panelUpload.SuspendLayout();
             this.gbLocalDisk.SuspendLayout();
+            this.panelDownload.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
-            this.panelUpload.SuspendLayout();
+            this.cms_Disk.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -632,6 +646,7 @@
             this.lbLog.Size = new System.Drawing.Size(764, 289);
             this.lbLog.TabIndex = 6;
             this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
+            this.lbLog.DoubleClick += new System.EventHandler(this.lbLog_DoubleClick);
             // 
             // tbpLogSelect
             // 
@@ -681,7 +696,7 @@
             this.splitContainer3.Panel2.Controls.Add(this.lvLocalDisk);
             this.splitContainer3.Panel2.Controls.Add(this.gbLocalDisk);
             this.splitContainer3.Size = new System.Drawing.Size(778, 459);
-            this.splitContainer3.SplitterDistance = 374;
+            this.splitContainer3.SplitterDistance = 380;
             this.splitContainer3.TabIndex = 0;
             // 
             // lvRemoteDisk
@@ -689,14 +704,16 @@
             this.lvRemoteDisk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvRemoteDisk.LargeImageList = this.iml_ExplorerImages;
             this.lvRemoteDisk.Location = new System.Drawing.Point(0, 78);
+            this.lvRemoteDisk.MultiSelect = false;
             this.lvRemoteDisk.Name = "lvRemoteDisk";
-            this.lvRemoteDisk.Size = new System.Drawing.Size(374, 381);
+            this.lvRemoteDisk.Size = new System.Drawing.Size(380, 381);
             this.lvRemoteDisk.SmallImageList = this.iml_ExplorerImages;
             this.lvRemoteDisk.StateImageList = this.iml_ExplorerImages;
             this.lvRemoteDisk.TabIndex = 2;
             this.lvRemoteDisk.UseCompatibleStateImageBehavior = false;
             this.lvRemoteDisk.SelectedIndexChanged += new System.EventHandler(this.lvRemoteDisk_SelectedIndexChanged);
             this.lvRemoteDisk.DoubleClick += new System.EventHandler(this.lvRemoteDisk_DoubleClick);
+            this.lvRemoteDisk.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lvRemoteDisk_MouseDown);
             // 
             // iml_ExplorerImages
             // 
@@ -783,32 +800,72 @@
             // gbRemoteDisk
             // 
             this.gbRemoteDisk.Controls.Add(this.panelUpload);
-            this.gbRemoteDisk.Controls.Add(this.btnUpload);
             this.gbRemoteDisk.Controls.Add(this.txt_remoteexplorer);
             this.gbRemoteDisk.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbRemoteDisk.Location = new System.Drawing.Point(0, 0);
             this.gbRemoteDisk.Name = "gbRemoteDisk";
-            this.gbRemoteDisk.Size = new System.Drawing.Size(374, 78);
+            this.gbRemoteDisk.Size = new System.Drawing.Size(380, 78);
             this.gbRemoteDisk.TabIndex = 0;
             this.gbRemoteDisk.TabStop = false;
             this.gbRemoteDisk.Text = "远程磁盘";
             // 
-            // btnUpload
+            // panelUpload
             // 
-            this.btnUpload.Location = new System.Drawing.Point(6, 25);
-            this.btnUpload.Name = "btnUpload";
-            this.btnUpload.Size = new System.Drawing.Size(75, 23);
-            this.btnUpload.TabIndex = 1;
-            this.btnUpload.Text = "上传";
-            this.btnUpload.UseVisualStyleBackColor = true;
-            this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
+            this.panelUpload.Controls.Add(this.btnUploadCancle);
+            this.panelUpload.Controls.Add(this.label8);
+            this.panelUpload.Controls.Add(this.lbUpload);
+            this.panelUpload.Controls.Add(this.pgbUpLoad);
+            this.panelUpload.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelUpload.Location = new System.Drawing.Point(3, 26);
+            this.panelUpload.Name = "panelUpload";
+            this.panelUpload.Size = new System.Drawing.Size(374, 28);
+            this.panelUpload.TabIndex = 2;
+            this.panelUpload.Visible = false;
+            // 
+            // btnUploadCancle
+            // 
+            this.btnUploadCancle.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnUploadCancle.Location = new System.Drawing.Point(327, 0);
+            this.btnUploadCancle.Name = "btnUploadCancle";
+            this.btnUploadCancle.Size = new System.Drawing.Size(47, 28);
+            this.btnUploadCancle.TabIndex = 5;
+            this.btnUploadCancle.Text = "取消";
+            this.btnUploadCancle.UseVisualStyleBackColor = true;
+            this.btnUploadCancle.Visible = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 9);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(59, 12);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "上传进度:";
+            // 
+            // lbUpload
+            // 
+            this.lbUpload.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbUpload.AutoSize = true;
+            this.lbUpload.Location = new System.Drawing.Point(269, 9);
+            this.lbUpload.Name = "lbUpload";
+            this.lbUpload.Size = new System.Drawing.Size(0, 12);
+            this.lbUpload.TabIndex = 3;
+            // 
+            // pgbUpLoad
+            // 
+            this.pgbUpLoad.Location = new System.Drawing.Point(64, 2);
+            this.pgbUpLoad.Name = "pgbUpLoad";
+            this.pgbUpLoad.Size = new System.Drawing.Size(197, 23);
+            this.pgbUpLoad.TabIndex = 2;
             // 
             // txt_remoteexplorer
             // 
             this.txt_remoteexplorer.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.txt_remoteexplorer.Location = new System.Drawing.Point(3, 54);
             this.txt_remoteexplorer.Name = "txt_remoteexplorer";
-            this.txt_remoteexplorer.Size = new System.Drawing.Size(368, 21);
+            this.txt_remoteexplorer.Size = new System.Drawing.Size(374, 21);
             this.txt_remoteexplorer.TabIndex = 0;
             // 
             // lvLocalDisk
@@ -816,32 +873,86 @@
             this.lvLocalDisk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvLocalDisk.LargeImageList = this.iml_ExplorerImages;
             this.lvLocalDisk.Location = new System.Drawing.Point(0, 78);
+            this.lvLocalDisk.MultiSelect = false;
             this.lvLocalDisk.Name = "lvLocalDisk";
-            this.lvLocalDisk.Size = new System.Drawing.Size(400, 381);
+            this.lvLocalDisk.Size = new System.Drawing.Size(394, 381);
             this.lvLocalDisk.SmallImageList = this.iml_ExplorerImages;
             this.lvLocalDisk.StateImageList = this.iml_ExplorerImages;
             this.lvLocalDisk.TabIndex = 2;
             this.lvLocalDisk.UseCompatibleStateImageBehavior = false;
             this.lvLocalDisk.SelectedIndexChanged += new System.EventHandler(this.lvLocalDisk_SelectedIndexChanged);
             this.lvLocalDisk.DoubleClick += new System.EventHandler(this.lvLocalDisk_DoubleClick);
+            this.lvLocalDisk.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lvLocalDisk_MouseDown);
             // 
             // gbLocalDisk
             // 
+            this.gbLocalDisk.Controls.Add(this.panelDownload);
             this.gbLocalDisk.Controls.Add(this.txt_myexplorer);
             this.gbLocalDisk.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbLocalDisk.Location = new System.Drawing.Point(0, 0);
             this.gbLocalDisk.Name = "gbLocalDisk";
-            this.gbLocalDisk.Size = new System.Drawing.Size(400, 78);
+            this.gbLocalDisk.Size = new System.Drawing.Size(394, 78);
             this.gbLocalDisk.TabIndex = 1;
             this.gbLocalDisk.TabStop = false;
             this.gbLocalDisk.Text = "本地磁盘";
+            // 
+            // panelDownload
+            // 
+            this.panelDownload.Controls.Add(this.btnDownloadCancle);
+            this.panelDownload.Controls.Add(this.label10);
+            this.panelDownload.Controls.Add(this.lbDownload);
+            this.panelDownload.Controls.Add(this.pgbDownload);
+            this.panelDownload.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelDownload.Location = new System.Drawing.Point(3, 26);
+            this.panelDownload.Name = "panelDownload";
+            this.panelDownload.Size = new System.Drawing.Size(388, 28);
+            this.panelDownload.TabIndex = 3;
+            this.panelDownload.Visible = false;
+            // 
+            // btnDownloadCancle
+            // 
+            this.btnDownloadCancle.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnDownloadCancle.Location = new System.Drawing.Point(341, 0);
+            this.btnDownloadCancle.Name = "btnDownloadCancle";
+            this.btnDownloadCancle.Size = new System.Drawing.Size(47, 28);
+            this.btnDownloadCancle.TabIndex = 6;
+            this.btnDownloadCancle.Text = "取消";
+            this.btnDownloadCancle.UseVisualStyleBackColor = true;
+            this.btnDownloadCancle.Visible = false;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(4, 9);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(59, 12);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "下载进度:";
+            // 
+            // lbDownload
+            // 
+            this.lbDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbDownload.AutoSize = true;
+            this.lbDownload.Location = new System.Drawing.Point(272, 10);
+            this.lbDownload.Name = "lbDownload";
+            this.lbDownload.Size = new System.Drawing.Size(0, 12);
+            this.lbDownload.TabIndex = 3;
+            // 
+            // pgbDownload
+            // 
+            this.pgbDownload.Location = new System.Drawing.Point(69, 3);
+            this.pgbDownload.Name = "pgbDownload";
+            this.pgbDownload.Size = new System.Drawing.Size(197, 23);
+            this.pgbDownload.TabIndex = 2;
             // 
             // txt_myexplorer
             // 
             this.txt_myexplorer.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.txt_myexplorer.Location = new System.Drawing.Point(3, 54);
             this.txt_myexplorer.Name = "txt_myexplorer";
-            this.txt_myexplorer.Size = new System.Drawing.Size(394, 21);
+            this.txt_myexplorer.Size = new System.Drawing.Size(388, 21);
             this.txt_myexplorer.TabIndex = 0;
             // 
             // menuStrip1
@@ -927,37 +1038,58 @@
             this.tsmRemoteResource.Text = "浏览资源";
             this.tsmRemoteResource.Click += new System.EventHandler(this.tsmRemoteResource_Click);
             // 
-            // pgbUpLoad
-            // 
-            this.pgbUpLoad.Location = new System.Drawing.Point(3, 3);
-            this.pgbUpLoad.Name = "pgbUpLoad";
-            this.pgbUpLoad.Size = new System.Drawing.Size(197, 23);
-            this.pgbUpLoad.TabIndex = 2;
-            // 
-            // lbUpload
-            // 
-            this.lbUpload.AutoSize = true;
-            this.lbUpload.Location = new System.Drawing.Point(206, 10);
-            this.lbUpload.Name = "lbUpload";
-            this.lbUpload.Size = new System.Drawing.Size(0, 12);
-            this.lbUpload.TabIndex = 3;
-            // 
-            // panelUpload
-            // 
-            this.panelUpload.Controls.Add(this.lbUpload);
-            this.panelUpload.Controls.Add(this.pgbUpLoad);
-            this.panelUpload.Location = new System.Drawing.Point(87, 21);
-            this.panelUpload.Name = "panelUpload";
-            this.panelUpload.Size = new System.Drawing.Size(280, 28);
-            this.panelUpload.TabIndex = 2;
-            this.panelUpload.Visible = false;
-            // 
             // 断开连接ToolStripMenuItem
             // 
             this.断开连接ToolStripMenuItem.Name = "断开连接ToolStripMenuItem";
-            this.断开连接ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.断开连接ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.断开连接ToolStripMenuItem.Text = "断开连接";
             this.断开连接ToolStripMenuItem.Click += new System.EventHandler(this.断开连接ToolStripMenuItem_Click);
+            // 
+            // cms_Disk
+            // 
+            this.cms_Disk.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DownloadToolStripMenuItem,
+            this.UploadToolStripMenuItem,
+            this.DeleteToolStripMenuItem,
+            this.BrowseToolStripMenuItem,
+            this.RefreshToolStripMenuItem});
+            this.cms_Disk.Name = "cms_Disk";
+            this.cms_Disk.Size = new System.Drawing.Size(101, 114);
+            // 
+            // DownloadToolStripMenuItem
+            // 
+            this.DownloadToolStripMenuItem.Name = "DownloadToolStripMenuItem";
+            this.DownloadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.DownloadToolStripMenuItem.Text = "下载";
+            this.DownloadToolStripMenuItem.Click += new System.EventHandler(this.DownloadToolStripMenuItem_Click);
+            // 
+            // UploadToolStripMenuItem
+            // 
+            this.UploadToolStripMenuItem.Name = "UploadToolStripMenuItem";
+            this.UploadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.UploadToolStripMenuItem.Text = "上传";
+            this.UploadToolStripMenuItem.Click += new System.EventHandler(this.UploadToolStripMenuItem_Click);
+            // 
+            // DeleteToolStripMenuItem
+            // 
+            this.DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem";
+            this.DeleteToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.DeleteToolStripMenuItem.Text = "删除";
+            this.DeleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItem_Click);
+            // 
+            // BrowseToolStripMenuItem
+            // 
+            this.BrowseToolStripMenuItem.Name = "BrowseToolStripMenuItem";
+            this.BrowseToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.BrowseToolStripMenuItem.Text = "浏览";
+            this.BrowseToolStripMenuItem.Click += new System.EventHandler(this.BrowseToolStripMenuItem_Click);
+            // 
+            // RefreshToolStripMenuItem
+            // 
+            this.RefreshToolStripMenuItem.Name = "RefreshToolStripMenuItem";
+            this.RefreshToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.RefreshToolStripMenuItem.Text = "刷新";
+            this.RefreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
             // 
             // AuWriterForm
             // 
@@ -1000,15 +1132,18 @@
             this.splitContainer3.ResumeLayout(false);
             this.gbRemoteDisk.ResumeLayout(false);
             this.gbRemoteDisk.PerformLayout();
+            this.panelUpload.ResumeLayout(false);
+            this.panelUpload.PerformLayout();
             this.gbLocalDisk.ResumeLayout(false);
             this.gbLocalDisk.PerformLayout();
+            this.panelDownload.ResumeLayout(false);
+            this.panelDownload.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
-            this.panelUpload.ResumeLayout(false);
-            this.panelUpload.PerformLayout();
+            this.cms_Disk.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1084,12 +1219,24 @@
         private System.Windows.Forms.TextBox txt_remoteexplorer;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem tsmRemoteResource;
-        private System.Windows.Forms.Button btnUpload;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.Panel panelUpload;
         private System.Windows.Forms.Label lbUpload;
         private System.Windows.Forms.ProgressBar pgbUpLoad;
         private System.Windows.Forms.ToolStripMenuItem 断开连接ToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip cms_Disk;
+        private System.Windows.Forms.ToolStripMenuItem DownloadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem UploadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DeleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem BrowseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RefreshToolStripMenuItem;
+        private System.Windows.Forms.Panel panelDownload;
+        private System.Windows.Forms.Label lbDownload;
+        private System.Windows.Forms.ProgressBar pgbDownload;
+        private System.Windows.Forms.Panel panelUpload;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnUploadCancle;
+        private System.Windows.Forms.Button btnDownloadCancle;
     }
 }
 
