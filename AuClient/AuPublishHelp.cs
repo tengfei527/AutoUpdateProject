@@ -231,6 +231,7 @@ namespace AuClient
                                     {
                                         var cmd = new CmdUtility(cp.Body, cp.Parameters);
                                         cmd.MyProcess.OutputDataReceived += MyProcess_OutputDataReceived;
+                                        cmd.MyProcess.ErrorDataReceived += MyProcess_ErrorDataReceived;
                                         DicTerminal.Add(cp.Body, cmd);
                                     }
                                     break;
@@ -441,6 +442,14 @@ namespace AuClient
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MyProcess_OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Data))
+            {
+                //发送消息
+                this.Send(CommandType.TERMINAL, e.Data);
+            }
+        }
+        private void MyProcess_ErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Data))
             {

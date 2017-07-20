@@ -35,6 +35,7 @@ namespace AU.Common.Utility
             MyProcess.Start();
             // Start the asynchronous read of the sort output stream.
             MyProcess.BeginOutputReadLine();
+            MyProcess.BeginErrorReadLine();
         }
 
         /// <summary>
