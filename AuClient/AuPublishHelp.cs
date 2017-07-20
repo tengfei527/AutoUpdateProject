@@ -496,68 +496,76 @@ namespace AuClient
             AuPublish a = null;
             while (true)
             {
-                if (ct.IsCancellationRequested)
-                    break;
-                if (!this.IsUpdateCheckRun)
+                try
                 {
-                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
-                    continue;
+                    if (ct.IsCancellationRequested)
+                        break;
+                    if (!this.IsUpdateCheckRun)
+                    {
+                        System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                        continue;
+                    }
+                    //通知消息
+                    if (!AuPublishQueue.TryDequeue(out a))
+                    {
+                        System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                        continue;
+                    }
+                    //识别子系统
+                    if (!Enum.IsDefined(typeof(SystemType), a.PublishType))
+                    {
+                        System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                        continue;
+                    }
+
+                    string sub = ((SystemType)a.PublishType).ToString();
+                    //管理及发布？
+                    if (!this.SubSystemDic.ContainsKey(sub) && !AppConfig.Current.AllowPublish)
+                    {
+                        System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                        continue;
+                    }
+                    AuPublish notify = null;
+                    //检查升级包
+                    if (this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0)
+                    {
+                        //获取升级包
+                        string file = this.AppRemotePublishConten.DownUpdateFile(sub, a, out notify, AppConfig.Current.AllowPublish);
+                        //显示升级服务
+                        if (this.SubSystemDic.ContainsKey(sub) && System.IO.File.Exists(file))
+                        {
+                            //通知消息
+                            UpgradeMessageQueue.Enqueue(new UpgradeMessage()
+                            {
+                                SubSystem = sub,
+                                UpdatePackFile = file,
+                                UpgradePath = this.SubSystemDic[sub]
+                            });
+                        }
+                    }
+                    else
+                    {
+                        notify = AppPublish.ReadPackage(this.LocalPath + "\\" + sub + "\\" + AppPublish.PackageName);
+                        //检查服务器和包是否一直
+                        if (this.SubSystemDic.ContainsKey(sub) && notify != null)
+                            UpgradeMessageQueue.Enqueue(new UpgradeMessage()
+                            {
+                                SubSystem = sub,
+                                UpdatePackFile = this.LocalPath + "\\" + sub + "\\" + notify.DownPath,
+                                UpgradePath = this.SubSystemDic[sub]
+                            });
+                    }
+                    //通知客户端消息
+                    if (notify != null)
+                        AU.Monitor.Server.ServerBootstrap.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(new List<AuPublish>() { notify }));
+                    if (ct.IsCancellationRequested)
+                        break;
                 }
-                //通知消息
-                if (!AuPublishQueue.TryDequeue(out a))
+                catch (Exception e)
                 {
-                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
-                    continue;
-                }
-                //识别子系统
-                if (!Enum.IsDefined(typeof(SystemType), a.PublishType))
-                {
-                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
-                    continue;
+                    Console.WriteLine(e.Message);
                 }
 
-                string sub = ((SystemType)a.PublishType).ToString();
-                //管理及发布？
-                if (!this.SubSystemDic.ContainsKey(sub) && !AppConfig.Current.AllowPublish)
-                {
-                    System.Threading.Thread.Sleep(AppConfig.Current.Interval);
-                    continue;
-                }
-                AuPublish notify = null;
-                //检查升级包
-                if (this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0)
-                {
-                    //获取升级包
-                    string file = this.AppRemotePublishConten.DownUpdateFile(sub, a, out notify, AppConfig.Current.AllowPublish);
-                    //显示升级服务
-                    if (this.SubSystemDic.ContainsKey(sub) && System.IO.File.Exists(file))
-                    {
-                        //通知消息
-                        UpgradeMessageQueue.Enqueue(new UpgradeMessage()
-                        {
-                            SubSystem = sub,
-                            UpdatePackFile = file,
-                            UpgradePath = this.SubSystemDic[sub]
-                        });
-                    }
-                }
-                else
-                {
-                    notify = AppPublish.ReadPackage(this.LocalPath + "\\" + sub + "\\" + AppPublish.PackageName);
-                    //检查服务器和包是否一直
-                    if (notify != null)
-                        UpgradeMessageQueue.Enqueue(new UpgradeMessage()
-                        {
-                            SubSystem = sub,
-                            UpdatePackFile = this.LocalPath + "\\" + sub + "\\" + notify.DownPath,
-                            UpgradePath = this.SubSystemDic[sub]
-                        });
-                }
-                //通知客户端消息
-                if (notify != null)
-                    AU.Monitor.Server.ServerBootstrap.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(notify));
-                if (ct.IsCancellationRequested)
-                    break;
                 System.Threading.Thread.Sleep(AppConfig.Current.Interval);
             }
             this.IsUpdateCheckRun = false;

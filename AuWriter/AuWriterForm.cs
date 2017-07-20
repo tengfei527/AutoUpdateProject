@@ -592,7 +592,7 @@ namespace AuWriter
                         {
                             Name = s.SessionId,
                             Text = s.Name + "(" + s.Version + ")",
-                            ToolTipText = session.RemoteEndPoint.ToString() + " " + session.StartTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                            ToolTipText = s.RemoteEndPoint.ToString(),
                             ContextMenuStrip = contextMenuStrip1,
                         });
                 }
@@ -879,9 +879,10 @@ namespace AuWriter
                 else
                 {
                     AU.Monitor.Server.ServerBootstrap.Send(session, msg);
+                    //原始文本
+                    Console.WriteLine(msg);
                 }
-                //原始文本
-                Console.WriteLine(msg);
+
             }
             else
             {
