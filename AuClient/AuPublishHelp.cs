@@ -47,6 +47,11 @@ namespace AuClient
         /// </summary>
         public string LocalPath { get; set; }
         /// <summary>
+        /// 终端
+        /// </summary>
+        private Dictionary<string, CmdUtility> DicTerminal = new Dictionary<string, CmdUtility>();
+
+        /// <summary>
         /// 构造函数
         /// </summary>
         public AuPublishHelp(MainForm ui)
@@ -212,10 +217,50 @@ namespace AuClient
                         }
 
                         break;
+                    case "TERMINAL":
+                        {
+                            if (string.IsNullOrEmpty(p.Body))
+                                break;
+                            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(p.Body);
+                            string result = string.Empty;
+
+                            switch (cp.Key)
+                            {
+                                case "START":
+                                    if (!DicTerminal.ContainsKey(cp.Body))
+                                    {
+                                        var cmd = new CmdUtility(cp.Body, cp.Parameters);
+                                        cmd.MyProcess.OutputDataReceived += MyProcess_OutputDataReceived;
+                                        DicTerminal.Add(cp.Body, cmd);
+                                    }
+                                    break;
+                                case "STOP":
+                                    if (DicTerminal.ContainsKey(cp.Body))
+                                    {
+                                        DicTerminal[cp.Body].Close();
+                                        DicTerminal.Remove(cp.Body);
+                                    }
+                                    break;
+                                default:
+                                    if (DicTerminal.ContainsKey(cp.Key))
+                                        try
+                                        {
+                                            DicTerminal[cp.Key].Run(cp.Body);
+                                        }
+                                        catch
+                                        {
+                                            DicTerminal[cp.Key].Close();
+                                            DicTerminal.Remove(cp.Key);
+                                        }
+                                    break;
+                            }
+                        }
+                        break;
                 }
             }
             catch (Exception e)
             {
+                this.Send(CommandType.ERROR, e.Message);
                 //log
                 Console.WriteLine(e);
             }
@@ -390,6 +435,20 @@ namespace AuClient
             });
             client.Start();
         }
+        /// <summary>
+        /// 新消息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MyProcess_OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Data))
+            {
+                //发送消息
+                this.Send(CommandType.TERMINAL, e.Data);
+            }
+        }
+
         private void SessionOper(int oper, AU.Monitor.Server.MonitorSession session, AU.Common.SessionModel sm = null)
         {
             if (oper == 0)

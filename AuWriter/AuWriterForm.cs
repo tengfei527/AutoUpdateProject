@@ -57,7 +57,7 @@ namespace AuWriter
         Dictionary<string, List<string>> DicCmdType = new Dictionary<string, List<string>>() {
             { "",new List<string>(){ ""} },
             {"AUVERSION",new List<string>(){ ""} },
-            {"TERMINAL",new List<string>(){ ""} },
+            {"TERMINAL",new List<string>(){ "START", "STOP" } },
             {"RESOURCE",new List<string>(){"SEND_DISKS","GET_DIRECTORY_DETIAL"}},
             {"SCRIPT",new List<string>(){"select","insert","update","delete","other"}},
         };
@@ -831,8 +831,18 @@ namespace AuWriter
                             });
                         }
                         break;
-                    case "FACK":
-
+                    case "TERMINAL":
+                        {
+                            this.BeginInvoke((MethodInvoker)delegate
+                            {
+                                this.rtbTerminial.AppendText(requestInfo.Body + "\n");
+                            });
+                        }
+                        break;
+                    case "ERROR":
+                        {
+                            Console.WriteLine(requestInfo.Body);
+                        }
                         break;
                 }
             }
@@ -893,7 +903,7 @@ namespace AuWriter
                 }
                 else
                 {
-                    SendMessage(session, route, cmbCmd.SelectedItem.ToString(), cmbCmdType.SelectedValue.ToString(), tbMsg.Text, "", tbParameter.Text.Split(','));
+                    SendMessage(session, route, cmbCmd.Text, cmbCmdType.Text, tbMsg.Text, "", tbParameter.Text.Split(','));
                 }
             }
         }
@@ -980,8 +990,8 @@ namespace AuWriter
         {
             if (lbLog.SelectedIndex > -1)
             {
-                tbContent.Visible = true;
-                tbContent.Text = lbLog.Items[lbLog.SelectedIndex].ToString().Replace("\t", "\r\n");
+                tbpContent.Visible = true;
+                tbpContent.Text = lbLog.Items[lbLog.SelectedIndex].ToString().Replace("\t", "\r\n");
             }
         }
 
@@ -1454,6 +1464,12 @@ namespace AuWriter
         {
             if (lbLog.Items.Count > 0)
                 lbLog.Items.Clear();
+        }
+
+        private void rtbTerminial_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks >= 2)
+                rtbTerminial.Text = "";
         }
     }
 }

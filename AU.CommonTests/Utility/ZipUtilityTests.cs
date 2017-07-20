@@ -99,5 +99,52 @@ namespace AU.Common.Utility.Tests
                 returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             return returnBytes;
         }
+        [TestMethod]
+        public void TestCmd()
+        {
+            Cmd c = new Cmd();
+
+            string r = c.Run("ping 192.168.1.1");
+            string v = c.Run("dir");
+            string d = c.Run("ping -t 192.168.1.1");
+
+        }
+    }
+
+    public class Cmd
+    {
+        public System.Diagnostics.Process MyProcess { get; private set; }
+        public Cmd()
+        {
+            MyProcess = new System.Diagnostics.Process();
+            //设定程序名
+            MyProcess.StartInfo.FileName = "cmd.exe";
+            //关闭Shell的使用
+            MyProcess.StartInfo.UseShellExecute = false;
+            //重定向标准输入
+            MyProcess.StartInfo.RedirectStandardInput = true;
+            //重定向标准输出
+            MyProcess.StartInfo.RedirectStandardOutput = true;
+            //重定向错误输出
+            MyProcess.StartInfo.RedirectStandardError = true;
+            //设置不显示窗口
+            MyProcess.StartInfo.CreateNoWindow = true;
+            MyProcess.OutputDataReceived += MyProcess_OutputDataReceived;
+            //执行VER命令
+            MyProcess.Start();
+            // Start the asynchronous read of the sort output stream.
+            MyProcess.BeginOutputReadLine();
+        }
+
+        private void MyProcess_OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        {
+            Console.WriteLine(e.Data);
+        }
+
+        public string Run(string cmd)
+        {
+            MyProcess.StandardInput.WriteLine(cmd);
+            return "";
+        }
     }
 }

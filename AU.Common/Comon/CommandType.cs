@@ -46,5 +46,9 @@ namespace AU.Common
         /// 脚本指令
         /// </summary>
         public static readonly string SCRIPT = "SCRIPT";
+        /// <summary>
+        /// 错误
+        /// </summary>
+        public static readonly string ERROR = "ERROR";
     }
 }

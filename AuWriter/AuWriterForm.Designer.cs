@@ -77,7 +77,7 @@
             this.tbpLog = new System.Windows.Forms.TabPage();
             this.lbLog = new System.Windows.Forms.ListBox();
             this.tbpLogSelect = new System.Windows.Forms.TabPage();
-            this.tbContent = new System.Windows.Forms.TextBox();
+            this.tbpContent = new System.Windows.Forms.TextBox();
             this.tbpRes = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.lvRemoteDisk = new System.Windows.Forms.ListView();
@@ -116,6 +116,8 @@
             this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tbpTerminal = new System.Windows.Forms.TabPage();
+            this.rtbTerminial = new System.Windows.Forms.RichTextBox();
             this.tbpBase.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tbpControl.SuspendLayout();
@@ -146,6 +148,7 @@
             this.statusStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.cms_Disk.SuspendLayout();
+            this.tbpTerminal.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -576,7 +579,6 @@
             // 
             // cmbCmdType
             // 
-            this.cmbCmdType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCmdType.FormattingEnabled = true;
             this.cmbCmdType.Location = new System.Drawing.Point(201, 12);
             this.cmbCmdType.Name = "cmbCmdType";
@@ -585,7 +587,6 @@
             // 
             // cmbCmd
             // 
-            this.cmbCmd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCmd.FormattingEnabled = true;
             this.cmbCmd.Items.AddRange(new object[] {
             "AUVERSION",
@@ -614,6 +615,7 @@
             // 
             this.tabControlLog.Controls.Add(this.tbpLog);
             this.tabControlLog.Controls.Add(this.tbpLogSelect);
+            this.tabControlLog.Controls.Add(this.tbpTerminal);
             this.tabControlLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlLog.Location = new System.Drawing.Point(0, 0);
             this.tabControlLog.Name = "tabControlLog";
@@ -650,7 +652,7 @@
             // 
             // tbpLogSelect
             // 
-            this.tbpLogSelect.Controls.Add(this.tbContent);
+            this.tbpLogSelect.Controls.Add(this.tbpContent);
             this.tbpLogSelect.Location = new System.Drawing.Point(4, 22);
             this.tbpLogSelect.Name = "tbpLogSelect";
             this.tbpLogSelect.Padding = new System.Windows.Forms.Padding(3);
@@ -659,15 +661,15 @@
             this.tbpLogSelect.Text = "选择";
             this.tbpLogSelect.UseVisualStyleBackColor = true;
             // 
-            // tbContent
+            // tbpContent
             // 
-            this.tbContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbContent.Location = new System.Drawing.Point(3, 3);
-            this.tbContent.Multiline = true;
-            this.tbContent.Name = "tbContent";
-            this.tbContent.Size = new System.Drawing.Size(764, 289);
-            this.tbContent.TabIndex = 7;
-            this.tbContent.Visible = false;
+            this.tbpContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbpContent.Location = new System.Drawing.Point(3, 3);
+            this.tbpContent.Multiline = true;
+            this.tbpContent.Name = "tbpContent";
+            this.tbpContent.Size = new System.Drawing.Size(764, 289);
+            this.tbpContent.TabIndex = 7;
+            this.tbpContent.Visible = false;
             // 
             // tbpRes
             // 
@@ -1091,6 +1093,27 @@
             this.RefreshToolStripMenuItem.Text = "刷新";
             this.RefreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
             // 
+            // tbpTerminal
+            // 
+            this.tbpTerminal.Controls.Add(this.rtbTerminial);
+            this.tbpTerminal.Location = new System.Drawing.Point(4, 22);
+            this.tbpTerminal.Name = "tbpTerminal";
+            this.tbpTerminal.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpTerminal.Size = new System.Drawing.Size(770, 295);
+            this.tbpTerminal.TabIndex = 2;
+            this.tbpTerminal.Text = "终端消息";
+            this.tbpTerminal.UseVisualStyleBackColor = true;
+            // 
+            // rtbTerminial
+            // 
+            this.rtbTerminial.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbTerminial.Location = new System.Drawing.Point(3, 3);
+            this.rtbTerminial.Name = "rtbTerminial";
+            this.rtbTerminial.Size = new System.Drawing.Size(764, 289);
+            this.rtbTerminial.TabIndex = 1;
+            this.rtbTerminial.Text = "";
+            this.rtbTerminial.MouseDown += new System.Windows.Forms.MouseEventHandler(this.rtbTerminial_MouseDown);
+            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1144,6 +1167,7 @@
             this.statusStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
             this.cms_Disk.ResumeLayout(false);
+            this.tbpTerminal.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1197,7 +1221,7 @@
         private System.Windows.Forms.TextBox tbParameter;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox tbContent;
+        private System.Windows.Forms.TextBox tbpContent;
         private System.Windows.Forms.TabControl tabControlLog;
         private System.Windows.Forms.TabPage tbpLog;
         private System.Windows.Forms.TabPage tbpLogSelect;
@@ -1237,6 +1261,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button btnUploadCancle;
         private System.Windows.Forms.Button btnDownloadCancle;
+        private System.Windows.Forms.TabPage tbpTerminal;
+        private System.Windows.Forms.RichTextBox rtbTerminial;
     }
 }
 

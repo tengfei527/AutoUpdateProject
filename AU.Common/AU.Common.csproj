@@ -81,6 +81,7 @@
     <Compile Include="AuList.cs" />
     <Compile Include="Comon\SubSystem.cs" />
     <Compile Include="Utility\BaseCommunication.cs" />
+    <Compile Include="Utility\CmdUtility.cs" />
     <Compile Include="Utility\ConfigUtility.cs" />
     <Compile Include="Utility\CryptoHelp.cs" />
     <Compile Include="Utility\HttpHelper.cs" />
