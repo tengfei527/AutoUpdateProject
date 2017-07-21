@@ -419,7 +419,7 @@ namespace AuClient
 
             //ms.Init(serverConfig, Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
 
-            //SessionTable = new Hashtable();
+            SessionTable = new Hashtable();
             //ms.ms.Start();
 
             AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
