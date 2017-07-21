@@ -59,5 +59,59 @@ namespace AuClient.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找类似 10000 的本地化字符串。
+        /// </summary>
+        internal static string MaxConnectionNumber {
+            get {
+                return ResourceManager.GetString("MaxConnectionNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 10240 的本地化字符串。
+        /// </summary>
+        internal static string MaxRequestLength {
+            get {
+                return ResourceManager.GetString("MaxRequestLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 5271 的本地化字符串。
+        /// </summary>
+        internal static string MsPort {
+            get {
+                return ResourceManager.GetString("MsPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 10240 的本地化字符串。
+        /// </summary>
+        internal static string ReceiveBufferSize {
+            get {
+                return ResourceManager.GetString("ReceiveBufferSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 10240 的本地化字符串。
+        /// </summary>
+        internal static string SendBufferSize {
+            get {
+                return ResourceManager.GetString("SendBufferSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 utf-8 的本地化字符串。
+        /// </summary>
+        internal static string TextEncoding {
+            get {
+                return ResourceManager.GetString("TextEncoding", resourceCulture);
+            }
+        }
     }
 }

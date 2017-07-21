@@ -50,12 +50,17 @@ namespace AuClient
         /// 终端
         /// </summary>
         private Dictionary<string, CmdUtility> DicTerminal = new Dictionary<string, CmdUtility>();
-
+        /// <summary>
+        /// 文件哈希
+        /// </summary>
+        public string Hash256 { get; private set; }
+        //public AU.Monitor.Server.MonitorServerHelp ms { get; private set; }
         /// <summary>
         /// 构造函数
         /// </summary>
         public AuPublishHelp(MainForm ui)
         {
+            this.Hash256 = AU.Common.Utility.ToolsHelp.ComputeSHA256(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             this.LocalPath = AppConfig.Current.UpdateConfigPath + "\\package\\";
             this.AppRemotePublishConten = new AppRemotePublish(AppConfig.Current.PublishAddress, this.LocalPath);
             this.UI = ui;
@@ -63,12 +68,9 @@ namespace AuClient
             {
                 nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
                 //Server
-                AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
-                StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
-                Console.WriteLine("Start result: {0}!", result);
-                SessionTable = new Hashtable();
-
+                InitSocketServer();
             }
+
             InitSocketClient();
         }
         private System.Collections.Hashtable FilePackage = new System.Collections.Hashtable();
@@ -274,6 +276,7 @@ namespace AuClient
             if (cp.Route != null && cp.Route.Length > 0 && cp.RouteIndex < cp.Route.Length - 1)
             {
                 cp.RouteIndex++;
+                //ms.Send(cp.Route[cp.RouteIndex], p.Key, Newtonsoft.Json.JsonConvert.SerializeObject(cp));
                 AU.Monitor.Server.ServerBootstrap.Send(cp.Route[cp.RouteIndex], p.Key, Newtonsoft.Json.JsonConvert.SerializeObject(cp));
             }
             else
@@ -399,6 +402,29 @@ namespace AuClient
             {
                 Console.WriteLine(e);
             }
+        }
+        private void InitSocketServer()
+        {
+            //ms = new AU.Monitor.Server.MonitorServerHelp();
+            //var serverConfig = new SuperSocket.SocketBase.Config.ServerConfig
+            //{
+            //    Port = AppConfig.Current.MsPort,
+            //    TextEncoding = AppConfig.Current.TextEncoding,
+            //    ReceiveBufferSize = AppConfig.Current.ReceiveBufferSize,
+            //    MaxConnectionNumber = AppConfig.Current.MaxConnectionNumber,
+            //    SendBufferSize = AppConfig.Current.SendBufferSize,
+            //    MaxRequestLength = AppConfig.Current.MaxRequestLength
+            //    //set the listening port
+            //};
+
+            //ms.Init(serverConfig, Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
+
+            //SessionTable = new Hashtable();
+            //ms.ms.Start();
+
+            AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
+            StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
+            Console.WriteLine("Start result: {0}!", result);
         }
 
         private void InitSocketClient()
@@ -625,7 +651,10 @@ namespace AuClient
                     }
                     //通知客户端消息
                     if (notify != null)
+                    {
+                        //ms.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(new List<AuPublish>() { notify }));
                         AU.Monitor.Server.ServerBootstrap.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(new List<AuPublish>() { notify }));
+                    }
                     if (ct.IsCancellationRequested)
                         break;
                 }
