@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Core" xml:space="preserve">
-    <value>AuClient.exe</value>
+    <value>AuClient.dll</value>
     <comment>守护进程</comment>
   </data>
   <data name="CoreName" xml:space="preserve">

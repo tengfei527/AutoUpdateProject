@@ -66,7 +66,14 @@ namespace AuClient
             this.UI = ui;
             if (AppConfig.Current.AllowPublish)
             {
-                nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
+                try
+                {
+                    nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
                 //Server
                 InitSocketServer();
             }
@@ -559,7 +566,7 @@ namespace AuClient
             engineTask.Start();
             this.StartUpdateCheck();
             if (AppConfig.Current.AllowPublish)
-                nancySelfHost.Start();
+                nancySelfHost?.Start();
             return true;
         }
         /// <summary>
@@ -572,7 +579,7 @@ namespace AuClient
             if (cts != null)
                 cts.Cancel();
             if (AppConfig.Current.AllowPublish)
-                nancySelfHost.Stop();
+                nancySelfHost?.Stop();
         }
 
         public void StartUpdateCheck()

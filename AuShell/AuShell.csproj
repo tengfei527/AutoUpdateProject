@@ -79,6 +79,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\AuClient\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>

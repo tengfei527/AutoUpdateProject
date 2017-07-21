@@ -140,6 +140,7 @@ namespace AuClient
             catch (Exception e)
             {
                 //log
+                MessageBox.Show(e.Message);
             }
         }
         /// <summary>
@@ -258,7 +259,7 @@ namespace AuClient
             }
             if (AvailableUpdate > 0)
             {
-                iisOperate(btnNext.Tag.ToString(), false);
+                iisOperate(btnNext.Tag?.ToString(), false);
                 Thread threadDown = new Thread(new ParameterizedThreadStart(auUpdater.Upgrade));
                 threadDown.IsBackground = true;
                 threadDown.Start(htUpdateFile);
@@ -280,12 +281,19 @@ namespace AuClient
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            iisOperate(btnNext.Tag.ToString(), true);
-            this.Hide();
-            this.MainAppRun();
-            this.AvailableUpdate = 0;
-            if (!this.bgw.IsBusy)
-                bgw.RunWorkerAsync();
+            try
+            {
+                iisOperate(btnNext.Tag?.ToString(), true);
+                this.Hide();
+                this.MainAppRun();
+                this.AvailableUpdate = 0;
+                if (!this.bgw.IsBusy)
+                    bgw.RunWorkerAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
 
@@ -326,14 +334,21 @@ namespace AuClient
 
         private void MainAppRun()
         {
-            string path = string.Empty;
-            string args = string.Empty;
-            if (!IsMainAppRun(out path, out args))
+            try
             {
-                if (System.IO.File.Exists(path))
+                string path = string.Empty;
+                string args = string.Empty;
+                if (!IsMainAppRun(out path, out args))
                 {
-                    System.Diagnostics.Process.Start(path, args);
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.Diagnostics.Process.Start(path, args);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
         /// <summary>
@@ -343,7 +358,8 @@ namespace AuClient
         private bool IsMainAppRun(out string applicationPath, out string args)
         {
             string name = args = applicationPath = string.Empty;
-
+            if (auUpdater == null)
+                return true;
             if (auUpdater.IsUpgrade)
             {
                 if (htUpdateFile.LocalAuList.Application.StartType != 1)
