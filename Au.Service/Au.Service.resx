@@ -117,32 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationService" xml:space="preserve">
-    <value>Au.Service.exe</value>
-    <comment>系统守护服务</comment>
-  </data>
-  <data name="MaxConnectionNumber" xml:space="preserve">
-    <value>10000</value>
-    <comment>server</comment>
-  </data>
-  <data name="MaxRequestLength" xml:space="preserve">
-    <value>10240</value>
-    <comment>server</comment>
-  </data>
-  <data name="MsPort" xml:space="preserve">
-    <value>5271</value>
-    <comment>server</comment>
-  </data>
-  <data name="ReceiveBufferSize" xml:space="preserve">
-    <value>10240</value>
-    <comment>server</comment>
-  </data>
-  <data name="SendBufferSize" xml:space="preserve">
-    <value>10240</value>
-    <comment>server</comment>
-  </data>
-  <data name="TextEncoding" xml:space="preserve">
-    <value>utf-8</value>
-    <comment>server</comment>
-  </data>
+  <metadata name="$this.TrayLargeIcon" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
 </root>

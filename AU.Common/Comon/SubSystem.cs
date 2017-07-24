@@ -148,7 +148,10 @@ namespace AU.Common
     }
     public enum SystemType : int
     {
-
+        /// <summary>
+        /// 升级程序
+        /// </summary>
+        auclient = 0x100,
         //手持机
         handsetserver = 0x101,
         //图象服务器

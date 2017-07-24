@@ -54,6 +54,10 @@ namespace AuClient
         /// 文件哈希
         /// </summary>
         public string Hash256 { get; private set; }
+        /// <summary>
+        /// 服务器管理
+        /// </summary>
+        MyServiceControll mc = new MyServiceControll();
         //public AU.Monitor.Server.MonitorServerHelp ms { get; private set; }
         /// <summary>
         /// 构造函数
@@ -79,6 +83,8 @@ namespace AuClient
             }
 
             InitSocketClient();
+
+            mc.Start(System.Reflection.Assembly.GetCallingAssembly().Location);
         }
         private System.Collections.Hashtable FilePackage = new System.Collections.Hashtable();
         private FileStream Fs;
@@ -618,6 +624,20 @@ namespace AuClient
                         System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                         continue;
                     }
+                    AuPublish notify = null;
+                    //客户端升级
+                    if ((int)SystemType.auclient == a.PublishType && !a.SHA256.Equals(this.Hash256, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        //自升级
+                        //获取升级包
+                        string file = this.AppRemotePublishConten.DownUpdateFile(SystemType.auclient.ToString(), a, out notify, false);
+                        if (System.IO.File.Exists(file))
+                        {
+                            //启动自升级                            
+                            if (mc.Start(file, System.Reflection.Assembly.GetCallingAssembly().Location))
+                                return;
+                        }
+                    }
 
                     string sub = ((SystemType)a.PublishType).ToString();
                     //管理及发布？
@@ -626,7 +646,6 @@ namespace AuClient
                         System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                         continue;
                     }
-                    AuPublish notify = null;
                     //检查升级包
                     if (this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0)
                     {
@@ -657,7 +676,7 @@ namespace AuClient
                             });
                     }
                     //通知客户端消息
-                    if (notify != null)
+                    if (notify != null && AppConfig.Current.AllowPublish)
                     {
                         //ms.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(new List<AuPublish>() { notify }));
                         AU.Monitor.Server.ServerBootstrap.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(new List<AuPublish>() { notify }));

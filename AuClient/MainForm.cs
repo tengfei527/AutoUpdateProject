@@ -198,8 +198,15 @@ namespace AuClient
         /// <param name="e"></param>
         private void MainForm_Load(object sender, EventArgs e)
         {
-            auPublishHelp.Start();
-            bgw.RunWorkerAsync();
+            try
+            {
+                auPublishHelp.Start();
+                bgw.RunWorkerAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         /// <summary>
         /// 消息通知
