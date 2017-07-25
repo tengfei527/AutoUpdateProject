@@ -117,36 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationService" xml:space="preserve">
-    <value>AuUpdate.exe</value>
-    <comment>系统升级服务</comment>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="AuUpdate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AuUpdate.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MaxConnectionNumber" xml:space="preserve">
-    <value>10000</value>
-    <comment>server</comment>
-  </data>
-  <data name="MaxRequestLength" xml:space="preserve">
-    <value>10240</value>
-    <comment>server</comment>
-  </data>
-  <data name="MsPort" xml:space="preserve">
-    <value>5271</value>
-    <comment>server</comment>
-  </data>
-  <data name="ReceiveBufferSize" xml:space="preserve">
-    <value>10240</value>
-    <comment>server</comment>
-  </data>
-  <data name="SendBufferSize" xml:space="preserve">
-    <value>10240</value>
-    <comment>server</comment>
-  </data>
-  <data name="TextEncoding" xml:space="preserve">
-    <value>utf-8</value>
-    <comment>server</comment>
+  <data name="Core" xml:space="preserve">
+    <value>AuClient</value>
   </data>
 </root>

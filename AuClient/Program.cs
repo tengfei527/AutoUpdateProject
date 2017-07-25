@@ -12,26 +12,44 @@ namespace AuClient
         [STAThread]
         static void Main(params string[] args)
         {
-            switch (args?.Length > 0 ? args[0].ToLower() : "")
+            //switch (args?.Length > 0 ? args[0].ToLower() : "")
+            //{
+            //    case "-u":
+            //    case "/u":
+            //        {
+            //            //MyServiceControll mc = new MyServiceControll();
+            //            //mc.UninstallService();
+            //        }
+            //        break;
+            //    default:
+            bool isRuned;
+            System.Threading.Mutex mutex = new System.Threading.Mutex(true, typeof(MainForm).FullName, out isRuned);
+            if (isRuned)
             {
-                case "-u":
-                case "/u":
+                try
+                {
+                    byte[] bu = AuClient.Properties.Resources.AuUpdate;
+                    string path = System.IO.Path.Combine(Application.StartupPath, AuClient.Properties.Resources.ApplicationService);
+                    AU.Common.Utility.ToolsHelp.CloseApplication(System.IO.Path.GetFileNameWithoutExtension(AuClient.Properties.Resources.ApplicationService));
+
+                    using (System.IO.FileStream fs = System.IO.File.Create(path))
                     {
-                        MyServiceControll mc = new MyServiceControll();
-                        mc.UninstallService();
+                        fs.Write(bu, 0, bu.Length);
+                        fs.Flush();
+                        fs.Close();
                     }
-                    break;
-                default:
-                    bool isRuned;
-                    System.Threading.Mutex mutex = new System.Threading.Mutex(true, typeof(MainForm).FullName, out isRuned);
-                    if (isRuned)
-                    {
-                        Application.EnableVisualStyles();
-                        Application.SetCompatibleTextRenderingDefault(false);
-                        Application.Run(new MainForm());
-                    }
-                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainForm());
             }
+            //        break;
+            //}
 
 
         }

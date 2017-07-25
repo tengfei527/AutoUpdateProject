@@ -81,6 +81,7 @@ namespace AuWriter
         /// <param name="e"></param>
         private void btnSrc_Click(object sender, EventArgs e)
         {
+            this.ofdSrc.Filter = "程序文件(*.exe)|*.exe|所有文件(*.*)|*.*";
             this.ofdSrc.ShowDialog(this);
         }
         string PublishVersion = "0.0.0.0";
@@ -544,6 +545,11 @@ namespace AuWriter
             this.BaseUpdatePath = Path.Combine(System.Configuration.ConfigurationManager.AppSettings["UpdateUrl"] ?? "", cbSubSystem.SelectedValue.ToString()) + "/";
             this.txtUrl.Text = this.BaseUpdatePath;
             this.SubSystem = cbSubSystem.SelectedValue.ToString();
+
+            bool auclient = this.SubSystem == "auclient";
+
+            this.panelAuclient.Visible = auclient;
+            this.gbPublish.Visible = !auclient;
         }
 
         private void tbVersion_TextChanged(object sender, EventArgs e)
@@ -1470,6 +1476,62 @@ namespace AuWriter
         {
             if (e.Button == MouseButtons.Left && e.Clicks >= 2)
                 rtbTerminial.Text = "";
+        }
+
+        private void btnbtnAuClientSelect_Click(object sender, EventArgs e)
+        {
+            this.ofdSrc.Filter = "程序文件(AuClient.exe)|AuClient.exe";
+            this.ofdSrc.ShowDialog(this);
+        }
+
+        private void btnAuClientPub_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!System.IO.File.Exists(ofdSrc.FileName) || !ofdSrc.FileName.EndsWith("AuClient.exe"))
+                {
+                    MessageBox.Show("请选择升级文件【AuClient.exe】");
+                    return;
+                }
+
+                string packagename = "AuClient.exe";
+                string mesg = Path.Combine(UpdatePackagePath + "\\" + this.SubSystem + "\\", packagename);
+                ToolsHelp.CreateDirtory(mesg);
+                //拷贝文件
+                System.IO.File.Copy(ofdSrc.FileName, mesg, true);
+
+                string aupublish = UpdatePackagePath + "\\" + this.SubSystem + "\\aupublish.json";
+                string No = "1";
+                if (System.IO.File.Exists(aupublish))
+                {
+                    No = (Convert.ToInt32(AU.Common.AppPublish.ReadPackage(aupublish).No) + 1).ToString();
+                }
+                AU.Common.AuPublish auPublish = new AU.Common.AuPublish()
+                {
+                    No = No,
+                    Description = "发布更新" + packagename,
+                    Url = BaseUpdatePath,
+                    DownPath = packagename,
+                    LastUpdateTime = DateTime.Now,
+                    PublishType = AU.Common.SubSystem.DicPublishType[this.SubSystem],
+                    SHA256 = AU.Common.Utility.ToolsHelp.ComputeSHA256(mesg),
+                    UpdateType = 0,
+                    Version = tbVersion.Text,
+                };
+                //发布包
+                StreamWriter swau = new StreamWriter(aupublish, false, System.Text.Encoding.UTF8);
+                string aujson = Newtonsoft.Json.JsonConvert.SerializeObject(auPublish);
+                swau.Write(aujson);
+
+                swau.Close();
+                //同时把新包加入列表
+                AddAuPublishs(auPublish);
+                MessageBox.Show("发布【AuClient.exe】升级包编号【" + No + "】成功！");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("发布失败，详情：" + ex.Message);
+            }
         }
     }
 }

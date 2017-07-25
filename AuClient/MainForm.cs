@@ -445,20 +445,49 @@ namespace AuClient
                 }
                 if (um != null)
                 {
-                    if (AppConfig.Current.AllowUI)
+                    if (um.SubSystem == "auclient")
                     {
-                        this.BeginInvoke((MethodInvoker)delegate ()
-                       {
-                           this.ShowUpdate(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
-                       });
+                        this.auPublishHelp.Stop();
+
+                        DoUpdate du = new DoUpdate();
+                        if (du.Start(um.UpdatePackFile, um.UpgradePath))
+                        {
+                            this.BeginInvoke((MethodInvoker)delegate ()
+                            {
+                                this.Close();
+                            });
+
+                            return;
+                        }
+
+                        this.auPublishHelp.Start();
+
                     }
                     else
-                        this.DoUpgrade(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
+                    {
+
+                        if (AppConfig.Current.AllowUI)
+                        {
+                            this.BeginInvoke((MethodInvoker)delegate ()
+                           {
+                               this.ShowUpdate(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
+                           });
+                        }
+                        else
+                            this.DoUpgrade(um.UpdatePackFile, um.SubSystem, um.UpgradePath);
+                    }
                 }
 
                 System.Threading.Thread.Sleep(AppConfig.Current.Interval);
             }
         }
+
+        public void CheckRun()
+        {
+            if (!this.IsShow && !bgw.IsBusy)
+                bgw.RunWorkerAsync();
+        }
+
 
         private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {

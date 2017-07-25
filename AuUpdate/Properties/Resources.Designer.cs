@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AuClient.Properties {
+namespace AuUpdate.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace AuClient.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AuClient.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AuUpdate.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,75 +61,11 @@ namespace AuClient.Properties {
         }
         
         /// <summary>
-        ///   查找类似 AuUpdate.exe 的本地化字符串。
+        ///   查找类似 AuClient 的本地化字符串。
         /// </summary>
-        internal static string ApplicationService {
+        internal static string Core {
             get {
-                return ResourceManager.GetString("ApplicationService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] AuUpdate {
-            get {
-                object obj = ResourceManager.GetObject("AuUpdate", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 10000 的本地化字符串。
-        /// </summary>
-        internal static string MaxConnectionNumber {
-            get {
-                return ResourceManager.GetString("MaxConnectionNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 10240 的本地化字符串。
-        /// </summary>
-        internal static string MaxRequestLength {
-            get {
-                return ResourceManager.GetString("MaxRequestLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 5271 的本地化字符串。
-        /// </summary>
-        internal static string MsPort {
-            get {
-                return ResourceManager.GetString("MsPort", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 10240 的本地化字符串。
-        /// </summary>
-        internal static string ReceiveBufferSize {
-            get {
-                return ResourceManager.GetString("ReceiveBufferSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 10240 的本地化字符串。
-        /// </summary>
-        internal static string SendBufferSize {
-            get {
-                return ResourceManager.GetString("SendBufferSize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 utf-8 的本地化字符串。
-        /// </summary>
-        internal static string TextEncoding {
-            get {
-                return ResourceManager.GetString("TextEncoding", resourceCulture);
+                return ResourceManager.GetString("Core", resourceCulture);
             }
         }
     }

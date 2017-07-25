@@ -188,7 +188,7 @@ namespace AU.Common
                 if (auapplication != null && !string.IsNullOrEmpty(auapplication.EntryPoint))
                 {
                     if (auapplication.CloseType == 0)
-                        AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint.ToLower());
+                        AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
                     else
                     {
                         string p = this.TargetAuPackage.LocalPath + "\\" + auapplication.Location + "\\" + auapplication.ApplicationId;
@@ -197,7 +197,7 @@ namespace AU.Common
                             System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
                             //防止未关闭进程关闭一次
                             System.Threading.Thread.Sleep(1000);
-                            AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint.ToLower());
+                            AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
                         }
                     }
                 }
@@ -291,7 +291,7 @@ namespace AU.Common
             {
                 if (this.TargetAuPackage.LocalAuList != null && this.TargetAuPackage.LocalAuList.Application.StartType == 1)
                 {
-                    AU.Common.Utility.ToolsHelp.CloseApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint.ToLower());
+                    AU.Common.Utility.ToolsHelp.CloseApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint);
                 }
 
                 AU.Common.Utility.ToolsHelp.CopyFile(this.AuBackupPath, this.SystemPath);

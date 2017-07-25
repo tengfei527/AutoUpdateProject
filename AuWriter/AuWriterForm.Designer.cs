@@ -78,6 +78,8 @@
             this.lbLog = new System.Windows.Forms.ListBox();
             this.tbpLogSelect = new System.Windows.Forms.TabPage();
             this.tbpContent = new System.Windows.Forms.TextBox();
+            this.tbpTerminal = new System.Windows.Forms.TabPage();
+            this.rtbTerminial = new System.Windows.Forms.RichTextBox();
             this.tbpRes = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.lvRemoteDisk = new System.Windows.Forms.ListView();
@@ -116,8 +118,10 @@
             this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tbpTerminal = new System.Windows.Forms.TabPage();
-            this.rtbTerminial = new System.Windows.Forms.RichTextBox();
+            this.gbPublish = new System.Windows.Forms.GroupBox();
+            this.btnbtnAuClientSelect = new System.Windows.Forms.Button();
+            this.btnAuClientPub = new System.Windows.Forms.Button();
+            this.panelAuclient = new System.Windows.Forms.Panel();
             this.tbpBase.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tbpControl.SuspendLayout();
@@ -135,6 +139,7 @@
             this.tabControlLog.SuspendLayout();
             this.tbpLog.SuspendLayout();
             this.tbpLogSelect.SuspendLayout();
+            this.tbpTerminal.SuspendLayout();
             this.tbpRes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
@@ -148,7 +153,8 @@
             this.statusStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.cms_Disk.SuspendLayout();
-            this.tbpTerminal.SuspendLayout();
+            this.gbPublish.SuspendLayout();
+            this.panelAuclient.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -188,7 +194,7 @@
             // cbPackage
             // 
             this.cbPackage.AutoSize = true;
-            this.cbPackage.Location = new System.Drawing.Point(477, 243);
+            this.cbPackage.Location = new System.Drawing.Point(502, 199);
             this.cbPackage.Name = "cbPackage";
             this.cbPackage.Size = new System.Drawing.Size(48, 16);
             this.cbPackage.TabIndex = 11;
@@ -198,7 +204,7 @@
             // 
             // txtUrl
             // 
-            this.txtUrl.Location = new System.Drawing.Point(70, 9);
+            this.txtUrl.Location = new System.Drawing.Point(98, 14);
             this.txtUrl.Name = "txtUrl";
             this.txtUrl.ReadOnly = true;
             this.txtUrl.Size = new System.Drawing.Size(513, 21);
@@ -207,7 +213,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(5, 12);
+            this.label5.Location = new System.Drawing.Point(33, 17);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(59, 12);
             this.label5.TabIndex = 9;
@@ -215,28 +221,16 @@
             // 
             // tbpBase
             // 
-            this.tbpBase.Controls.Add(this.btnExit);
-            this.tbpBase.Controls.Add(this.prbProd);
-            this.tbpBase.Controls.Add(this.btnProduce);
-            this.tbpBase.Controls.Add(this.tbUpdateMsg);
+            this.tbpBase.Controls.Add(this.panelAuclient);
             this.tbpBase.Controls.Add(this.tbVersion);
+            this.tbpBase.Controls.Add(this.gbPublish);
             this.tbpBase.Controls.Add(this.panel2);
-            this.tbpBase.Controls.Add(this.cbFilter);
             this.tbpBase.Controls.Add(this.label6);
             this.tbpBase.Controls.Add(this.cbSubSystem);
-            this.tbpBase.Controls.Add(this.cbPackage);
             this.tbpBase.Controls.Add(this.txtUrl);
             this.tbpBase.Controls.Add(this.label5);
-            this.tbpBase.Controls.Add(this.btnExpt);
-            this.tbpBase.Controls.Add(this.txtExpt);
-            this.tbpBase.Controls.Add(this.label4);
-            this.tbpBase.Controls.Add(this.btnDest);
-            this.tbpBase.Controls.Add(this.txtDest);
-            this.tbpBase.Controls.Add(this.label3);
-            this.tbpBase.Controls.Add(this.btnDir);
-            this.tbpBase.Controls.Add(this.btnSrc);
-            this.tbpBase.Controls.Add(this.txtSrc);
             this.tbpBase.Controls.Add(this.label2);
+            this.tbpBase.Controls.Add(this.txtSrc);
             this.tbpBase.Location = new System.Drawing.Point(4, 22);
             this.tbpBase.Name = "tbpBase";
             this.tbpBase.Padding = new System.Windows.Forms.Padding(3);
@@ -248,7 +242,7 @@
             // btnExit
             // 
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExit.Location = new System.Drawing.Point(519, 412);
+            this.btnExit.Location = new System.Drawing.Point(544, 368);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(64, 23);
             this.btnExit.TabIndex = 15;
@@ -258,7 +252,7 @@
             // 
             // prbProd
             // 
-            this.prbProd.Location = new System.Drawing.Point(69, 412);
+            this.prbProd.Location = new System.Drawing.Point(94, 368);
             this.prbProd.Name = "prbProd";
             this.prbProd.Size = new System.Drawing.Size(370, 23);
             this.prbProd.TabIndex = 2;
@@ -267,7 +261,7 @@
             // btnProduce
             // 
             this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnProduce.Location = new System.Drawing.Point(453, 412);
+            this.btnProduce.Location = new System.Drawing.Point(478, 368);
             this.btnProduce.Name = "btnProduce";
             this.btnProduce.Size = new System.Drawing.Size(60, 23);
             this.btnProduce.TabIndex = 14;
@@ -277,7 +271,7 @@
             // 
             // tbUpdateMsg
             // 
-            this.tbUpdateMsg.Location = new System.Drawing.Point(69, 263);
+            this.tbUpdateMsg.Location = new System.Drawing.Point(94, 219);
             this.tbUpdateMsg.Multiline = true;
             this.tbUpdateMsg.Name = "tbUpdateMsg";
             this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -287,7 +281,7 @@
             // 
             // tbVersion
             // 
-            this.tbVersion.Location = new System.Drawing.Point(412, 65);
+            this.tbVersion.Location = new System.Drawing.Point(439, 71);
             this.tbVersion.Name = "tbVersion";
             this.tbVersion.Size = new System.Drawing.Size(172, 21);
             this.tbVersion.TabIndex = 6;
@@ -306,7 +300,7 @@
             this.cbFilter.AutoSize = true;
             this.cbFilter.Checked = true;
             this.cbFilter.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFilter.Location = new System.Drawing.Point(70, 89);
+            this.cbFilter.Location = new System.Drawing.Point(95, 45);
             this.cbFilter.Name = "cbFilter";
             this.cbFilter.Size = new System.Drawing.Size(300, 16);
             this.cbFilter.TabIndex = 7;
@@ -316,7 +310,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(4, 42);
+            this.label6.Location = new System.Drawing.Point(31, 45);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 12);
             this.label6.TabIndex = 13;
@@ -326,7 +320,7 @@
             // 
             this.cbSubSystem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbSubSystem.FormattingEnabled = true;
-            this.cbSubSystem.Location = new System.Drawing.Point(70, 37);
+            this.cbSubSystem.Location = new System.Drawing.Point(98, 42);
             this.cbSubSystem.Name = "cbSubSystem";
             this.cbSubSystem.Size = new System.Drawing.Size(336, 20);
             this.cbSubSystem.TabIndex = 2;
@@ -334,7 +328,7 @@
             // btnExpt
             // 
             this.btnExpt.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExpt.Location = new System.Drawing.Point(531, 111);
+            this.btnExpt.Location = new System.Drawing.Point(556, 67);
             this.btnExpt.Name = "btnExpt";
             this.btnExpt.Size = new System.Drawing.Size(53, 21);
             this.btnExpt.TabIndex = 9;
@@ -344,7 +338,7 @@
             // 
             // txtExpt
             // 
-            this.txtExpt.Location = new System.Drawing.Point(70, 111);
+            this.txtExpt.Location = new System.Drawing.Point(95, 67);
             this.txtExpt.Multiline = true;
             this.txtExpt.Name = "txtExpt";
             this.txtExpt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -354,7 +348,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(5, 111);
+            this.label4.Location = new System.Drawing.Point(30, 67);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 12);
             this.label4.TabIndex = 6;
@@ -363,7 +357,7 @@
             // btnDest
             // 
             this.btnDest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDest.Location = new System.Drawing.Point(531, 240);
+            this.btnDest.Location = new System.Drawing.Point(556, 196);
             this.btnDest.Name = "btnDest";
             this.btnDest.Size = new System.Drawing.Size(52, 21);
             this.btnDest.TabIndex = 12;
@@ -373,7 +367,7 @@
             // 
             // txtDest
             // 
-            this.txtDest.Location = new System.Drawing.Point(69, 236);
+            this.txtDest.Location = new System.Drawing.Point(94, 192);
             this.txtDest.Name = "txtDest";
             this.txtDest.Size = new System.Drawing.Size(402, 21);
             this.txtDest.TabIndex = 10;
@@ -381,7 +375,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 240);
+            this.label3.Location = new System.Drawing.Point(29, 196);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 12);
             this.label3.TabIndex = 3;
@@ -390,7 +384,7 @@
             // btnDir
             // 
             this.btnDir.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDir.Location = new System.Drawing.Point(504, 36);
+            this.btnDir.Location = new System.Drawing.Point(195, 14);
             this.btnDir.Name = "btnDir";
             this.btnDir.Size = new System.Drawing.Size(79, 21);
             this.btnDir.TabIndex = 4;
@@ -401,7 +395,7 @@
             // btnSrc
             // 
             this.btnSrc.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSrc.Location = new System.Drawing.Point(419, 36);
+            this.btnSrc.Location = new System.Drawing.Point(95, 14);
             this.btnSrc.Name = "btnSrc";
             this.btnSrc.Size = new System.Drawing.Size(79, 21);
             this.btnSrc.TabIndex = 3;
@@ -411,7 +405,7 @@
             // 
             // txtSrc
             // 
-            this.txtSrc.Location = new System.Drawing.Point(70, 65);
+            this.txtSrc.Location = new System.Drawing.Point(97, 71);
             this.txtSrc.Name = "txtSrc";
             this.txtSrc.Size = new System.Drawing.Size(336, 21);
             this.txtSrc.TabIndex = 5;
@@ -419,7 +413,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 69);
+            this.label2.Location = new System.Drawing.Point(43, 75);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 12);
             this.label2.TabIndex = 0;
@@ -670,6 +664,27 @@
             this.tbpContent.Size = new System.Drawing.Size(764, 289);
             this.tbpContent.TabIndex = 7;
             this.tbpContent.Visible = false;
+            // 
+            // tbpTerminal
+            // 
+            this.tbpTerminal.Controls.Add(this.rtbTerminial);
+            this.tbpTerminal.Location = new System.Drawing.Point(4, 22);
+            this.tbpTerminal.Name = "tbpTerminal";
+            this.tbpTerminal.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpTerminal.Size = new System.Drawing.Size(770, 295);
+            this.tbpTerminal.TabIndex = 2;
+            this.tbpTerminal.Text = "终端消息";
+            this.tbpTerminal.UseVisualStyleBackColor = true;
+            // 
+            // rtbTerminial
+            // 
+            this.rtbTerminial.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbTerminial.Location = new System.Drawing.Point(3, 3);
+            this.rtbTerminial.Name = "rtbTerminial";
+            this.rtbTerminial.Size = new System.Drawing.Size(764, 289);
+            this.rtbTerminial.TabIndex = 1;
+            this.rtbTerminial.Text = "";
+            this.rtbTerminial.MouseDown += new System.Windows.Forms.MouseEventHandler(this.rtbTerminial_MouseDown);
             // 
             // tbpRes
             // 
@@ -1093,26 +1108,60 @@
             this.RefreshToolStripMenuItem.Text = "刷新";
             this.RefreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
             // 
-            // tbpTerminal
+            // gbPublish
             // 
-            this.tbpTerminal.Controls.Add(this.rtbTerminial);
-            this.tbpTerminal.Location = new System.Drawing.Point(4, 22);
-            this.tbpTerminal.Name = "tbpTerminal";
-            this.tbpTerminal.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpTerminal.Size = new System.Drawing.Size(770, 295);
-            this.tbpTerminal.TabIndex = 2;
-            this.tbpTerminal.Text = "终端消息";
-            this.tbpTerminal.UseVisualStyleBackColor = true;
+            this.gbPublish.Controls.Add(this.txtExpt);
+            this.gbPublish.Controls.Add(this.btnExit);
+            this.gbPublish.Controls.Add(this.cbFilter);
+            this.gbPublish.Controls.Add(this.cbPackage);
+            this.gbPublish.Controls.Add(this.label3);
+            this.gbPublish.Controls.Add(this.btnExpt);
+            this.gbPublish.Controls.Add(this.label4);
+            this.gbPublish.Controls.Add(this.btnDir);
+            this.gbPublish.Controls.Add(this.prbProd);
+            this.gbPublish.Controls.Add(this.btnSrc);
+            this.gbPublish.Controls.Add(this.tbUpdateMsg);
+            this.gbPublish.Controls.Add(this.btnDest);
+            this.gbPublish.Controls.Add(this.txtDest);
+            this.gbPublish.Controls.Add(this.btnProduce);
+            this.gbPublish.Location = new System.Drawing.Point(3, 95);
+            this.gbPublish.Name = "gbPublish";
+            this.gbPublish.Size = new System.Drawing.Size(832, 399);
+            this.gbPublish.TabIndex = 16;
+            this.gbPublish.TabStop = false;
+            this.gbPublish.Visible = false;
             // 
-            // rtbTerminial
+            // btnbtnAuClientSelect
             // 
-            this.rtbTerminial.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbTerminial.Location = new System.Drawing.Point(3, 3);
-            this.rtbTerminial.Name = "rtbTerminial";
-            this.rtbTerminial.Size = new System.Drawing.Size(764, 289);
-            this.rtbTerminial.TabIndex = 1;
-            this.rtbTerminial.Text = "";
-            this.rtbTerminial.MouseDown += new System.Windows.Forms.MouseEventHandler(this.rtbTerminial_MouseDown);
+            this.btnbtnAuClientSelect.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnbtnAuClientSelect.Location = new System.Drawing.Point(6, 3);
+            this.btnbtnAuClientSelect.Name = "btnbtnAuClientSelect";
+            this.btnbtnAuClientSelect.Size = new System.Drawing.Size(79, 21);
+            this.btnbtnAuClientSelect.TabIndex = 17;
+            this.btnbtnAuClientSelect.Text = "选择程序(&S)";
+            this.btnbtnAuClientSelect.UseVisualStyleBackColor = true;
+            this.btnbtnAuClientSelect.Click += new System.EventHandler(this.btnbtnAuClientSelect_Click);
+            // 
+            // btnAuClientPub
+            // 
+            this.btnAuClientPub.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnAuClientPub.Location = new System.Drawing.Point(90, 3);
+            this.btnAuClientPub.Name = "btnAuClientPub";
+            this.btnAuClientPub.Size = new System.Drawing.Size(79, 21);
+            this.btnAuClientPub.TabIndex = 17;
+            this.btnAuClientPub.Text = "发布";
+            this.btnAuClientPub.UseVisualStyleBackColor = true;
+            this.btnAuClientPub.Click += new System.EventHandler(this.btnAuClientPub_Click);
+            // 
+            // panelAuclient
+            // 
+            this.panelAuclient.Controls.Add(this.btnAuClientPub);
+            this.panelAuclient.Controls.Add(this.btnbtnAuClientSelect);
+            this.panelAuclient.Location = new System.Drawing.Point(438, 38);
+            this.panelAuclient.Name = "panelAuclient";
+            this.panelAuclient.Size = new System.Drawing.Size(173, 28);
+            this.panelAuclient.TabIndex = 18;
+            this.panelAuclient.Visible = false;
             // 
             // AuWriterForm
             // 
@@ -1148,6 +1197,7 @@
             this.tbpLog.ResumeLayout(false);
             this.tbpLogSelect.ResumeLayout(false);
             this.tbpLogSelect.PerformLayout();
+            this.tbpTerminal.ResumeLayout(false);
             this.tbpRes.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
@@ -1167,7 +1217,9 @@
             this.statusStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
             this.cms_Disk.ResumeLayout(false);
-            this.tbpTerminal.ResumeLayout(false);
+            this.gbPublish.ResumeLayout(false);
+            this.gbPublish.PerformLayout();
+            this.panelAuclient.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1263,6 +1315,10 @@
         private System.Windows.Forms.Button btnDownloadCancle;
         private System.Windows.Forms.TabPage tbpTerminal;
         private System.Windows.Forms.RichTextBox rtbTerminial;
+        private System.Windows.Forms.GroupBox gbPublish;
+        private System.Windows.Forms.Button btnAuClientPub;
+        private System.Windows.Forms.Button btnbtnAuClientSelect;
+        private System.Windows.Forms.Panel panelAuclient;
     }
 }
 

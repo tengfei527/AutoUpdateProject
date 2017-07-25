@@ -57,7 +57,8 @@ namespace AuClient
         /// <summary>
         /// 服务器管理
         /// </summary>
-        MyServiceControll mc = new MyServiceControll();
+        //MyServiceControll mc = new MyServiceControll();
+
         //public AU.Monitor.Server.MonitorServerHelp ms { get; private set; }
         /// <summary>
         /// 构造函数
@@ -79,12 +80,14 @@ namespace AuClient
                     Console.WriteLine(e);
                 }
                 //Server
-                InitSocketServer();
+                SessionTable = new Hashtable();
+                AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
+                //InitSocketServer();
             }
 
-            InitSocketClient();
+            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), clienthandler);
 
-            mc.Start(System.Reflection.Assembly.GetCallingAssembly().Location);
+            //mc.Start(System.Reflection.Assembly.GetCallingAssembly().Location);
         }
         private System.Collections.Hashtable FilePackage = new System.Collections.Hashtable();
         private FileStream Fs;
@@ -436,19 +439,16 @@ namespace AuClient
             //ms.ms.Start();
 
             AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
-            StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
-            Console.WriteLine("Start result: {0}!", result);
         }
 
-        private void InitSocketClient()
+        private void StartSocketClient()
         {
-            easyClient.Initialize(new AU.Monitor.Client.FakeReceiveFilter(System.Text.Encoding.UTF8), clienthandler);
             var ips = AppConfig.Current.SocketServer.Split(':');
             System.Net.IPAddress ip = System.Net.IPAddress.Parse(ips[0]);
             int port = Convert.ToInt32(ips[1]);
             System.Threading.Tasks.Task client = new System.Threading.Tasks.Task(() =>
             {
-                while (true)
+                while (this.IsUpdateCheckRun)
                 {
                     try
                     {
@@ -473,6 +473,7 @@ namespace AuClient
                     System.Threading.Thread.Sleep(AppConfig.Current.Interval);
                 }
             });
+
             client.Start();
         }
         /// <summary>
@@ -564,6 +565,7 @@ namespace AuClient
         {
             //读注册表
             SubSystemDic = AU.Common.Utility.RegistryHelper.GetRegistrySubs(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7");
+            SubSystemDic.Add(SystemType.auclient.ToString(), System.Reflection.Assembly.GetCallingAssembly().Location);
             //cts = new System.Threading.CancellationTokenSource();
             //Task engineTask = new Task(() => Engine(cts.Token), cts.Token);
             //engineTask.Start();
@@ -572,7 +574,14 @@ namespace AuClient
             engineTask.Start();
             this.StartUpdateCheck();
             if (AppConfig.Current.AllowPublish)
+            {
+                StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
+                Console.WriteLine("Start result: {0}!", result);
                 nancySelfHost?.Start();
+            }
+
+            StartSocketClient();
+
             return true;
         }
         /// <summary>
@@ -585,7 +594,13 @@ namespace AuClient
             if (cts != null)
                 cts.Cancel();
             if (AppConfig.Current.AllowPublish)
+            {
+                AU.Monitor.Server.ServerBootstrap.Stop();
+                Console.WriteLine("Stop Au Monitor Server");
                 nancySelfHost?.Stop();
+            }
+
+            easyClient.Close();
         }
 
         public void StartUpdateCheck()
@@ -607,6 +622,12 @@ namespace AuClient
                 {
                     if (ct.IsCancellationRequested)
                         break;
+                    //检查UI服务是否运行
+                    this.UI.BeginInvoke((MethodInvoker)delegate ()
+                    {
+                        this.UI.CheckRun();
+                    });
+
                     if (!this.IsUpdateCheckRun)
                     {
                         System.Threading.Thread.Sleep(AppConfig.Current.Interval);
@@ -625,19 +646,20 @@ namespace AuClient
                         continue;
                     }
                     AuPublish notify = null;
-                    //客户端升级
-                    if ((int)SystemType.auclient == a.PublishType && !a.SHA256.Equals(this.Hash256, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //自升级
-                        //获取升级包
-                        string file = this.AppRemotePublishConten.DownUpdateFile(SystemType.auclient.ToString(), a, out notify, false);
-                        if (System.IO.File.Exists(file))
-                        {
-                            //启动自升级                            
-                            if (mc.Start(file, System.Reflection.Assembly.GetCallingAssembly().Location))
-                                return;
-                        }
-                    }
+                    ////客户端升级
+                    //if ((int)SystemType.auclient == a.PublishType && !a.SHA256.Equals(this.Hash256, StringComparison.InvariantCultureIgnoreCase))
+                    //{
+                    //    //自升级
+                    //    //获取升级包
+                    //    string file = this.AppRemotePublishConten.DownUpdateFile(SystemType.auclient.ToString(), a, out notify, true);
+                    //    if (System.IO.File.Exists(file))
+                    //    {
+                    //        //启动自升级
+                    //        this.Stop();
+                    //        if (du.Start(file, System.Reflection.Assembly.GetCallingAssembly().Location))
+                    //            return;
+                    //    }
+                    //}
 
                     string sub = ((SystemType)a.PublishType).ToString();
                     //管理及发布？
@@ -667,7 +689,7 @@ namespace AuClient
                     {
                         notify = AppPublish.ReadPackage(this.LocalPath + "\\" + sub + "\\" + AppPublish.PackageName);
                         //检查服务器和包是否一直
-                        if (this.SubSystemDic.ContainsKey(sub) && notify != null)
+                        if (sub != "auclient" && this.SubSystemDic.ContainsKey(sub) && notify != null)
                             UpgradeMessageQueue.Enqueue(new UpgradeMessage()
                             {
                                 SubSystem = sub,

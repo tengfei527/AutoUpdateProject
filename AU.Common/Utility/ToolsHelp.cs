@@ -152,7 +152,34 @@ namespace AU.Common.Utility
             }
 
             return hashSHA256;
-        }//ComputeSHA1
+        }
+        /// <summary>
+        ///  计算指定文件的SHA1值
+        /// </summary>
+        /// <param name="buff">文件内存流</param>
+        /// <returns>返回值的字符串形式</returns>
+        public static String ComputeSHA256(byte[] buff)
+        {
+            String hashSHA256 = String.Empty;
+            //计算文件的SHA1值
+            if (buff != null && buff.Length > 0)
+            {
+                System.Security.Cryptography.SHA256 calculator = System.Security.Cryptography.SHA256.Create();
+                Byte[] buffer = calculator.ComputeHash(buff, 0, buff.Length);
+                calculator.Clear();
+                //将字节数组转换成十六进制的字符串形式
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    stringBuilder.Append(buffer[i].ToString("x2"));
+                }
+
+                hashSHA256 = stringBuilder.ToString();
+            }
+
+            return hashSHA256;
+        }
+        //ComputeSHA1
 
         /// <summary>
         /// 关闭主应用程序
@@ -160,6 +187,7 @@ namespace AU.Common.Utility
         /// <param name="applicationName"></param>
         public static void CloseApplication(string applicationName)
         {
+            applicationName = applicationName.ToLower();
             System.Diagnostics.Process[] allProcess = System.Diagnostics.Process.GetProcesses();
             foreach (System.Diagnostics.Process p in allProcess)
             {

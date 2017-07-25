@@ -13,6 +13,7 @@ namespace AU.Common
         /// 系统字典
         /// </summary>
         public static readonly Dictionary<string, string> Dic = new Dictionary<string, string>() {
+            { "auclient" , "Au升级" },
             //API服务器
             { "coreserver", "E7服务器"},
             //管理中心
@@ -110,6 +111,9 @@ namespace AU.Common
         /// 系统发布字典
         /// </summary>
         public static readonly Dictionary<string, int> DicPublishType = new Dictionary<string, int>() {
+
+            //升级程序
+            { "auclient", 0x100},
             //手持机
             { "handsetserver", 0x101},
             //图象服务器

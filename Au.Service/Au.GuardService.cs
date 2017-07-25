@@ -183,10 +183,10 @@ namespace Au.Service
                 {
                     System.Diagnostics.ProcessStartInfo processInfo = new System.Diagnostics.ProcessStartInfo();
                     processInfo.FileName = path;
-                    processInfo.Verb = "runas";
+                    //processInfo.Verb = "runas";
                     processInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
                     processInfo.UseShellExecute = false;
-                    processInfo.CreateNoWindow = true;
+                    //processInfo.CreateNoWindow = true;
                     var proc = System.Diagnostics.Process.Start(processInfo);
                 }
                 catch (Exception e)
