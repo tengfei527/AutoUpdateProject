@@ -102,7 +102,7 @@ namespace AU.Common
             }
 
             return 0;
-        }      
+        }
         /// <summary>
         /// 通知消息
         /// </summary>
@@ -119,7 +119,7 @@ namespace AU.Common
         /// </summary>
         /// <param name="upgradeFiles"></param>
         /// <returns></returns>
-        public string DownUpdateFile(string subSystem, AuPublish upgradeFiles, out AuPublish notify, bool allowPublish = false)
+        public string DownUpdateFile(string subSystem, string standbyIp, AuPublish upgradeFiles, out AuPublish notify, bool allowPublish = false)
         {
             notify = null;
             if (upgradeFiles == null)
@@ -140,8 +140,19 @@ namespace AU.Common
                 if (!(System.IO.File.Exists(tempPath) && ToolsHelp.ComputeSHA256(tempPath).ToLower() == upgradeFiles.SHA256.ToLower()))
                 {
                     WebRequest webReq = WebRequest.Create(down);
-                    WebResponse webRes = webReq.GetResponse();
+                    WebResponse webRes = null;
+                    try
+                    {
+                        webRes = webReq.GetResponse();
+                    }
+                    catch
+                    {
+                        Uri u = new Uri(down);
+                        string url = string.Format("http://{0}:{1}{2}", standbyIp, u.Port, u.AbsolutePath);
+                        webReq = WebRequest.Create(url);
+                        webRes = webReq.GetResponse();
 
+                    }
                     NotifyMessage(new Common.NotifyMessage(NotifyType.Process, "正在下载[" + upgradeFiles.DownPath + "]文件,请稍后...", 100000));
                     Stream srm = webRes.GetResponseStream();
                     Stream outStream = System.IO.File.Create(tempPath);

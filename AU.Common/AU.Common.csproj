@@ -86,6 +86,7 @@
     <Compile Include="Utility\CryptoHelp.cs" />
     <Compile Include="Utility\HttpHelper.cs" />
     <Compile Include="Utility\IO.cs" />
+    <Compile Include="Utility\IpHelp.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\NetworkSpeed.cs" />
     <Compile Include="Utility\RegistryHelper.cs" />

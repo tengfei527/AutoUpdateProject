@@ -73,7 +73,7 @@ namespace AuClient
             {
                 try
                 {
-                    nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(AppConfig.Current.PublishAddress), new MyBootstrapper());
+                    nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri("http://localhost:" + AppConfig.Current.PublishPort), new MyBootstrapper());
                 }
                 catch (Exception e)
                 {
@@ -440,11 +440,11 @@ namespace AuClient
 
             AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
         }
-
+        public System.Net.IPAddress ServerIp { get; protected set; }
         private void StartSocketClient()
         {
             var ips = AppConfig.Current.SocketServer.Split(':');
-            System.Net.IPAddress ip = System.Net.IPAddress.Parse(ips[0]);
+            ServerIp = System.Net.IPAddress.Parse(ips[0]);
             int port = Convert.ToInt32(ips[1]);
             System.Threading.Tasks.Task client = new System.Threading.Tasks.Task(() =>
             {
@@ -454,7 +454,7 @@ namespace AuClient
                     {
                         if (!easyClient.IsConnected)
                         {
-                            var res = easyClient.ConnectAsync(new System.Net.IPEndPoint(ip, port));
+                            var res = easyClient.ConnectAsync(new System.Net.IPEndPoint(ServerIp, port));
                             System.Threading.Tasks.Task.WaitAll(res);
 
                             //推送指令
@@ -672,7 +672,7 @@ namespace AuClient
                     if (this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0)
                     {
                         //获取升级包
-                        string file = this.AppRemotePublishConten.DownUpdateFile(sub, a, out notify, AppConfig.Current.AllowPublish);
+                        string file = this.AppRemotePublishConten.DownUpdateFile(sub, ServerIp?.ToString(), a, out notify, AppConfig.Current.AllowPublish);
                         //显示升级服务
                         if (this.SubSystemDic.ContainsKey(sub) && System.IO.File.Exists(file))
                         {

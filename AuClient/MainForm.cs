@@ -50,8 +50,8 @@ namespace AuClient
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Minimized;
-            this.auPublishHelp = new AuPublishHelp(this);
             linkLabel1.Text = AppConfig.Current.LinkUrl;
+            this.auPublishHelp = new AuPublishHelp(this);            
         }
         /// <summary>
         /// 静默更新

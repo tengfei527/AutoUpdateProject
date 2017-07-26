@@ -35,6 +35,10 @@ namespace AuClient
         /// </summary>
         public bool AllowUI { get; set; }
         /// <summary>
+        /// 发布端口
+        /// </summary>
+        public int PublishPort { get; set; }
+        /// <summary>
         /// 发布地址
         /// </summary>
         public string PublishAddress { get; set; }
@@ -68,11 +72,37 @@ namespace AuClient
             this.AllowPublish = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowPublish"], StringComparison.InvariantCultureIgnoreCase);
 
             this.AllowUI = "true".Equals(System.Configuration.ConfigurationManager.AppSettings["AllowUI"], StringComparison.InvariantCultureIgnoreCase);
-
-            this.PublishAddress = System.Configuration.ConfigurationManager.AppSettings["PublishAddress"] ?? "http://192.168.8.23:54321/";
+            //PublishAddress
+            try
+            {
+                this.PublishPort = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["PublishPort"]);
+            }
+            catch
+            {
+                this.PublishPort = 54321;
+            }
+            try
+            {
+                this.PublishAddress = string.Format("http://{0}:{1}/", AU.Common.Utility.IpHelp.GetLocalIP(), this.PublishPort);
+            }
+            catch
+            {
+                this.PublishAddress = string.Format("http://{0}:{1}/", "0.0.0.0", this.PublishPort);
+            }
             this.UpdateConfigPath = Application.StartupPath;
             this.LinkUrl = System.Configuration.ConfigurationManager.AppSettings["LinkUrl"] ?? "";
-            this.SocketServer = System.Configuration.ConfigurationManager.AppSettings["SocketServer"] ?? "";
+            try
+            {
+                this.SocketServer = System.Configuration.ConfigurationManager.AppSettings
+                    ["SocketServer"] ?? "";
+                var ips = this.SocketServer.Split(':');
+                System.Net.IPAddress.Parse(ips[0]);
+                int port = Convert.ToInt32(ips[1]);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("服务器地址配置错误，详情：" + e.Message);
+            }
         }
 
         public static string GetUpdateTempPath(string subsystem)
