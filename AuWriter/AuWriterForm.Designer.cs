@@ -38,25 +38,29 @@
             this.txtUrl = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbpBase = new System.Windows.Forms.TabPage();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.prbProd = new System.Windows.Forms.ProgressBar();
-            this.btnProduce = new System.Windows.Forms.Button();
-            this.tbUpdateMsg = new System.Windows.Forms.TextBox();
+            this.panelAuclient = new System.Windows.Forms.Panel();
+            this.btnAuClientPub = new System.Windows.Forms.Button();
+            this.btnbtnAuClientSelect = new System.Windows.Forms.Button();
             this.tbVersion = new System.Windows.Forms.TextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.cbFilter = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.cbSubSystem = new System.Windows.Forms.ComboBox();
-            this.btnExpt = new System.Windows.Forms.Button();
+            this.gbPublish = new System.Windows.Forms.GroupBox();
             this.txtExpt = new System.Windows.Forms.TextBox();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.cbFilter = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnExpt = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.btnDir = new System.Windows.Forms.Button();
+            this.prbProd = new System.Windows.Forms.ProgressBar();
+            this.btnSrc = new System.Windows.Forms.Button();
+            this.tbUpdateMsg = new System.Windows.Forms.TextBox();
             this.btnDest = new System.Windows.Forms.Button();
             this.txtDest = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.btnDir = new System.Windows.Forms.Button();
-            this.btnSrc = new System.Windows.Forms.Button();
-            this.txtSrc = new System.Windows.Forms.TextBox();
+            this.btnProduce = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbSubSystem = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.txtSrc = new System.Windows.Forms.TextBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tbpControl = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -118,11 +122,9 @@
             this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gbPublish = new System.Windows.Forms.GroupBox();
-            this.btnbtnAuClientSelect = new System.Windows.Forms.Button();
-            this.btnAuClientPub = new System.Windows.Forms.Button();
-            this.panelAuclient = new System.Windows.Forms.Panel();
             this.tbpBase.SuspendLayout();
+            this.panelAuclient.SuspendLayout();
+            this.gbPublish.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tbpControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -153,8 +155,6 @@
             this.statusStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.cms_Disk.SuspendLayout();
-            this.gbPublish.SuspendLayout();
-            this.panelAuclient.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdExpt
@@ -239,6 +239,78 @@
             this.tbpBase.Text = "※基本信息";
             this.tbpBase.UseVisualStyleBackColor = true;
             // 
+            // panelAuclient
+            // 
+            this.panelAuclient.Controls.Add(this.btnAuClientPub);
+            this.panelAuclient.Controls.Add(this.btnbtnAuClientSelect);
+            this.panelAuclient.Location = new System.Drawing.Point(438, 38);
+            this.panelAuclient.Name = "panelAuclient";
+            this.panelAuclient.Size = new System.Drawing.Size(173, 28);
+            this.panelAuclient.TabIndex = 18;
+            this.panelAuclient.Visible = false;
+            // 
+            // btnAuClientPub
+            // 
+            this.btnAuClientPub.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnAuClientPub.Location = new System.Drawing.Point(90, 3);
+            this.btnAuClientPub.Name = "btnAuClientPub";
+            this.btnAuClientPub.Size = new System.Drawing.Size(79, 21);
+            this.btnAuClientPub.TabIndex = 17;
+            this.btnAuClientPub.Text = "发布";
+            this.btnAuClientPub.UseVisualStyleBackColor = true;
+            this.btnAuClientPub.Click += new System.EventHandler(this.btnAuClientPub_Click);
+            // 
+            // btnbtnAuClientSelect
+            // 
+            this.btnbtnAuClientSelect.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnbtnAuClientSelect.Location = new System.Drawing.Point(6, 3);
+            this.btnbtnAuClientSelect.Name = "btnbtnAuClientSelect";
+            this.btnbtnAuClientSelect.Size = new System.Drawing.Size(79, 21);
+            this.btnbtnAuClientSelect.TabIndex = 17;
+            this.btnbtnAuClientSelect.Text = "选择程序(&S)";
+            this.btnbtnAuClientSelect.UseVisualStyleBackColor = true;
+            this.btnbtnAuClientSelect.Click += new System.EventHandler(this.btnbtnAuClientSelect_Click);
+            // 
+            // tbVersion
+            // 
+            this.tbVersion.Location = new System.Drawing.Point(439, 71);
+            this.tbVersion.Name = "tbVersion";
+            this.tbVersion.Size = new System.Drawing.Size(172, 21);
+            this.tbVersion.TabIndex = 6;
+            this.tbVersion.TextChanged += new System.EventHandler(this.tbVersion_TextChanged);
+            // 
+            // gbPublish
+            // 
+            this.gbPublish.Controls.Add(this.txtExpt);
+            this.gbPublish.Controls.Add(this.btnExit);
+            this.gbPublish.Controls.Add(this.cbFilter);
+            this.gbPublish.Controls.Add(this.cbPackage);
+            this.gbPublish.Controls.Add(this.label3);
+            this.gbPublish.Controls.Add(this.btnExpt);
+            this.gbPublish.Controls.Add(this.label4);
+            this.gbPublish.Controls.Add(this.btnDir);
+            this.gbPublish.Controls.Add(this.prbProd);
+            this.gbPublish.Controls.Add(this.btnSrc);
+            this.gbPublish.Controls.Add(this.tbUpdateMsg);
+            this.gbPublish.Controls.Add(this.btnDest);
+            this.gbPublish.Controls.Add(this.txtDest);
+            this.gbPublish.Controls.Add(this.btnProduce);
+            this.gbPublish.Location = new System.Drawing.Point(3, 95);
+            this.gbPublish.Name = "gbPublish";
+            this.gbPublish.Size = new System.Drawing.Size(832, 399);
+            this.gbPublish.TabIndex = 16;
+            this.gbPublish.TabStop = false;
+            this.gbPublish.Visible = false;
+            // 
+            // txtExpt
+            // 
+            this.txtExpt.Location = new System.Drawing.Point(95, 67);
+            this.txtExpt.Multiline = true;
+            this.txtExpt.Name = "txtExpt";
+            this.txtExpt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtExpt.Size = new System.Drawing.Size(455, 124);
+            this.txtExpt.TabIndex = 8;
+            // 
             // btnExit
             // 
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -249,51 +321,6 @@
             this.btnExit.Text = "退出(&X)";
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // prbProd
-            // 
-            this.prbProd.Location = new System.Drawing.Point(94, 368);
-            this.prbProd.Name = "prbProd";
-            this.prbProd.Size = new System.Drawing.Size(370, 23);
-            this.prbProd.TabIndex = 2;
-            this.prbProd.Visible = false;
-            // 
-            // btnProduce
-            // 
-            this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnProduce.Location = new System.Drawing.Point(478, 368);
-            this.btnProduce.Name = "btnProduce";
-            this.btnProduce.Size = new System.Drawing.Size(60, 23);
-            this.btnProduce.TabIndex = 14;
-            this.btnProduce.Text = "生成(&G)";
-            this.btnProduce.UseVisualStyleBackColor = true;
-            this.btnProduce.Click += new System.EventHandler(this.btnProduce_Click);
-            // 
-            // tbUpdateMsg
-            // 
-            this.tbUpdateMsg.Location = new System.Drawing.Point(94, 219);
-            this.tbUpdateMsg.Multiline = true;
-            this.tbUpdateMsg.Name = "tbUpdateMsg";
-            this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbUpdateMsg.Size = new System.Drawing.Size(514, 143);
-            this.tbUpdateMsg.TabIndex = 13;
-            this.tbUpdateMsg.Text = "更新说明：";
-            // 
-            // tbVersion
-            // 
-            this.tbVersion.Location = new System.Drawing.Point(439, 71);
-            this.tbVersion.Name = "tbVersion";
-            this.tbVersion.Size = new System.Drawing.Size(172, 21);
-            this.tbVersion.TabIndex = 6;
-            this.tbVersion.TextChanged += new System.EventHandler(this.tbVersion_TextChanged);
-            // 
-            // panel2
-            // 
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(3, 455);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(968, 39);
-            this.panel2.TabIndex = 4;
             // 
             // cbFilter
             // 
@@ -307,23 +334,14 @@
             this.cbFilter.Text = "过滤文件(*.log,*.config,*.db,*.dat,unins000.*)";
             this.cbFilter.UseVisualStyleBackColor = true;
             // 
-            // label6
+            // label3
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(31, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(59, 12);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "升级类型:";
-            // 
-            // cbSubSystem
-            // 
-            this.cbSubSystem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbSubSystem.FormattingEnabled = true;
-            this.cbSubSystem.Location = new System.Drawing.Point(98, 42);
-            this.cbSubSystem.Name = "cbSubSystem";
-            this.cbSubSystem.Size = new System.Drawing.Size(336, 20);
-            this.cbSubSystem.TabIndex = 2;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(29, 196);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 12);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "保存位置:";
             // 
             // btnExpt
             // 
@@ -336,15 +354,6 @@
             this.btnExpt.UseVisualStyleBackColor = true;
             this.btnExpt.Click += new System.EventHandler(this.btnExpt_Click);
             // 
-            // txtExpt
-            // 
-            this.txtExpt.Location = new System.Drawing.Point(95, 67);
-            this.txtExpt.Multiline = true;
-            this.txtExpt.Name = "txtExpt";
-            this.txtExpt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtExpt.Size = new System.Drawing.Size(455, 124);
-            this.txtExpt.TabIndex = 8;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -353,6 +362,46 @@
             this.label4.Size = new System.Drawing.Size(59, 12);
             this.label4.TabIndex = 6;
             this.label4.Text = "排除文件:";
+            // 
+            // btnDir
+            // 
+            this.btnDir.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDir.Location = new System.Drawing.Point(195, 14);
+            this.btnDir.Name = "btnDir";
+            this.btnDir.Size = new System.Drawing.Size(79, 21);
+            this.btnDir.TabIndex = 4;
+            this.btnDir.Text = "选择目录(&D)";
+            this.btnDir.UseVisualStyleBackColor = true;
+            this.btnDir.Click += new System.EventHandler(this.btnDir_Click);
+            // 
+            // prbProd
+            // 
+            this.prbProd.Location = new System.Drawing.Point(94, 368);
+            this.prbProd.Name = "prbProd";
+            this.prbProd.Size = new System.Drawing.Size(370, 23);
+            this.prbProd.TabIndex = 2;
+            this.prbProd.Visible = false;
+            // 
+            // btnSrc
+            // 
+            this.btnSrc.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnSrc.Location = new System.Drawing.Point(95, 14);
+            this.btnSrc.Name = "btnSrc";
+            this.btnSrc.Size = new System.Drawing.Size(79, 21);
+            this.btnSrc.TabIndex = 3;
+            this.btnSrc.Text = "选择程序(&S)";
+            this.btnSrc.UseVisualStyleBackColor = true;
+            this.btnSrc.Click += new System.EventHandler(this.btnSrc_Click);
+            // 
+            // tbUpdateMsg
+            // 
+            this.tbUpdateMsg.Location = new System.Drawing.Point(94, 219);
+            this.tbUpdateMsg.Multiline = true;
+            this.tbUpdateMsg.Name = "tbUpdateMsg";
+            this.tbUpdateMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbUpdateMsg.Size = new System.Drawing.Size(514, 143);
+            this.tbUpdateMsg.TabIndex = 13;
+            this.tbUpdateMsg.Text = "更新说明：";
             // 
             // btnDest
             // 
@@ -372,43 +421,42 @@
             this.txtDest.Size = new System.Drawing.Size(402, 21);
             this.txtDest.TabIndex = 10;
             // 
-            // label3
+            // btnProduce
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(29, 196);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "保存位置:";
+            this.btnProduce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnProduce.Location = new System.Drawing.Point(478, 368);
+            this.btnProduce.Name = "btnProduce";
+            this.btnProduce.Size = new System.Drawing.Size(60, 23);
+            this.btnProduce.TabIndex = 14;
+            this.btnProduce.Text = "生成(&G)";
+            this.btnProduce.UseVisualStyleBackColor = true;
+            this.btnProduce.Click += new System.EventHandler(this.btnProduce_Click);
             // 
-            // btnDir
+            // panel2
             // 
-            this.btnDir.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDir.Location = new System.Drawing.Point(195, 14);
-            this.btnDir.Name = "btnDir";
-            this.btnDir.Size = new System.Drawing.Size(79, 21);
-            this.btnDir.TabIndex = 4;
-            this.btnDir.Text = "选择目录(&D)";
-            this.btnDir.UseVisualStyleBackColor = true;
-            this.btnDir.Click += new System.EventHandler(this.btnDir_Click);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(3, 455);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(968, 39);
+            this.panel2.TabIndex = 4;
             // 
-            // btnSrc
+            // label6
             // 
-            this.btnSrc.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSrc.Location = new System.Drawing.Point(95, 14);
-            this.btnSrc.Name = "btnSrc";
-            this.btnSrc.Size = new System.Drawing.Size(79, 21);
-            this.btnSrc.TabIndex = 3;
-            this.btnSrc.Text = "选择程序(&S)";
-            this.btnSrc.UseVisualStyleBackColor = true;
-            this.btnSrc.Click += new System.EventHandler(this.btnSrc_Click);
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(31, 45);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(59, 12);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "升级类型:";
             // 
-            // txtSrc
+            // cbSubSystem
             // 
-            this.txtSrc.Location = new System.Drawing.Point(97, 71);
-            this.txtSrc.Name = "txtSrc";
-            this.txtSrc.Size = new System.Drawing.Size(336, 21);
-            this.txtSrc.TabIndex = 5;
+            this.cbSubSystem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbSubSystem.FormattingEnabled = true;
+            this.cbSubSystem.Location = new System.Drawing.Point(98, 42);
+            this.cbSubSystem.Name = "cbSubSystem";
+            this.cbSubSystem.Size = new System.Drawing.Size(336, 20);
+            this.cbSubSystem.TabIndex = 2;
             // 
             // label2
             // 
@@ -418,6 +466,13 @@
             this.label2.Size = new System.Drawing.Size(47, 12);
             this.label2.TabIndex = 0;
             this.label2.Text = "主程序:";
+            // 
+            // txtSrc
+            // 
+            this.txtSrc.Location = new System.Drawing.Point(97, 71);
+            this.txtSrc.Name = "txtSrc";
+            this.txtSrc.Size = new System.Drawing.Size(336, 21);
+            this.txtSrc.TabIndex = 5;
             // 
             // tabControlMain
             // 
@@ -1108,61 +1163,6 @@
             this.RefreshToolStripMenuItem.Text = "刷新";
             this.RefreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
             // 
-            // gbPublish
-            // 
-            this.gbPublish.Controls.Add(this.txtExpt);
-            this.gbPublish.Controls.Add(this.btnExit);
-            this.gbPublish.Controls.Add(this.cbFilter);
-            this.gbPublish.Controls.Add(this.cbPackage);
-            this.gbPublish.Controls.Add(this.label3);
-            this.gbPublish.Controls.Add(this.btnExpt);
-            this.gbPublish.Controls.Add(this.label4);
-            this.gbPublish.Controls.Add(this.btnDir);
-            this.gbPublish.Controls.Add(this.prbProd);
-            this.gbPublish.Controls.Add(this.btnSrc);
-            this.gbPublish.Controls.Add(this.tbUpdateMsg);
-            this.gbPublish.Controls.Add(this.btnDest);
-            this.gbPublish.Controls.Add(this.txtDest);
-            this.gbPublish.Controls.Add(this.btnProduce);
-            this.gbPublish.Location = new System.Drawing.Point(3, 95);
-            this.gbPublish.Name = "gbPublish";
-            this.gbPublish.Size = new System.Drawing.Size(832, 399);
-            this.gbPublish.TabIndex = 16;
-            this.gbPublish.TabStop = false;
-            this.gbPublish.Visible = false;
-            // 
-            // btnbtnAuClientSelect
-            // 
-            this.btnbtnAuClientSelect.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnbtnAuClientSelect.Location = new System.Drawing.Point(6, 3);
-            this.btnbtnAuClientSelect.Name = "btnbtnAuClientSelect";
-            this.btnbtnAuClientSelect.Size = new System.Drawing.Size(79, 21);
-            this.btnbtnAuClientSelect.TabIndex = 17;
-            this.btnbtnAuClientSelect.Text = "选择程序(&S)";
-            this.btnbtnAuClientSelect.UseVisualStyleBackColor = true;
-            this.btnbtnAuClientSelect.Click += new System.EventHandler(this.btnbtnAuClientSelect_Click);
-            // 
-            // btnAuClientPub
-            // 
-            this.btnAuClientPub.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnAuClientPub.Location = new System.Drawing.Point(90, 3);
-            this.btnAuClientPub.Name = "btnAuClientPub";
-            this.btnAuClientPub.Size = new System.Drawing.Size(79, 21);
-            this.btnAuClientPub.TabIndex = 17;
-            this.btnAuClientPub.Text = "发布";
-            this.btnAuClientPub.UseVisualStyleBackColor = true;
-            this.btnAuClientPub.Click += new System.EventHandler(this.btnAuClientPub_Click);
-            // 
-            // panelAuclient
-            // 
-            this.panelAuclient.Controls.Add(this.btnAuClientPub);
-            this.panelAuclient.Controls.Add(this.btnbtnAuClientSelect);
-            this.panelAuclient.Location = new System.Drawing.Point(438, 38);
-            this.panelAuclient.Name = "panelAuclient";
-            this.panelAuclient.Size = new System.Drawing.Size(173, 28);
-            this.panelAuclient.TabIndex = 18;
-            this.panelAuclient.Visible = false;
-            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1171,6 +1171,7 @@
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "AuWriterForm";
             this.Text = "E7升级包发布服务器";
@@ -1178,6 +1179,9 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tbpBase.ResumeLayout(false);
             this.tbpBase.PerformLayout();
+            this.panelAuclient.ResumeLayout(false);
+            this.gbPublish.ResumeLayout(false);
+            this.gbPublish.PerformLayout();
             this.tabControlMain.ResumeLayout(false);
             this.tbpControl.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -1217,9 +1221,6 @@
             this.statusStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
             this.cms_Disk.ResumeLayout(false);
-            this.gbPublish.ResumeLayout(false);
-            this.gbPublish.PerformLayout();
-            this.panelAuclient.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
