@@ -239,10 +239,12 @@ namespace AuWriter
             this.cbSubSystem_SelectedIndexChanged(cbSubSystem, EventArgs.Empty);
             this.txtUrl.Text = BaseUpdatePath;
             InitAuPublishs();
-            string url = "http://localhost:12345";
-            var nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(url), new MyBootstrapper());
+
             try
             {
+                Uri pub = new Uri(this.BaseUpdatePath);
+                string url = "http://localhost:" + pub.Port;
+                var nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(url), new MyBootstrapper());
                 nancySelfHost.Start();
                 Console.WriteLine("NancySelfHost已启动。。");
                 //System.Diagnostics.Process.Start(url);
@@ -251,6 +253,7 @@ namespace AuWriter
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                MessageBox.Show(ex.Message);
             }
 
             AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);

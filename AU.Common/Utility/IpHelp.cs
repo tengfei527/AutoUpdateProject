@@ -138,5 +138,24 @@ namespace AU.Common.Utility
                 return false;
             }
         }
+        /// <summary>
+        /// 验证 IPEndPoint 合法性
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public static bool IsValidIPEndPoint(string address)
+        {
+            string[] p = address.Split(':');
+            if (p.Length < 2)
+                return false;
+            IPAddress ip;
+            if (!IPAddress.TryParse(p[0], out ip))
+                return false;
+            int port;
+            if (!int.TryParse(p[1], out port))
+                return false;
+
+            return true;
+        }
     }
 }

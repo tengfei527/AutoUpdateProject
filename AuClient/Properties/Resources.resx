@@ -117,13 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="App" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\App.config;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ApplicationConfig" xml:space="preserve">
+    <value>AuWizard.exe</value>
+    <comment>系统配置</comment>
+  </data>
   <data name="ApplicationService" xml:space="preserve">
     <value>AuUpdate.exe</value>
     <comment>系统升级服务</comment>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AuUpdate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AuUpdate.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AuWizard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AuWizard.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="MaxConnectionNumber" xml:space="preserve">
     <value>10000</value>

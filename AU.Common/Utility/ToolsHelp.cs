@@ -185,13 +185,30 @@ namespace AU.Common.Utility
         /// 关闭主应用程序
         /// </summary>
         /// <param name="applicationName"></param>
+        public static void CloseApplication(string applicationName, int id)
+        {
+            applicationName = applicationName.ToLower();
+            System.Diagnostics.Process[] allProcess = System.Diagnostics.Process.GetProcesses();
+            foreach (System.Diagnostics.Process p in allProcess)
+            {
+                if (p.Id != id && p.ProcessName.ToLower() + ".exe" == applicationName)
+                {
+                    for (int i = 0; i < p.Threads.Count; i++)
+                        p.Threads[i].Dispose();
+                    p.Kill();
+                }
+            }
+        }
+        /// <summary>
+        /// 关闭主应用程序
+        /// </summary>
+        /// <param name="applicationName"></param>
         public static void CloseApplication(string applicationName)
         {
             applicationName = applicationName.ToLower();
             System.Diagnostics.Process[] allProcess = System.Diagnostics.Process.GetProcesses();
             foreach (System.Diagnostics.Process p in allProcess)
             {
-
                 if (p.ProcessName.ToLower() + ".exe" == applicationName)
                 {
                     for (int i = 0; i < p.Threads.Count; i++)
@@ -199,6 +216,36 @@ namespace AU.Common.Utility
                     p.Kill();
                 }
             }
+        }
+
+        /// <summary>
+        /// CreateApplication
+        /// </summary>
+        /// <param name="path"></param>
+        public static bool CreateApplication(string path)
+        {
+            try
+            {
+                var process = System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(path));
+                if (process.Length == 0 && System.IO.File.Exists(path))
+                {
+
+                    System.Diagnostics.ProcessStartInfo processInfo = new System.Diagnostics.ProcessStartInfo();
+                    processInfo.FileName = path;
+                    //processInfo.Verb = "runas";
+                    processInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
+                    processInfo.UseShellExecute = false;
+                    //processInfo.CreateNoWindow = true;
+                    var proc = System.Diagnostics.Process.Start(processInfo);
+                    return true;
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return false;
         }
 
         /// <summary>

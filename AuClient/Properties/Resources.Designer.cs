@@ -61,6 +61,31 @@ namespace AuClient.Properties {
         }
         
         /// <summary>
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;configuration&gt;
+        ///  &lt;configSections&gt;
+        ///    &lt;section name=&quot;superSocket&quot; type=&quot;SuperSocket.SocketEngine.Configuration.SocketServiceConfig, SuperSocket.SocketEngine&quot; /&gt;
+        ///  &lt;/configSections&gt;
+        ///  &lt;superSocket xmlns=&quot;http://schema.supersocket.net/supersocket&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://schema.supersocket.net/supersocket http://schema.supersocket.net/v1-7/supersocket.xsd&quot;&gt;
+        ///    &lt;servers&gt;
+        ///      &lt;server name=&quot;MonitorServer&quot; s [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string App {
+            get {
+                return ResourceManager.GetString("App", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 AuWizard.exe 的本地化字符串。
+        /// </summary>
+        internal static string ApplicationConfig {
+            get {
+                return ResourceManager.GetString("ApplicationConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 AuUpdate.exe 的本地化字符串。
         /// </summary>
         internal static string ApplicationService {
@@ -75,6 +100,16 @@ namespace AuClient.Properties {
         internal static byte[] AuUpdate {
             get {
                 object obj = ResourceManager.GetObject("AuUpdate", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] AuWizard {
+            get {
+                object obj = ResourceManager.GetObject("AuWizard", resourceCulture);
                 return ((byte[])(obj));
             }
         }
