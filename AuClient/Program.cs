@@ -19,7 +19,7 @@ namespace AuClient
                     {
                         try
                         {
-                            AU.Common.Utility.ToolsHelp.CloseApplication("AuClient", System.Threading.Thread.CurrentThread.ManagedThreadId);
+                            AU.Common.Utility.ToolsHelp.CloseApplication("AuClient.exe", System.Diagnostics.Process.GetCurrentProcess().Id);
 
                         }
                         catch
