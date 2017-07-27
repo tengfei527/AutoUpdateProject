@@ -545,7 +545,19 @@ namespace AuWriter
 
         private void cbSubSystem_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.BaseUpdatePath = Path.Combine(System.Configuration.ConfigurationManager.AppSettings["UpdateUrl"] ?? "", cbSubSystem.SelectedValue.ToString()) + "/";
+            int port;
+            try
+            {
+                port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["UpdatePort"]);
+            }
+            catch
+            {
+                port = 52706;
+            }
+
+
+            string url = string.Format("http://{0}:{1}/package/", AU.Common.Utility.IpHelp.GetLocalIP(), port);
+            this.BaseUpdatePath = Path.Combine(url, cbSubSystem.SelectedValue.ToString()) + "/";
             this.txtUrl.Text = this.BaseUpdatePath;
             this.SubSystem = cbSubSystem.SelectedValue.ToString();
 
