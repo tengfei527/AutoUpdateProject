@@ -10,8 +10,28 @@ namespace AuWriter
         /// 应用程序的主入口点。
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(params string[] args)
         {
+            switch (args?.Length > 0 ? args[0].ToLower() : "")
+            {
+                case "-u":
+                case "/u":
+                    {
+                        try
+                        {
+                            AU.Common.Utility.ToolsHelp.CloseApplication("AuWriter.exe", System.Diagnostics.Process.GetCurrentProcess().Id);
+
+                        }
+                        catch
+                        {
+
+                        }
+                        return;
+                    }
+                default:
+                    break;
+            }
+
             bool isRuned;
             System.Threading.Mutex mutex = new System.Threading.Mutex(true, typeof(AuWriterForm).FullName, out isRuned);
             if (isRuned)

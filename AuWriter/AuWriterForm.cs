@@ -1566,8 +1566,10 @@ namespace AuWriter
 
         private void AuWriterForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("退出本程序将影响系统消息服务，您确定退出吗？", "系统提示", buttons: MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+            if (MessageBox.Show("退出本程序将影响系统自动更新服务，您确定退出吗？", "系统提示", buttons: MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+            {
                 e.Cancel = true;
+            }
             else
             {
                 return;
