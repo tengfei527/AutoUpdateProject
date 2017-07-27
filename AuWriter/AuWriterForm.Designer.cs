@@ -122,6 +122,7 @@
             this.DeleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.tbpBase.SuspendLayout();
             this.panelAuclient.SuspendLayout();
             this.gbPublish.SuspendLayout();
@@ -1163,6 +1164,16 @@
             this.RefreshToolStripMenuItem.Text = "刷新";
             this.RefreshToolStripMenuItem.Click += new System.EventHandler(this.RefreshToolStripMenuItem_Click);
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon1.BalloonTipText = "管理界面已隐藏，可点击小图标可显示管理器控制面板！";
+            this.notifyIcon1.BalloonTipTitle = "E7 升级包发布服务器";
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "E7 升级包发布服务器";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
+            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1176,7 +1187,9 @@
             this.Name = "AuWriterForm";
             this.Text = "E7升级包发布服务器";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AuWriterForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.SizeChanged += new System.EventHandler(this.AuWriterForm_SizeChanged);
             this.tbpBase.ResumeLayout(false);
             this.tbpBase.PerformLayout();
             this.panelAuclient.ResumeLayout(false);
@@ -1320,6 +1333,7 @@
         private System.Windows.Forms.Button btnAuClientPub;
         private System.Windows.Forms.Button btnbtnAuClientSelect;
         private System.Windows.Forms.Panel panelAuclient;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 

@@ -1548,5 +1548,49 @@ namespace AuWriter
                 MessageBox.Show("发布失败，详情：" + ex.Message);
             }
         }
+
+
+        private bool FormMaximized = false;
+        bool flag = true;
+        /// <summary>
+        /// 图标显示时间
+        /// </summary>
+        public int ToolTipShowTime = 100;
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            flag = false;
+            this.WindowState = FormWindowState.Minimized;
+            this.Show();
+            this.WindowState = FormMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
+        }
+
+        private void AuWriterForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("退出本程序将影响系统消息服务，您确定退出吗？", "系统提示", buttons: MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                e.Cancel = true;
+            else
+            {
+                return;
+            }
+        }
+
+        private void AuWriterForm_SizeChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+                if (flag)
+                    this.notifyIcon1.ShowBalloonTip(ToolTipShowTime);
+            }
+            else if (this.WindowState == FormWindowState.Maximized)
+            {
+                FormMaximized = true;
+            }
+            else
+            {
+                FormMaximized = false;
+            }
+            flag = true;
+        }
     }
 }
