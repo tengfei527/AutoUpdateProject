@@ -229,7 +229,7 @@ namespace AuWriter
         private void Form1_Load(object sender, EventArgs e)
         {
             cmbCmd.DataSource = DicCmdType.Keys.ToList();
-
+            tabControlMain.TabPages.Remove(tbpOpt);
             BindingSource bs = new BindingSource();
             bs.DataSource = AU.Common.SubSystem.Dic;
             this.cbSubSystem.DataSource = bs;
@@ -273,243 +273,274 @@ namespace AuWriter
         #region [生成文件]
         private void btnProduce_Click(object sender, EventArgs e)
         {
-            //建立新线程
-            Thread thrdProduce = new Thread(new ThreadStart(WriterAUPackage));
+            
 
-            if (this.btnProduce.Text == "生成(&G)")
+            try
             {
+                //建立新线程
+                Thread thrdProduce = new Thread(new ThreadStart(WriterAUPackage));
 
-                #region [检测基本条件]
-
-                //if (!File.Exists(this.txtSrc.Text))
-                //{
-                //    MessageBox.Show(this, "请选择主入口程序!", "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //    this.btnSrc_Click(sender, e);
-                //}
-
-                #region [请输入自动更新网址]
-
-                if (this.txtUrl.Text.Trim().Length == 0)
+                if (this.btnProduce.Text == "生成(&G)")
                 {
-                    MessageBox.Show(this, "请输入自动更新网址!", "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.txtUrl.Focus();
+                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"\d+.\d.+\d.+\d", System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace);
 
-                    return;
-                }
-
-
-                #endregion [请输入自动更新网址]
-
-                if (this.txtDest.Text.Trim() == string.Empty)
-                {
-                    MessageBox.Show(this, "请选择AutoUpdaterList保存位置!", "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.btnDest_Click(sender, e);
-                }
-
-                #endregion [检测基本条件]
-
-                #region [新线程写文件]
-
-                thrdProduce.IsBackground = true;
-                thrdProduce.Start();
-
-                #endregion [新线程写文件]
-                cbPackage.Enabled = false;
-                this.btnProduce.Text = "停止(&S)";
-            }
-            else
-            {
-                Application.DoEvents();
-                if (MessageBox.Show(this, "是否停止文件生成更新文件?", "AutoUpdater", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    //thrdProduce.Interrupt();
-                    //thrdProduce.Abort();
-                    if (thrdProduce.IsAlive)
+                    if (rg.IsMatch(tbVersion.Text))
                     {
-                        thrdProduce.Abort();
-                        thrdProduce.Join();
+                        this.PublishVersion = tbVersion.Text.Trim();
                     }
-                    cbPackage.Enabled = true;
-                    this.btnProduce.Text = "生成(&G)";
+                    else
+                    {
+                        MessageBox.Show("输入版本号格式不正确，请重新输入！");
+                        this.tbVersion.Focus();
+                        return;
+                    }
+
+                    #region [检测基本条件]
+
+                    //if (!File.Exists(this.txtSrc.Text))
+                    //{
+                    //    MessageBox.Show(this, "请选择主入口程序!", "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //    this.btnSrc_Click(sender, e);
+                    //}
+
+                    #region [请输入自动更新网址]
+
+                    if (this.txtUrl.Text.Trim().Length == 0)
+                    {
+                        MessageBox.Show(this, "请输入自动更新网址!", "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.txtUrl.Focus();
+
+                        return;
+                    }
+
+
+                    #endregion [请输入自动更新网址]
+
+                    if (this.txtDest.Text.Trim() == string.Empty)
+                    {
+                        MessageBox.Show(this, "请选择AutoUpdaterList保存位置!", "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.btnDest_Click(sender, e);
+                    }
+
+                    #endregion [检测基本条件]
+
+                    #region [新线程写文件]
+
+                    thrdProduce.IsBackground = true;
+                    thrdProduce.Start();
+
+                    #endregion [新线程写文件]
+                    cbPackage.Enabled = false;
+                    this.btnProduce.Text = "停止(&S)";
                 }
+                else
+                {
+                    Application.DoEvents();
+                    if (MessageBox.Show(this, "是否停止文件生成更新文件?", "AutoUpdater", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        //thrdProduce.Interrupt();
+                        //thrdProduce.Abort();
+                        if (thrdProduce.IsAlive)
+                        {
+                            thrdProduce.Abort();
+                            thrdProduce.Join();
+                        }
+                        cbPackage.Enabled = true;
+                        this.btnProduce.Text = "生成(&G)";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("生成失败，详情：" + ex.Message);
             }
         }
 
         #region [写AutoUpdaterList]
         void WriterAUPackage()
         {
-            #region [WriterAUPackage]
-            //包保存位置
-            string strFilePath = this.txtDest.Text.Trim();
-
-            AU.Common.AuList aulist = new AU.Common.AuList();
-            //aulist.Url = this.txtUrl.Text.Trim();
-
-            #region [application]
-            string strEntryPoint = "";
-            string dr = "";
-            //入口函数
-            if (this.IsSelectFile)
+            try
             {
-                FileVersionInfo m_fvi = FileVersionInfo.GetVersionInfo(this.txtSrc.Text);
-                aulist.Application.Version = string.Format("{0}.{1}.{2}.{3}", m_fvi.FileMajorPart, m_fvi.FileMinorPart, m_fvi.FileBuildPart, m_fvi.FilePrivatePart);
-                strEntryPoint = this.txtSrc.Text.Trim().Substring(this.txtSrc.Text.Trim().LastIndexOf(@"\") + 1, this.txtSrc.Text.Trim().Length - this.txtSrc.Text.Trim().LastIndexOf(@"\") - 1);
-                if (strEntryPoint.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
+                #region [WriterAUPackage]
+                //包保存位置
+                string strFilePath = this.txtDest.Text.Trim();
+
+                AU.Common.AuList aulist = new AU.Common.AuList();
+                //aulist.Url = this.txtUrl.Text.Trim();
+
+                #region [application]
+                string strEntryPoint = "";
+                string dr = "";
+                //入口函数
+                if (this.IsSelectFile)
                 {
-                    //入口点
-                    aulist.Application.EntryPoint = strEntryPoint;
-                    aulist.Application.StartType = 1;
-                }
-                aulist.Application.ApplicationId = strEntryPoint;
-                dr = this.txtSrc.Text.Substring(0, this.txtSrc.Text.LastIndexOf(@"\"));
-                aulist.Application.Location = ".";
-            }
-            else
-            {
-                dr = this.txtSrc.Text;
-                aulist.Application.Version = this.PublishVersion;
-                if (SubSystem == AU.Common.SystemType.coreserver.ToString())
-                {
-                    if (File.Exists(dr + "\\Manage\\OneCardSystem.SyncTokenControl.exe"))
+                    FileVersionInfo m_fvi = FileVersionInfo.GetVersionInfo(this.txtSrc.Text);
+                    aulist.Application.Version = string.Format("{0}.{1}.{2}.{3}", m_fvi.FileMajorPart, m_fvi.FileMinorPart, m_fvi.FileBuildPart, m_fvi.FilePrivatePart);
+                    strEntryPoint = this.txtSrc.Text.Trim().Substring(this.txtSrc.Text.Trim().LastIndexOf(@"\") + 1, this.txtSrc.Text.Trim().Length - this.txtSrc.Text.Trim().LastIndexOf(@"\") - 1);
+                    if (strEntryPoint.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.SyncTokenControl.exe";
+                        //入口点
+                        aulist.Application.EntryPoint = strEntryPoint;
                         aulist.Application.StartType = 1;
-                        aulist.Application.StartArgs = "-m";
-                        aulist.Application.CloseType = 1;
-                        aulist.Application.CloseArgs = "-u";
-                        aulist.Application.Location = ".\\Manage\\";
                     }
-                }
-                else if (SubSystem == AU.Common.SystemType.vmsclient.ToString())
-                {
-                    aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.VehicleManageWPF.exe";
-                    aulist.Application.StartType = 1;
-                    aulist.Application.StartArgs = "";
-                    aulist.Application.CloseType = 0;
-                    aulist.Application.CloseArgs = "";
+                    aulist.Application.ApplicationId = strEntryPoint;
+                    dr = this.txtSrc.Text.Substring(0, this.txtSrc.Text.LastIndexOf(@"\"));
                     aulist.Application.Location = ".";
                 }
-            }
-
-            aulist.No = Guid.NewGuid().ToString();
-            aulist.Description = tbUpdateMsg.Text;
-            aulist.LastUpdateTime = DateTime.Now;
-
-            #endregion [application]
-
-            #region [Files]
-            StringCollection strColl = AU.Common.Utility.ToolsHelp.GetAllFiles(dr);
-
-            this.Invoke((MethodInvoker)delegate ()
-            {
-                this.prbProd.Visible = true;
-                this.prbProd.Minimum = 0;
-                this.prbProd.Maximum = strColl.Count;
-            });
-            System.Security.Cryptography.SHA256 sha256 = new System.Security.Cryptography.SHA256Managed();
-            string rootDir = dr + @"\";
-            for (int i = 0; i < strColl.Count; i++)
-            {
-                if (!CheckExist(strColl[i].Trim()))
+                else
                 {
-                    string path = strColl[i].ToString();
-                    FileVersionInfo f_fvi = FileVersionInfo.GetVersionInfo(path);
-                    AU.Common.AuFile aufile = new AU.Common.AuFile();
-
-                    //写目录
-                    aufile.WritePath = aufile.No = @strColl[i].Replace(@rootDir, "");
-                    if (path.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
+                    dr = this.txtSrc.Text;
+                    aulist.Application.Version = this.PublishVersion;
+                    if (SubSystem == AU.Common.SystemType.coreserver.ToString())
                     {
-                        aufile.FileType = 1;
+                        if (File.Exists(dr + "\\Manage\\OneCardSystem.SyncTokenControl.exe"))
+                        {
+                            aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.SyncTokenControl.exe";
+                            aulist.Application.StartType = 1;
+                            aulist.Application.StartArgs = "-m";
+                            aulist.Application.CloseType = 1;
+                            aulist.Application.CloseArgs = "-u";
+                            aulist.Application.Location = ".\\Manage\\";
+                        }
                     }
-                    else if (path.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase))
+                    else if (SubSystem == AU.Common.SystemType.vmsclient.ToString())
                     {
-                        aufile.FileType = 0;
-                    }
-                    else if (path.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        aufile.FileType = 2;
-                    }
-                    else
-                    {
-                        aufile.FileType = 4;
-                    }
-                    //aufile.RunTime
-                    aufile.SHA256 = AU.Common.Utility.ToolsHelp.ComputeSHA256(path);
-                    aufile.Version = string.Format("{0}.{1}.{2}.{3}", f_fvi.FileMajorPart, f_fvi.FileMinorPart, f_fvi.FileBuildPart, f_fvi.FilePrivatePart);
-                    aulist.Files.Add(aufile);
-                    if (aufile.Version == "0.0.0.0")
-                        aufile.Version = this.PublishVersion;
-                    //打包复制临时目录
-                    if (IsPackage)
-                    {
-                        string destpath = Path.Combine(PackageTempPath, path.Replace(dr, "").TrimStart('\\'));
-                        AU.Common.Utility.ToolsHelp.CreateDirtory(destpath);
-                        File.Copy(path, destpath);
+                        aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.VehicleManageWPF.exe";
+                        aulist.Application.StartType = 1;
+                        aulist.Application.StartArgs = "";
+                        aulist.Application.CloseType = 0;
+                        aulist.Application.CloseArgs = "";
+                        aulist.Application.Location = ".";
                     }
                 }
+
+                aulist.No = Guid.NewGuid().ToString();
+                aulist.Description = tbUpdateMsg.Text;
+                aulist.LastUpdateTime = DateTime.Now;
+
+                #endregion [application]
+
+                #region [Files]
+                StringCollection strColl = AU.Common.Utility.ToolsHelp.GetAllFiles(dr);
+
                 this.Invoke((MethodInvoker)delegate ()
                 {
-                    this.prbProd.Value = i;
+                    this.prbProd.Visible = true;
+                    this.prbProd.Minimum = 0;
+                    this.prbProd.Maximum = strColl.Count;
+                });
+                System.Security.Cryptography.SHA256 sha256 = new System.Security.Cryptography.SHA256Managed();
+                string rootDir = dr + @"\";
+                for (int i = 0; i < strColl.Count; i++)
+                {
+                    if (!CheckExist(strColl[i].Trim()))
+                    {
+                        string path = strColl[i].ToString();
+                        FileVersionInfo f_fvi = FileVersionInfo.GetVersionInfo(path);
+                        AU.Common.AuFile aufile = new AU.Common.AuFile();
+
+                        //写目录
+                        aufile.WritePath = aufile.No = @strColl[i].Replace(@rootDir, "");
+                        if (path.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            aufile.FileType = 1;
+                        }
+                        else if (path.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            aufile.FileType = 0;
+                        }
+                        else if (path.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            aufile.FileType = 2;
+                        }
+                        else
+                        {
+                            aufile.FileType = 4;
+                        }
+                        //aufile.RunTime
+                        aufile.SHA256 = AU.Common.Utility.ToolsHelp.ComputeSHA256(path);
+                        aufile.Version = string.Format("{0}.{1}.{2}.{3}", f_fvi.FileMajorPart, f_fvi.FileMinorPart, f_fvi.FileBuildPart, f_fvi.FilePrivatePart);
+                        aulist.Files.Add(aufile);
+                        if (aufile.Version == "0.0.0.0")
+                            aufile.Version = this.PublishVersion;
+                        //打包复制临时目录
+                        if (IsPackage)
+                        {
+                            string destpath = Path.Combine(PackageTempPath, path.Replace(dr, "").TrimStart('\\'));
+                            AU.Common.Utility.ToolsHelp.CreateDirtory(destpath);
+                            File.Copy(path, destpath, true);
+                        }
+                    }
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        this.prbProd.Value = i;
+                    });
+                }
+                #endregion [Files]
+                StreamWriter sw = new StreamWriter(strFilePath, false, System.Text.Encoding.UTF8);
+                sw.Write(Newtonsoft.Json.JsonConvert.SerializeObject(aulist));
+                sw.Close();
+                #region 打包
+                string mesg = this.txtDest.Text.Trim();
+                if (IsPackage)
+                {
+                    string packagename = aulist.Application.Version + ".aup";
+                    mesg = Path.Combine(UpdatePackagePath + "\\" + this.SubSystem + "\\", packagename);
+                    AU.Common.Utility.ZipUtility.Compress(PackageTempPath, mesg);
+                    string aupublish = UpdatePackagePath + "\\" + this.SubSystem + "\\aupublish.json";
+                    string No = "1";
+                    if (System.IO.File.Exists(aupublish))
+                    {
+                        No = (Convert.ToInt32(AU.Common.AppPublish.ReadPackage(aupublish).No) + 1).ToString();
+                    }
+                    AU.Common.AuPublish auPublish = new AU.Common.AuPublish()
+                    {
+                        No = No,
+                        Description = "发布更新" + packagename,
+                        Url = BaseUpdatePath,
+                        DownPath = packagename,
+                        LastUpdateTime = DateTime.Now,
+                        PublishType = AU.Common.SubSystem.DicPublishType[this.SubSystem],
+                        SHA256 = AU.Common.Utility.ToolsHelp.ComputeSHA256(mesg),
+                        UpdateType = 0,
+                        Version = aulist.Application.Version,
+                    };
+                    //发布包
+                    StreamWriter swau = new StreamWriter(aupublish, false, System.Text.Encoding.UTF8);
+                    string aujson = Newtonsoft.Json.JsonConvert.SerializeObject(auPublish);
+                    swau.Write(aujson);
+
+                    swau.Close();
+                    //同时把新包加入列表
+                    AddAuPublishs(auPublish);
+                }
+                #endregion
+                #region [Notification]
+
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    this.prbProd.Value = 0;
+                    this.prbProd.Visible = false;
+                    this.btnProduce.Text = "生成(&G)";
+                    cbPackage.Enabled = true;
+                    //发送客户端通知消息
+                    AU.Monitor.Server.ServerBootstrap.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
+                    MessageBox.Show(this, "自动更新文件生成成功:" + mesg, "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (System.IO.Directory.Exists(PackageTempPath))
+                        System.IO.Directory.Delete(PackageTempPath, true);
+                });
+
+                #endregion [Notification]
+
+                #endregion [WriterAUPackage]
+            }
+            catch (Exception ex)
+            {
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    MessageBox.Show(this, ex.Message, "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 });
             }
-            #endregion [Files]
-            StreamWriter sw = new StreamWriter(strFilePath, false, System.Text.Encoding.UTF8);
-            sw.Write(Newtonsoft.Json.JsonConvert.SerializeObject(aulist));
-            sw.Close();
-            #region 打包
-            string mesg = this.txtDest.Text.Trim();
-            if (IsPackage)
-            {
-                string packagename = aulist.Application.Version + ".aup";
-                mesg = Path.Combine(UpdatePackagePath + "\\" + this.SubSystem + "\\", packagename);
-                AU.Common.Utility.ZipUtility.Compress(PackageTempPath, mesg);
-                string aupublish = UpdatePackagePath + "\\" + this.SubSystem + "\\aupublish.json";
-                string No = "1";
-                if (System.IO.File.Exists(aupublish))
-                {
-                    No = (Convert.ToInt32(AU.Common.AppPublish.ReadPackage(aupublish).No) + 1).ToString();
-                }
-                AU.Common.AuPublish auPublish = new AU.Common.AuPublish()
-                {
-                    No = No,
-                    Description = "发布更新" + packagename,
-                    Url = BaseUpdatePath,
-                    DownPath = packagename,
-                    LastUpdateTime = DateTime.Now,
-                    PublishType = AU.Common.SubSystem.DicPublishType[this.SubSystem],
-                    SHA256 = AU.Common.Utility.ToolsHelp.ComputeSHA256(mesg),
-                    UpdateType = 0,
-                    Version = aulist.Application.Version,
-                };
-                //发布包
-                StreamWriter swau = new StreamWriter(aupublish, false, System.Text.Encoding.UTF8);
-                string aujson = Newtonsoft.Json.JsonConvert.SerializeObject(auPublish);
-                swau.Write(aujson);
-
-                swau.Close();
-                //同时把新包加入列表
-                AddAuPublishs(auPublish);
-            }
-            #endregion
-            #region [Notification]
-
-            this.Invoke((MethodInvoker)delegate ()
-            {
-                this.prbProd.Value = 0;
-                this.prbProd.Visible = false;
-                this.btnProduce.Text = "生成(&G)";
-                cbPackage.Enabled = true;
-                //发送客户端通知消息
-                AU.Monitor.Server.ServerBootstrap.Send("", AU.Common.CommandType.AUVERSION, Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
-                MessageBox.Show(this, "自动更新文件生成成功:" + mesg, "AutoUpdater", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                if (System.IO.Directory.Exists(PackageTempPath))
-                    System.IO.Directory.Delete(PackageTempPath, true);
-            });
-
-            #endregion [Notification]
-
-            #endregion [WriterAUPackage]
         }
         #endregion [写AutoUpdaterList]
 
@@ -565,20 +596,6 @@ namespace AuWriter
 
             this.panelAuclient.Visible = auclient;
             this.gbPublish.Visible = !auclient;
-        }
-
-        private void tbVersion_TextChanged(object sender, EventArgs e)
-        {
-            System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"\d+.\d.+\d.+\d", System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace);
-
-            if (rg.IsMatch(tbVersion.Text))
-            {
-                this.PublishVersion = tbVersion.Text.Trim();
-            }
-            else
-            {
-                MessageBox.Show("输入版本号格式不正确，请重新输入！");
-            }
         }
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {

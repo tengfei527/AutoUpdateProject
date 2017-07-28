@@ -278,7 +278,6 @@
             this.tbVersion.Name = "tbVersion";
             this.tbVersion.Size = new System.Drawing.Size(172, 21);
             this.tbVersion.TabIndex = 6;
-            this.tbVersion.TextChanged += new System.EventHandler(this.tbVersion_TextChanged);
             // 
             // gbPublish
             // 

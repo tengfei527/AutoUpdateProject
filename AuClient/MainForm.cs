@@ -51,7 +51,7 @@ namespace AuClient
             InitializeComponent();
             this.WindowState = FormWindowState.Minimized;
             linkLabel1.Text = AppConfig.Current.LinkUrl;
-            this.auPublishHelp = new AuPublishHelp(this);            
+            this.auPublishHelp = new AuPublishHelp(this);
         }
         /// <summary>
         /// 静默更新
@@ -131,10 +131,16 @@ namespace AuClient
             {
                 if (subsystem == SystemType.coreserver.ToString() || subsystem == SystemType.managerserver.ToString() || subsystem == SystemType.handsetserver.ToString() || subsystem == SystemType.imageserver.ToString())
                 {
+                    Process p = new Process();
+                    p.StartInfo.FileName = "iisreset";//要执行的程序名称
+                    p.StartInfo.CreateNoWindow = true;//不显示程序窗口
+
                     if (start)
-                        Process.Start("iisreset", "/start");
+                        p.StartInfo.Arguments = "/start";
                     else
-                        Process.Start("iisreset", "/stop");
+                        p.StartInfo.Arguments = "/stop";
+
+                    p.Start();//启动程序
                 }
             }
             catch (Exception e)
@@ -215,6 +221,8 @@ namespace AuClient
         /// <param name="e"></param>
         private void Au_Notify(object sender, NotifyMessage e)
         {
+            if (!AppConfig.Current.AllowUI)
+                return;
             this.Invoke((MethodInvoker)delegate ()
             {
                 switch (e.NotifyType)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace AuClient
@@ -31,11 +32,20 @@ namespace AuClient
                 default:
                     break;
             }
-            bool isRuned;
-
-            System.Threading.Mutex mutex = new System.Threading.Mutex(true, typeof(MainForm).FullName, out isRuned);
-            if (isRuned)
+            string proc = Process.GetCurrentProcess().ProcessName;
+            Process[] processes = Process.GetProcessesByName(proc);
+            if (processes.Length >= 2)
             {
+                MessageBox.Show("系统中已经有一个程序进程在运行, 您不能同时运行多个实例.", "提示:");
+                return;
+            }
+            else
+            {
+                //    bool isRuned;
+
+                //System.Threading.Mutex mutex = new System.Threading.Mutex(true, typeof(MainForm).FullName, out isRuned);
+                //if (isRuned)
+                //{
                 try
                 {
                     string path = System.IO.Path.Combine(Application.StartupPath, "AuClient.exe.config");

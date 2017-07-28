@@ -36,7 +36,7 @@ namespace AuClient
                     processInfo.FileName = this.ApplicationPath;
                     processInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(this.ApplicationPath);
                     processInfo.UseShellExecute = false;
-                    processInfo.Arguments = string.Format("-u {0} {1}", filepath, runpath);
+                    processInfo.Arguments = string.Format("-u \"{0}\" \"{1}\"", filepath, runpath);
                     //processInfo.CreateNoWindow = true;
                     var proc = System.Diagnostics.Process.Start(processInfo);
                 }
