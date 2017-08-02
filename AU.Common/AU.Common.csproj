@@ -74,6 +74,7 @@
     <Compile Include="Codes\Simple\DoubleCode.cs" />
     <Compile Include="Codes\Simple\ThreeCode.cs" />
     <Compile Include="Comon\CommandType.cs" />
+    <Compile Include="Comon\LoginModel.cs" />
     <Compile Include="Comon\NotifyMessage.cs" />
     <Compile Include="Comon\NotifyType.cs" />
     <Compile Include="Comon\SessionModel.cs" />

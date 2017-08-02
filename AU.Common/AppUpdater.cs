@@ -194,10 +194,15 @@ namespace AU.Common
                         string p = this.TargetAuPackage.LocalPath + "\\" + auapplication.Location + "\\" + auapplication.ApplicationId;
                         if (System.IO.File.Exists(p))
                         {
-                            System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
+                            Process pro = System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
+                            pro.WaitForExit(2000);
                             //防止未关闭进程关闭一次
-                            System.Threading.Thread.Sleep(1000);
                             AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
+                            //如果消息服务器顺便关闭MQ进程
+                            if (SystemType.coreserver.ToString() == upgradeFiles.SubSystem)
+                            {
+                                AU.Common.Utility.ToolsHelp.CloseApplication("MQ.BrokerServer.exe");
+                            }
                         }
                     }
                 }

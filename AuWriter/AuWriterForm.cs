@@ -273,7 +273,7 @@ namespace AuWriter
         #region [生成文件]
         private void btnProduce_Click(object sender, EventArgs e)
         {
-            
+
 
             try
             {
@@ -606,6 +606,18 @@ namespace AuWriter
             Console.WriteLine("New Connected\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString());
 
         }
+
+        private void ModifyTreeView(string sessionId, AU.Common.LoginModel model)
+        {
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                if (tvTerminal.Nodes.ContainsKey(sessionId))
+                {
+                    tvTerminal.Nodes[sessionId].Text = (model.UserName.Equals("客户端") ? "项目服务器" : model.UserName) + "(" + model.Version + ")";
+                }
+            });
+        }
+
         private void AddTreeView(AU.Monitor.Server.MonitorSession session, List<AU.Common.SessionModel> sms)
         {
             this.BeginInvoke((MethodInvoker)delegate
@@ -675,6 +687,14 @@ namespace AuWriter
                         {
                             var au = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AU.Common.SessionModel>>(requestInfo.Body);
                             this.AddTreeView(session, au);
+                        }
+                        break;
+                    case "LOGIN":
+                        {
+                            var mode = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Common.LoginModel>(requestInfo.Body);//
+                            if (mode != null)
+                                this.ModifyTreeView(session.SessionID, mode);
+
                         }
                         break;
                     case "RESOURCE":

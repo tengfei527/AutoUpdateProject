@@ -133,14 +133,16 @@ namespace AuClient
                 {
                     Process p = new Process();
                     p.StartInfo.FileName = "iisreset";//要执行的程序名称
-                    p.StartInfo.CreateNoWindow = true;//不显示程序窗口
-
+                    p.StartInfo.CreateNoWindow = true;
+                    //不显示程序窗口
+                    p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     if (start)
                         p.StartInfo.Arguments = "/start";
                     else
                         p.StartInfo.Arguments = "/stop";
 
                     p.Start();//启动程序
+                    p.WaitForExit();
                 }
             }
             catch (Exception e)

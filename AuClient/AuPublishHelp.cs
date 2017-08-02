@@ -460,6 +460,15 @@ namespace AuClient
                             //推送指令
                             if (res.Result)
                             {
+                                //登陆
+                                //通知服务器
+                                this.Send(AU.Common.CommandType.LOGIN, Newtonsoft.Json.JsonConvert.SerializeObject(new AU.Common.LoginModel()
+                                {
+                                    UserName = "客户端",
+                                    Password = "123456",
+                                    Version = Application.ProductVersion.ToString(),
+                                }));
+                                System.Threading.Thread.Sleep(10);
                                 //通知当前客户端版本
                                 SessionOper(-1, null);
                             }
@@ -522,13 +531,13 @@ namespace AuClient
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
             Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
-            this.SessionOper(1, session, new SessionModel()
-            {
-                SessionId = session.SessionID,
-                RemoteEndPoint = session.RemoteEndPoint.ToString(),
-                Name = "客户端",
-                Version = "0.0.0.0",
-            });
+            //this.SessionOper(1, session, new SessionModel()
+            //{
+            //    SessionId = session.SessionID,
+            //    RemoteEndPoint = session.RemoteEndPoint.ToString(),
+            //    Name = "客户端",
+            //    Version = "0.0.0.0",
+            //});
 
             session.Send("Welcome to AuClient Socket Server");
         }
@@ -544,6 +553,19 @@ namespace AuClient
             switch (requestInfo.Key)
             {
                 case "SESSION":
+                    break;
+                case "LOGIN":
+                    {
+                        var mode = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Common.LoginModel>(requestInfo.Body);//
+                        this.SessionOper(1, session, new SessionModel()
+                        {
+                            SessionId = session.SessionID,
+                            RemoteEndPoint = session.RemoteEndPoint.ToString(),
+                            Name = mode == null ? "客户端" : mode.UserName,
+                            Version = mode == null ? "0.0.0.0" : mode.Version,
+                        });
+
+                    }
                     break;
                 case "P":
                 case "F":
