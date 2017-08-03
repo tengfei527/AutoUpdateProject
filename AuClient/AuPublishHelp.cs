@@ -748,7 +748,7 @@ namespace AuClient
                         continue;
                     }
                     //检查升级包
-                    if (this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0)
+                    if ((sub == "auclient" && this.Hash256.ToLower() != a.SHA256.ToLower()) || (sub != "auclient" && this.AppRemotePublishConten.CheckForUpdate(sub, a) > 0))
                     {
                         //获取升级包
                         string file = this.AppRemotePublishConten.DownUpdateFile(sub, ServerIp?.ToString(), a, out notify, AppConfig.Current.AllowPublish);
