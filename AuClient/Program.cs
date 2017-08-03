@@ -34,7 +34,7 @@ namespace AuClient
             }
             string proc = Process.GetCurrentProcess().ProcessName;
             Process[] processes = Process.GetProcessesByName(proc);
-            if (false && processes.Length >= 2)
+            if (processes.Length >= 2)
             {
                 MessageBox.Show("系统中已经有一个程序进程在运行, 您不能同时运行多个实例.", "提示:");
                 return;
