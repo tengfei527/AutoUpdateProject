@@ -15,8 +15,20 @@ namespace AU.Common
         /// </summary>
         public string Password { get; set; }
         /// <summary>
-        /// 版本
+        /// 客户端版本
         /// </summary>
         public string Version { get; set; }
+        /// <summary>
+        /// 项目编号
+        /// </summary>
+        public string ProjectNo { get; set; }
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        public string ProjectName { get; set; }
+        /// <summary>
+        /// 项目版本
+        /// </summary>
+        public string ProjectVer { get; set; }
     }
 }

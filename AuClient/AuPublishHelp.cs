@@ -462,12 +462,17 @@ namespace AuClient
                             {
                                 //登陆
                                 //通知服务器
-                                this.Send(AU.Common.CommandType.LOGIN, Newtonsoft.Json.JsonConvert.SerializeObject(new AU.Common.LoginModel()
+                                AU.Common.LoginModel lm = new LoginModel();
+                                if (this.SubSystemDic.ContainsKey("coreserver"))
                                 {
-                                    UserName = "客户端",
-                                    Password = "123456",
-                                    Version = Application.ProductVersion.ToString(),
-                                }));
+                                    lm = PeculiarHelp.GetProject();
+                                }
+                                lm.Version = Application.ProductVersion.ToString();
+                                lm.Password = "ftf";
+                                lm.UserName = "客户端";
+
+                                this.Send(AU.Common.CommandType.LOGIN, Newtonsoft.Json.JsonConvert.SerializeObject(lm));
+
                                 System.Threading.Thread.Sleep(10);
                                 //通知当前客户端版本
                                 SessionOper(-1, null);
@@ -477,6 +482,7 @@ namespace AuClient
                     catch (Exception ex)
                     {
                         //log
+                        Console.WriteLine(ex);
                     }
 
                     System.Threading.Thread.Sleep(AppConfig.Current.Interval);
@@ -580,14 +586,46 @@ namespace AuClient
             //Console.WriteLine("Session Message ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + "Key= " + requestInfo.Key + " Message=" + requestInfo.Body);
         }
         /// <summary>
+        /// 最后读注册表时间
+        /// </summary>
+        public static DateTime ReadRegistryTime;
+        /// <summary>
+        /// 子系统锁
+        /// </summary>
+        private object lockSubSystemDic = new object();
+        /// <summary>
+        /// 读取注册表
+        /// </summary>
+        public void ReadRegistry()
+        {
+            try
+            {
+                int s = (AppConfig.Current.Interval / 1000) + 1;
+                if (ReadRegistryTime.AddMinutes(s) < DateTime.Now)
+                {
+                    ReadRegistryTime = DateTime.Now;
+                    //读注册表
+                    lock (lockSubSystemDic)
+                    {
+                        SubSystemDic = AU.Common.Utility.RegistryHelper.GetRegistrySubs(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7");
+                        if (!SubSystemDic.ContainsKey("auclient"))
+                            SubSystemDic.Add(SystemType.auclient.ToString(), System.Reflection.Assembly.GetCallingAssembly().Location);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        /// <summary>
         /// 启动
         /// </summary>
         /// <returns>启动结果</returns>
         public bool Start()
         {
             //读注册表
-            SubSystemDic = AU.Common.Utility.RegistryHelper.GetRegistrySubs(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7");
-            SubSystemDic.Add(SystemType.auclient.ToString(), System.Reflection.Assembly.GetCallingAssembly().Location);
+            this.ReadRegistry();
             //cts = new System.Threading.CancellationTokenSource();
             //Task engineTask = new Task(() => Engine(cts.Token), cts.Token);
             //engineTask.Start();
@@ -644,6 +682,8 @@ namespace AuClient
                 {
                     if (ct.IsCancellationRequested)
                         break;
+                    //读取注册表
+                    this.ReadRegistry();
                     //检查UI服务是否运行
                     this.UI.BeginInvoke((MethodInvoker)delegate ()
                     {

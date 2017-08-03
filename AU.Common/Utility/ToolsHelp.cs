@@ -222,7 +222,7 @@ namespace AU.Common.Utility
         /// CreateApplication
         /// </summary>
         /// <param name="path"></param>
-        public static bool CreateApplication(string path)
+        public static bool CreateApplication(string path, bool step = false)
         {
             try
             {
@@ -231,16 +231,18 @@ namespace AU.Common.Utility
                 {
 
                     System.Diagnostics.ProcessStartInfo processInfo = new System.Diagnostics.ProcessStartInfo();
-                    processInfo.FileName = path;
+        processInfo.FileName = path;
                     //processInfo.Verb = "runas";
                     processInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
                     processInfo.UseShellExecute = false;
                     //processInfo.CreateNoWindow = true;
                     var proc = System.Diagnostics.Process.Start(processInfo);
+                    if (step)
+                        proc.WaitForExit();
                     return true;
 
                 }
-            }
+}
             catch (Exception e)
             {
                 Console.WriteLine(e);
@@ -256,141 +258,141 @@ namespace AU.Common.Utility
         /// <returns></returns>
 
         public static System.Collections.Specialized.StringCollection GetAllFiles(string rootdir, bool recursion = true)
-        {
-            System.Collections.Specialized.StringCollection result = new System.Collections.Specialized.StringCollection();
-            if (recursion)
-                GetAllFiles(rootdir, result);
-            else
-            {
-                string[] file = Directory.GetFiles(rootdir);
-                for (int i = 0; i < file.Length; i++)
-                    result.Add(file[i]);
-            }
+{
+    System.Collections.Specialized.StringCollection result = new System.Collections.Specialized.StringCollection();
+    if (recursion)
+        GetAllFiles(rootdir, result);
+    else
+    {
+        string[] file = Directory.GetFiles(rootdir);
+        for (int i = 0; i < file.Length; i++)
+            result.Add(file[i]);
+    }
 
-            return result;
-        }
-        /// <summary>
-        /// 递归获取文件
-        /// </summary>
-        /// <param name="parentDir">父文件夹</param>
-        /// <param name="result">结果</param>
-        public static void GetAllFiles(string parentDir, System.Collections.Specialized.StringCollection result)
+    return result;
+}
+/// <summary>
+/// 递归获取文件
+/// </summary>
+/// <param name="parentDir">父文件夹</param>
+/// <param name="result">结果</param>
+public static void GetAllFiles(string parentDir, System.Collections.Specialized.StringCollection result)
+{
+    string[] dir = Directory.GetDirectories(parentDir);
+    for (int i = 0; i < dir.Length; i++)
+        GetAllFiles(dir[i], result);
+    string[] file = Directory.GetFiles(parentDir);
+    for (int i = 0; i < file.Length; i++)
+        result.Add(file[i]);
+}
+/// <summary>
+/// 删除文件
+/// </summary>
+/// <param name="rootdir"></param>
+/// <param name="recursion"></param>
+/// <param name="namefileter"></param>
+/// <returns></returns>
+public static bool DeleteFile(string rootdir, bool recursion = true, params string[] namefileter)
+{
+    try
+    {
+        System.Collections.Specialized.StringCollection file = GetAllFiles(rootdir, recursion);
+        foreach (var f in file)
         {
-            string[] dir = Directory.GetDirectories(parentDir);
-            for (int i = 0; i < dir.Length; i++)
-                GetAllFiles(dir[i], result);
-            string[] file = Directory.GetFiles(parentDir);
-            for (int i = 0; i < file.Length; i++)
-                result.Add(file[i]);
-        }
-        /// <summary>
-        /// 删除文件
-        /// </summary>
-        /// <param name="rootdir"></param>
-        /// <param name="recursion"></param>
-        /// <param name="namefileter"></param>
-        /// <returns></returns>
-        public static bool DeleteFile(string rootdir, bool recursion = true, params string[] namefileter)
-        {
-            try
+            if (namefileter != null && namefileter.Length > 0)
             {
-                System.Collections.Specialized.StringCollection file = GetAllFiles(rootdir, recursion);
-                foreach (var f in file)
+                bool filter = false;
+                foreach (var n in namefileter)
                 {
-                    if (namefileter != null && namefileter.Length > 0)
+                    if (f.EndsWith(n, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        bool filter = false;
-                        foreach (var n in namefileter)
-                        {
-                            if (f.EndsWith(n, StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                filter = true;
-                                break;
-                            }
-                        }
-                        if (filter)
-                            continue;
+                        filter = true;
+                        break;
                     }
-                    System.IO.File.Delete(f);
                 }
+                if (filter)
+                    continue;
             }
-            catch
-            {
-                return false;
-            }
-
-            return true;
+            System.IO.File.Delete(f);
         }
-        /// <summary>
-        /// 删除目录
-        /// </summary>
-        /// <param name="rootdir">根目录</param>
-        /// <param name="namefileter">过滤目录</param>
-        /// <returns></returns>
-        public static bool DeleteDirectory(string rootdir, params string[] namefileter)
+    }
+    catch
+    {
+        return false;
+    }
+
+    return true;
+}
+/// <summary>
+/// 删除目录
+/// </summary>
+/// <param name="rootdir">根目录</param>
+/// <param name="namefileter">过滤目录</param>
+/// <returns></returns>
+public static bool DeleteDirectory(string rootdir, params string[] namefileter)
+{
+    try
+    {
+        string[] dir = Directory.GetDirectories(rootdir);
+        foreach (var d in dir)
         {
-            try
+            if (namefileter != null && namefileter.Length > 0)
             {
-                string[] dir = Directory.GetDirectories(rootdir);
-                foreach (var d in dir)
+                bool filter = false;
+                foreach (var n in namefileter)
                 {
-                    if (namefileter != null && namefileter.Length > 0)
+                    if (d.IndexOf(n, StringComparison.InvariantCultureIgnoreCase) > -1)
                     {
-                        bool filter = false;
-                        foreach (var n in namefileter)
-                        {
-                            if (d.IndexOf(n, StringComparison.InvariantCultureIgnoreCase) > -1)
-                            {
-                                filter = true;
-                                break;
-                            }
-                        }
-                        if (filter)
-                            continue;
+                        filter = true;
+                        break;
                     }
-                    System.IO.Directory.Delete(d, true);
                 }
+                if (filter)
+                    continue;
             }
-            catch
-            {
-                return false;
-            }
-            return true;
+            System.IO.Directory.Delete(d, true);
         }
+    }
+    catch
+    {
+        return false;
+    }
+    return true;
+}
 
 
-        /// <summary>
-        /// 字节数组转16进制字符串
-        /// </summary>
-        /// <param name=”bytes”></param>
-        /// <returns></returns>
-        public static string ByteToHexString(byte[] bytes)
+/// <summary>
+/// 字节数组转16进制字符串
+/// </summary>
+/// <param name=”bytes”></param>
+/// <returns></returns>
+public static string ByteToHexString(byte[] bytes)
+{
+    string returnStr = "";
+    if (bytes != null)
+    {
+        for (int i = 0; i < bytes.Length; i++)
         {
-            string returnStr = "";
-            if (bytes != null)
-            {
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    returnStr += bytes[i].ToString("x2");
-                }
-            }
-            return returnStr;
+            returnStr += bytes[i].ToString("x2");
         }
+    }
+    return returnStr;
+}
 
-        /// <summary>
-        /// 字符串转16进制字节数组
-        /// </summary>
-        /// <param name=”hexString”></param>
-        /// <returns></returns>
-        public static byte[] HexStringToByte(string hexString)
-        {
-            hexString = hexString.Replace(" ", "");
-            if ((hexString.Length % 2) != 0)
-                hexString += " ";
-            byte[] returnBytes = new byte[hexString.Length / 2];
-            for (int i = 0; i < returnBytes.Length; i++)
-                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-            return returnBytes;
-        }
+/// <summary>
+/// 字符串转16进制字节数组
+/// </summary>
+/// <param name=”hexString”></param>
+/// <returns></returns>
+public static byte[] HexStringToByte(string hexString)
+{
+    hexString = hexString.Replace(" ", "");
+    if ((hexString.Length % 2) != 0)
+        hexString += " ";
+    byte[] returnBytes = new byte[hexString.Length / 2];
+    for (int i = 0; i < returnBytes.Length; i++)
+        returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+    return returnBytes;
+}
     }
 }

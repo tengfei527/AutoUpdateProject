@@ -34,7 +34,7 @@ namespace AuClient
             }
             string proc = Process.GetCurrentProcess().ProcessName;
             Process[] processes = Process.GetProcessesByName(proc);
-            if (processes.Length >= 2)
+            if (false && processes.Length >= 2)
             {
                 MessageBox.Show("系统中已经有一个程序进程在运行, 您不能同时运行多个实例.", "提示:");
                 return;
@@ -77,16 +77,13 @@ namespace AuClient
                         fs.Flush();
                         fs.Close();
                     }
-
-                    if (!AU.Common.Utility.IpHelp.IsValidIPEndPoint(System.Configuration.ConfigurationManager.AppSettings
-                    ["SocketServer"] ?? ""))
+                    while (!AU.Common.Utility.IpHelp.IsValidIPEndPoint(System.Configuration.ConfigurationManager.AppSettings
+                        ["SocketServer"] ?? ""))
                     {
+
                         //启动配置
-                        if (AU.Common.Utility.ToolsHelp.CreateApplication(path))
-                            return;
+                        AU.Common.Utility.ToolsHelp.CreateApplication(path, true);
                     }
-
-
                 }
                 catch (Exception e)
                 {

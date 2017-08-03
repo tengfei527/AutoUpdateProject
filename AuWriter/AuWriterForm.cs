@@ -599,7 +599,7 @@ namespace AuWriter
         }
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
-            this.AddTreeView(session, null);
+            this.AddTreeView(session.SessionID, session.RemoteEndPoint, session.StartTime, null);
 
             session.Send(AU.Common.CommandType.AUVERSION + ":" + Newtonsoft.Json.JsonConvert.SerializeObject(this.AuPublishs));
 
@@ -607,37 +607,42 @@ namespace AuWriter
 
         }
 
-        private void ModifyTreeView(string sessionId, AU.Common.LoginModel model)
+        private void ModifyTreeView(string sessionId, System.Net.IPEndPoint endPoint, DateTime startTime, AU.Common.LoginModel model)
         {
             this.BeginInvoke((MethodInvoker)delegate
             {
                 if (tvTerminal.Nodes.ContainsKey(sessionId))
                 {
-                    tvTerminal.Nodes[sessionId].Text = (model.UserName.Equals("客户端") ? "项目服务器" : model.UserName) + "(" + model.Version + ")";
+                    tvTerminal.Nodes[sessionId].Tag = model;
+                    if (!string.IsNullOrEmpty(model.ProjectName))
+                    {
+                        tvTerminal.Nodes[sessionId].Text = model.ProjectName + "(Ver:" + model.Version + ")";
+                        tvTerminal.Nodes[sessionId].ToolTipText = string.Format("(E7:{0}) {1} {2}", model.ProjectVer, endPoint.ToString(), startTime.ToString("yyyy/MM/dd HH:mm:ss"));
+                    }
                 }
             });
         }
 
-        private void AddTreeView(AU.Monitor.Server.MonitorSession session, List<AU.Common.SessionModel> sms)
+        private void AddTreeView(string sessionId, System.Net.IPEndPoint endpoint, DateTime startTime, List<AU.Common.SessionModel> sms)
         {
             this.BeginInvoke((MethodInvoker)delegate
             {
-                if (!tvTerminal.Nodes.ContainsKey(session.SessionID))
+                if (!tvTerminal.Nodes.ContainsKey(sessionId))
                 {
                     tvTerminal.Nodes.Add(new TreeNode()
                     {
-                        Name = session.SessionID,
-                        Text = session.SessionID,
-                        ToolTipText = session.RemoteEndPoint.ToString() + " " + session.StartTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                        Name = sessionId,
+                        Text = sessionId,
+                        ToolTipText = endpoint + " " + startTime.ToString("yyyy/MM/dd HH:mm:ss"),
                         ContextMenuStrip = contextMenuStrip1,
                     });
                 }
                 if (sms == null)
                     return;
-                tvTerminal.Nodes[session.SessionID].Nodes.Clear();
+                tvTerminal.Nodes[sessionId].Nodes.Clear();
                 foreach (var s in sms)
                 {
-                    tvTerminal.Nodes[session.SessionID].Nodes.Add(
+                    tvTerminal.Nodes[sessionId].Nodes.Add(
                         new TreeNode()
                         {
                             Name = s.SessionId,
@@ -686,14 +691,14 @@ namespace AuWriter
                     case "SESSION":
                         {
                             var au = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AU.Common.SessionModel>>(requestInfo.Body);
-                            this.AddTreeView(session, au);
+                            this.AddTreeView(session.SessionID, session.RemoteEndPoint, session.StartTime, au);
                         }
                         break;
                     case "LOGIN":
                         {
                             var mode = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Common.LoginModel>(requestInfo.Body);//
                             if (mode != null)
-                                this.ModifyTreeView(session.SessionID, mode);
+                                this.ModifyTreeView(session.SessionID, session.RemoteEndPoint, session.StartTime, mode);
 
                         }
                         break;
