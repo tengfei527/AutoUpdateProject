@@ -617,7 +617,7 @@ namespace AuWriter
                     if (!string.IsNullOrEmpty(model.ProjectName))
                     {
                         tvTerminal.Nodes[sessionId].Text = model.ProjectName + "(Ver:" + model.Version + ")";
-                        tvTerminal.Nodes[sessionId].ToolTipText = string.Format("(E7:{0}) {1} {2}", model.ProjectVer, endPoint.ToString(), startTime.ToString("yyyy/MM/dd HH:mm:ss"));
+                        tvTerminal.Nodes[sessionId].ToolTipText = string.Format("(E7:{0}) {1} {2} [{3}]", model.ProjectVer, endPoint.ToString(), startTime.ToString("yyyy/MM/dd HH:mm:ss"), model.ProjectNo);
                     }
                 }
             });
