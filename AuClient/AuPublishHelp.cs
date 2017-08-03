@@ -275,6 +275,23 @@ namespace AuClient
                             }
                         }
                         break;
+                    case "CONTROLL":
+                        {
+                            if (string.IsNullOrEmpty(p.Body))
+                                break;
+                            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(p.Body);
+                            string result = string.Empty;
+                            switch (cp.Key)
+                            {
+                                case "CLOSE":
+                                    {
+                                        AU.Monitor.Server.ServerBootstrap.Close(cp.Body);
+                                    }
+                                    break;
+                            }
+
+                        }
+                        break;
                 }
             }
             catch (Exception e)

@@ -1307,7 +1307,17 @@ namespace AuWriter
             TreeNode tn = tvTerminal.SelectedNode;
             if (tn != null)
             {
-                //tn.Name
+                if (tn.Parent == null)
+                {
+                    //tn.Name
+                    AU.Monitor.Server.ServerBootstrap.Close(tn.Name);
+                }
+                else
+                {
+                    string route = string.Empty;
+                    string session = GetTreeViewRoute(tn.Parent, ref route);
+                    SendMessage(session: session, route: route, cmd: AU.Common.CommandType.CONTROLL, key: "CLOSE", body: tn.Name);
+                }
             }
         }
 

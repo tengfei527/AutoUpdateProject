@@ -50,5 +50,9 @@ namespace AU.Common
         /// 错误
         /// </summary>
         public static readonly string ERROR = "ERROR";
+        /// <summary>
+        /// 控制
+        /// </summary>
+        public static readonly string CONTROLL = "CONTROLL";
     }
 }

@@ -83,6 +83,23 @@ namespace AU.Monitor.Server
                     d.NewRequestReceived += NewRequestReceived;
             }
         }
+        /// <summary>
+        /// 关闭指定客户端
+        /// </summary>
+        /// <param name="sessionId"></param>
+        public static void Close(string sessionId)
+        {
+            foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
+            {
+                var session = d.GetSessionByID(sessionId);
+                if (session != null)
+                {
+                    session.Close();
+                    break;
+                }
+            }
+        }
+
 
         /// <summary>
         /// 启动
