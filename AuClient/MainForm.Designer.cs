@@ -82,7 +82,6 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(184, 16);
             this.label3.TabIndex = 11;
-            this.label3.Text = "欢迎以后继续关注我们的产品。";
             // 
             // label2
             // 
@@ -104,20 +103,20 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(253, 220);
+            this.label4.Location = new System.Drawing.Point(201, 201);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 16);
+            this.label4.Size = new System.Drawing.Size(178, 16);
             this.label4.TabIndex = 13;
-            this.label4.Text = "深圳富士智能科技有限公司";
+            this.label4.Text = "深圳市富士智能系统有限公司 ";
             // 
             // linkLabel1
             // 
-            this.linkLabel1.Location = new System.Drawing.Point(245, 244);
+            this.linkLabel1.Location = new System.Drawing.Point(205, 226);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(128, 16);
+            this.linkLabel1.Size = new System.Drawing.Size(154, 16);
             this.linkLabel1.TabIndex = 12;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://www.ftf.cn";
+            this.linkLabel1.Text = "http://www.fujica.com.cn";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // panel2

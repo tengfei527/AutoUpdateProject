@@ -36,7 +36,7 @@ namespace AuClient
             Process[] processes = Process.GetProcessesByName(proc);
             if (processes.Length >= 2)
             {
-                MessageBox.Show("系统中已经有一个程序进程在运行, 您不能同时运行多个实例.", "提示:");
+                MessageBox.Show("程序已经在运行中, 您不能同时运行多个升级服务！", "提示:");
                 return;
             }
             else
