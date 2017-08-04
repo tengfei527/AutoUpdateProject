@@ -253,13 +253,13 @@ namespace AuClient
                     case NotifyType.StopDown:
                         this.InvalidateControl();
                         this.Cursor = Cursors.Default;
+                        btnNext.Enabled = true;
                         lbState.Text = e.Message;
                         break;
                 }
             });
 
         }
-
         /// <summary>
         /// 执行更新
         /// </summary>
@@ -276,10 +276,15 @@ namespace AuClient
             }
             if (AvailableUpdate > 0)
             {
+                //if (threadDown != null && threadDown.ThreadState != System.Threading.ThreadState.Running)
+                //{
+                this.Cursor = Cursors.WaitCursor;
                 iisOperate(btnNext.Tag?.ToString(), false);
+                //this.Cursor = Cursors.Default;
                 Thread threadDown = new Thread(new ParameterizedThreadStart(auUpdater.Upgrade));
                 threadDown.IsBackground = true;
                 threadDown.Start(htUpdateFile);
+                btnNext.Enabled = false;
             }
             else
             {

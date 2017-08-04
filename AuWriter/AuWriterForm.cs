@@ -1311,6 +1311,7 @@ namespace AuWriter
                 {
                     //tn.Name
                     AU.Monitor.Server.ServerBootstrap.Close(tn.Name);
+                    tvTerminal.Nodes.Remove(tn);
                 }
                 else
                 {
