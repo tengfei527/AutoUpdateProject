@@ -108,8 +108,8 @@
             this.系统ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.启动服务ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.停止服务ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.视图ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.资源列表显示方式ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbl_Display = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -123,6 +123,14 @@
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderRName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderRDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderRType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderRSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tbpBase.SuspendLayout();
             this.panelAuclient.SuspendLayout();
             this.gbPublish.SuspendLayout();
@@ -773,6 +781,11 @@
             // 
             // lvRemoteDisk
             // 
+            this.lvRemoteDisk.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderRName,
+            this.columnHeaderRDate,
+            this.columnHeaderRType,
+            this.columnHeaderRSize});
             this.lvRemoteDisk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvRemoteDisk.LargeImageList = this.iml_ExplorerImages;
             this.lvRemoteDisk.Location = new System.Drawing.Point(0, 78);
@@ -942,6 +955,11 @@
             // 
             // lvLocalDisk
             // 
+            this.lvLocalDisk.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderName,
+            this.columnHeaderDate,
+            this.columnHeaderType,
+            this.columnHeaderSize});
             this.lvLocalDisk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvLocalDisk.LargeImageList = this.iml_ExplorerImages;
             this.lvLocalDisk.Location = new System.Drawing.Point(0, 78);
@@ -1031,8 +1049,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.系统ToolStripMenuItem,
-            this.toolStripMenuItem1,
-            this.toolStripMenuItem2});
+            this.视图ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(982, 25);
@@ -1062,17 +1079,20 @@
             this.停止服务ToolStripMenuItem.Text = "停止服务";
             this.停止服务ToolStripMenuItem.Click += new System.EventHandler(this.停止服务ToolStripMenuItem_Click);
             // 
-            // toolStripMenuItem1
+            // 视图ToolStripMenuItem
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(24, 21);
-            this.toolStripMenuItem1.Text = " ";
+            this.视图ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.资源列表显示方式ToolStripMenuItem});
+            this.视图ToolStripMenuItem.Name = "视图ToolStripMenuItem";
+            this.视图ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.视图ToolStripMenuItem.Text = "视图";
             // 
-            // toolStripMenuItem2
+            // 资源列表显示方式ToolStripMenuItem
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(24, 21);
-            this.toolStripMenuItem2.Text = " ";
+            this.资源列表显示方式ToolStripMenuItem.Name = "资源列表显示方式ToolStripMenuItem";
+            this.资源列表显示方式ToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.资源列表显示方式ToolStripMenuItem.Text = "资源列表显示方式";
+            this.资源列表显示方式ToolStripMenuItem.Click += new System.EventHandler(this.资源列表显示方式ToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -1172,6 +1192,46 @@
             this.notifyIcon1.Text = "E7 升级包发布服务器";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
+            // 
+            // columnHeaderName
+            // 
+            this.columnHeaderName.Text = "名称";
+            this.columnHeaderName.Width = 300;
+            // 
+            // columnHeaderDate
+            // 
+            this.columnHeaderDate.Text = "修改日期";
+            this.columnHeaderDate.Width = 130;
+            // 
+            // columnHeaderType
+            // 
+            this.columnHeaderType.Text = "类型";
+            this.columnHeaderType.Width = 100;
+            // 
+            // columnHeaderSize
+            // 
+            this.columnHeaderSize.Text = "大小";
+            this.columnHeaderSize.Width = 100;
+            // 
+            // columnHeaderRName
+            // 
+            this.columnHeaderRName.Text = "名称";
+            this.columnHeaderRName.Width = 300;
+            // 
+            // columnHeaderRDate
+            // 
+            this.columnHeaderRDate.Text = "修改日期";
+            this.columnHeaderRDate.Width = 130;
+            // 
+            // columnHeaderRType
+            // 
+            this.columnHeaderRType.Text = "类型";
+            this.columnHeaderRType.Width = 100;
+            // 
+            // columnHeaderRSize
+            // 
+            this.columnHeaderRSize.Text = "大小";
+            this.columnHeaderRSize.Width = 100;
             // 
             // AuWriterForm
             // 
@@ -1279,8 +1339,6 @@
         private System.Windows.Forms.ToolStripMenuItem 启动服务ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 停止服务ToolStripMenuItem;
         private System.Windows.Forms.ComboBox cmbCmd;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TextBox tbParameter;
@@ -1333,6 +1391,16 @@
         private System.Windows.Forms.Button btnbtnAuClientSelect;
         private System.Windows.Forms.Panel panelAuclient;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ToolStripMenuItem 视图ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 资源列表显示方式ToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeaderName;
+        private System.Windows.Forms.ColumnHeader columnHeaderDate;
+        private System.Windows.Forms.ColumnHeader columnHeaderType;
+        private System.Windows.Forms.ColumnHeader columnHeaderSize;
+        private System.Windows.Forms.ColumnHeader columnHeaderRName;
+        private System.Windows.Forms.ColumnHeader columnHeaderRDate;
+        private System.Windows.Forms.ColumnHeader columnHeaderRType;
+        private System.Windows.Forms.ColumnHeader columnHeaderRSize;
     }
 }
 

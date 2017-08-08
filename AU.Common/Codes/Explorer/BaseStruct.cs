@@ -42,5 +42,20 @@ namespace AU.Common.Codes
         {
             get;
         }
+
+        /// <summary>
+        /// 最后修改时间
+        /// </summary>
+        public abstract string LastUpdateTime
+        {
+            get;set;
+        }
+        /// <summary>
+        /// 大小
+        /// </summary>
+        public abstract string Size
+        {
+            get;set;
+        }
     }
 }

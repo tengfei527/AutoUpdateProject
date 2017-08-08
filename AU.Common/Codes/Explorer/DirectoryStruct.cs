@@ -18,5 +18,13 @@ namespace AU.Common.Codes
             get { return FileFlag.Directory; }
         }
         public DirectoryStruct(string name) : base(name) { }
+
+        public override string Size
+        {
+            get
+            {
+                return "";
+            }
+        }
     }
 }

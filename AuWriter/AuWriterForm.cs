@@ -1647,5 +1647,26 @@ namespace AuWriter
             }
             flag = true;
         }
+
+        private void 资源列表显示方式ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int v = (int)lvRemoteDisk.View + 1;
+            if (v > 4)
+            {
+                lvRemoteDisk.View = View.LargeIcon;
+            }else
+            {
+                lvRemoteDisk.View = (View)v;
+            }
+            int l = (int)lvLocalDisk.View + 1;
+            if (l > 4)
+            {
+                lvLocalDisk.View = View.LargeIcon;
+            }
+            else
+            {
+                lvLocalDisk.View = (View)l;
+            }
+        }
     }
 }

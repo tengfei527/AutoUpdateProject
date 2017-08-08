@@ -116,6 +116,27 @@ namespace AU.Common.Utility.Tests
             string gw = GetGateway();
             string ip = GetLocalIP();
         }
+        [TestMethod]
+        public void TestFile()
+        {
+            string path = @"C:\Program Files\fujica\E7服务器\Manage\OneCardSystem.SyncTokenControl.exe";
+            try
+            {
+
+
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    byte[] buff = new byte[1024];
+                    int t = fs.Read(buff, 0, 1024);
+                    fs.Close();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+        }
         /// <summary>
         /// 得到本机IP
         /// </summary>

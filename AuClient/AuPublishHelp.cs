@@ -330,7 +330,7 @@ namespace AuClient
                     if (!System.IO.File.Exists(path))
                         return;
                     byte[] sp = System.Text.Encoding.UTF8.GetBytes(cmdSpilts);
-                    using (System.IO.FileStream f = System.IO.File.Open(path, System.IO.FileMode.Open))
+                    using (FileStream f = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         easyClient.Send(System.Text.Encoding.UTF8.GetBytes("F:" + f.Length / 1024 + "&" + System.IO.Path.GetFileName(path) + cmdSpilts));
 

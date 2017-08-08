@@ -121,7 +121,7 @@ namespace AU.Common.Utility
         /// </summary>
         /// <param name="file">文件名</param>
         /// <returns></returns>
-        private static string GetFileSize(string file)
+        public static string GetFileSize(string file)
         {
             double KB = 1024;
             double MB = 1024 * KB;
@@ -142,9 +142,9 @@ namespace AU.Common.Utility
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private static long GetFileLength(string file)
+        public static long GetFileLength(string file)
         {
-            FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+            FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             long fileLength = fileStream.Length;
             fileStream.Close();
             return fileLength;
@@ -185,6 +185,7 @@ namespace AU.Common.Utility
                     //文件夹图标
                     dItems[i].ImageKey = (string)imageHashtable["Disk"];
                     dItems[i].Tag = disk[i];
+                    dItems[i].SubItems.Add(disk[i].Size);
                     lView.Items.Add(dItems[i]);
                 }
             }
@@ -249,6 +250,9 @@ namespace AU.Common.Utility
                     //文件夹图标
                     dItems[i].ImageKey = (string)imageHashtable["Directory"];
                     dItems[i].Tag = directorys[i];
+                    dItems[i].SubItems.Add(directorys[i].LastUpdateTime);
+                    dItems[i].SubItems.Add("文件夹");
+                    dItems[i].SubItems.Add(directorys[i].Size);
                     lView.Items.Add(dItems[i]);
                 }
             }
@@ -268,6 +272,10 @@ namespace AU.Common.Utility
                     else
                         fItems[i].ImageKey = (string)imageHashtable["Unknown"];
                     fItems[i].Tag = files[i];
+
+                    fItems[i].SubItems.Add(files[i].LastUpdateTime);
+                    fItems[i].SubItems.Add(type);
+                    fItems[i].SubItems.Add(files[i].Size);
                     lView.Items.Add(fItems[i]);
                 }
             }
@@ -320,11 +328,12 @@ namespace AU.Common.Utility
         /// <returns></returns>
         public static DisksCode GetDisks()
         {
-            string[] diskslist = Directory.GetLogicalDrives();
+            //string[] diskslist = Directory.GetLogicalDrives();
+            System.IO.DriveInfo[] drives = System.IO.DriveInfo.GetDrives();
             DisksCode diskcode = new DisksCode();
-            diskcode.Disks = new DiskStruct[diskslist.Length];
-            for (int i = 0; i < diskslist.Length; i++)
-                diskcode.Disks[i] = new DiskStruct(diskslist[i].Substring(0, 2));
+            diskcode.Disks = new DiskStruct[drives.Length];
+            for (int i = 0; i < drives.Length; i++)
+                diskcode.Disks[i] = new DiskStruct(drives[i].Name.Substring(0, 2), drives[i].TotalFreeSpace, drives[i].TotalSize, drives[i].DriveType);
             return diskcode;
         }
 
@@ -339,5 +348,54 @@ namespace AU.Common.Utility
             return (serverDisk ? "远程磁盘(" + diskName + ")" : "本地磁盘(" + diskName + ")");
         }
 
+        ///   
+        /// 获取指定驱动器的空间总大小(单位为B) 
+        ///   
+        ///  只需输入代表驱动器的字母即可 （大写） 
+        ///    
+        public static long GetHardDiskSpace(string str_HardDiskName)
+        {
+            long totalSize = new long();
+            try
+            {
+                str_HardDiskName = str_HardDiskName + ":\\";
+                System.IO.DriveInfo[] drives = System.IO.DriveInfo.GetDrives();
+                foreach (System.IO.DriveInfo drive in drives)
+                {
+                    if (drive.Name == str_HardDiskName)
+                    {
+                        totalSize = drive.TotalSize / (1024 * 1024 * 1024);
+                    }
+                }
+            }
+            catch { }
+
+            return totalSize;
+        }
+
+        ///   
+        /// 获取指定驱动器的剩余空间总大小(单位为B) 
+        ///   
+        ///  只需输入代表驱动器的字母即可  
+        ///    
+        public static long GetHardDiskFreeSpace(string str_HardDiskName)
+        {
+            long freeSpace = new long();
+            try
+            {
+                str_HardDiskName = str_HardDiskName + ":\\";
+                System.IO.DriveInfo[] drives = System.IO.DriveInfo.GetDrives();
+                foreach (System.IO.DriveInfo drive in drives)
+                {
+                    if (drive.Name == str_HardDiskName)
+                    {
+                        freeSpace = drive.TotalFreeSpace / (1024 * 1024 * 1024);
+                    }
+                }
+            }
+            catch { }
+
+            return freeSpace;
+        }
     }
 }
