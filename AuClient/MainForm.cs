@@ -285,6 +285,7 @@ namespace AuClient
                 threadDown.IsBackground = true;
                 threadDown.Start(htUpdateFile);
                 btnNext.Enabled = false;
+                btnCancel.Enabled = false;
             }
             else
             {
@@ -336,6 +337,7 @@ namespace AuClient
         /// <param name="sucess">sucess 完成=true 下一步=false</param>
         private void InvalidateControl(bool sucess = true)
         {
+            btnCancel.Enabled = true;
             if (sucess)
             {
                 tabPageMain.TabPages.Clear();
@@ -350,7 +352,7 @@ namespace AuClient
                 lbState.Text = "点击“下一步”开始更新文件";
                 pbDownFile.Value = 0;
                 btnNext.Visible = true;
-                btnCancel.Text = "取消";
+                btnCancel.Text = "取消";               
             }
         }
 

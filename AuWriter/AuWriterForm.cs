@@ -658,6 +658,10 @@ namespace AuWriter
         {
             if (PartPackage.ContainsKey(session.SessionID))
                 PartPackage.Remove(session.SessionID);
+            //关闭上传文件
+            UpFileEnd(session.SessionID);
+            //关闭下载
+            IsDownFile = false;
 
             this.BeginInvoke((MethodInvoker)delegate
             {
@@ -917,6 +921,37 @@ namespace AuWriter
             }
             Console.WriteLine("Session Message\tID=[" + session.SessionID + "]\tIP=" + session.RemoteEndPoint.ToString() + "\tKey=" + requestInfo.Key + "\tMessage=" + requestInfo.Body);
         }
+
+        private void UpFileEnd(string sessionId, bool clear = true)
+        {
+            if (FilePackage.ContainsKey(sessionId))
+            {
+                var fs = FilePackage[sessionId] as FileStream;
+                if (fs != null)
+                {
+                    fs.Close();
+                    fs.Dispose();
+                }
+                FilePackage.Remove(sessionId);
+            }
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                if (clear)
+                {
+                    this.gbRemoteDisk.Text = "远程磁盘>>";
+                    lvRemoteDisk.Tag = "";
+                    lvRemoteDisk.Items.Clear();
+                }
+                AU.Common.Utility.IO.OpenDirectory(lvLocalDisk.Tag.ToString(), lvLocalDisk, imageKey);
+                this.panelUpload.Visible = false;
+                this.pgbUpLoad.Value = this.pgbUpLoad.Maximum;
+                this.toolStripStatusLabel1.ForeColor = Color.Red;
+                this.toolStripStatusLabel1.Text = "上传终止";
+                this.UploadToolStripMenuItem.Enabled = true;
+            });
+
+        }
+
 
         private string GetTreeViewRoute(TreeNode nowNode, ref string route)
         {
@@ -1292,7 +1327,7 @@ namespace AuWriter
             }
             else
             {
-                MessageBox.Show("正在上传/下载中文件，请等待文件传输完成！");
+                MessageBox.Show("正在上传/下载文件中，请等待文件传输完成！");
             }
         }
         /// <summary>
@@ -1318,6 +1353,12 @@ namespace AuWriter
 
         private void 断开连接ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (UploadToolStripMenuItem.Enabled == false || DownloadToolStripMenuItem.Enabled == false)
+            {
+                MessageBox.Show("正在上传/下载文件中，请等待文件传输完成！");
+                //return;
+            }
+
             TreeNode tn = tvTerminal.SelectedNode;
             if (tn != null)
             {
@@ -1361,7 +1402,7 @@ namespace AuWriter
                 }
             }
         }
-
+        private bool IsDownFile = true;
         private void SendFile(string session, string route, string file, string path)
         {
             new System.Threading.Tasks.Task(() =>
@@ -1392,6 +1433,8 @@ namespace AuWriter
                          int count = 0;
                          do
                          {
+                             if (!IsDownFile)
+                                 throw new Exception("取消下载");
                              count = f.Read(buff, 0, len);
                              if (count == len)
                              {//分片包编号后期扩展
@@ -1468,6 +1511,7 @@ namespace AuWriter
                     MessageBox.Show("请选择接收终端！");
                     return;
                 }
+                this.IsDownFile = true;
                 //发送文件
                 SendFile(session, route, txt_myexplorer.Tag.ToString(), lvRemoteDisk.Tag.ToString());
 
@@ -1682,6 +1726,16 @@ namespace AuWriter
             {
                 lvLocalDisk.View = (View)l;
             }
+        }
+
+        private void btnUploadCancle_Click(object sender, EventArgs e)
+        {
+            UpFileEnd(tvTerminal.SelectedNode.Name, false);
+        }
+
+        private void btnDownloadCancle_Click(object sender, EventArgs e)
+        {
+            this.IsDownFile = false;
         }
     }
 }

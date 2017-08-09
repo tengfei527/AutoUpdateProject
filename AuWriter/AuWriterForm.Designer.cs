@@ -86,7 +86,12 @@
             this.rtbTerminial = new System.Windows.Forms.RichTextBox();
             this.tbpRes = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.lb_remoteexplorer = new System.Windows.Forms.Label();
             this.lvRemoteDisk = new System.Windows.Forms.ListView();
+            this.columnHeaderRName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderRDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderRType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderRSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.iml_ExplorerImages = new System.Windows.Forms.ImageList(this.components);
             this.gbRemoteDisk = new System.Windows.Forms.GroupBox();
             this.panelUpload = new System.Windows.Forms.Panel();
@@ -95,7 +100,12 @@
             this.lbUpload = new System.Windows.Forms.Label();
             this.pgbUpLoad = new System.Windows.Forms.ProgressBar();
             this.txt_remoteexplorer = new System.Windows.Forms.TextBox();
+            this.lb_myexplorer = new System.Windows.Forms.Label();
             this.lvLocalDisk = new System.Windows.Forms.ListView();
+            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gbLocalDisk = new System.Windows.Forms.GroupBox();
             this.panelDownload = new System.Windows.Forms.Panel();
             this.btnDownloadCancle = new System.Windows.Forms.Button();
@@ -123,16 +133,6 @@
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderRName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderRDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderRType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderRSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.lb_myexplorer = new System.Windows.Forms.Label();
-            this.lb_remoteexplorer = new System.Windows.Forms.Label();
             this.tbpBase.SuspendLayout();
             this.panelAuclient.SuspendLayout();
             this.gbPublish.SuspendLayout();
@@ -783,6 +783,17 @@
             this.splitContainer3.SplitterDistance = 380;
             this.splitContainer3.TabIndex = 0;
             // 
+            // lb_remoteexplorer
+            // 
+            this.lb_remoteexplorer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lb_remoteexplorer.AutoSize = true;
+            this.lb_remoteexplorer.Location = new System.Drawing.Point(4, 444);
+            this.lb_remoteexplorer.Name = "lb_remoteexplorer";
+            this.lb_remoteexplorer.Size = new System.Drawing.Size(11, 12);
+            this.lb_remoteexplorer.TabIndex = 4;
+            this.lb_remoteexplorer.Text = ":";
+            // 
             // lvRemoteDisk
             // 
             this.lvRemoteDisk.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -803,6 +814,26 @@
             this.lvRemoteDisk.SelectedIndexChanged += new System.EventHandler(this.lvRemoteDisk_SelectedIndexChanged);
             this.lvRemoteDisk.DoubleClick += new System.EventHandler(this.lvRemoteDisk_DoubleClick);
             this.lvRemoteDisk.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lvRemoteDisk_MouseDown);
+            // 
+            // columnHeaderRName
+            // 
+            this.columnHeaderRName.Text = "名称";
+            this.columnHeaderRName.Width = 280;
+            // 
+            // columnHeaderRDate
+            // 
+            this.columnHeaderRDate.Text = "修改日期";
+            this.columnHeaderRDate.Width = 130;
+            // 
+            // columnHeaderRType
+            // 
+            this.columnHeaderRType.Text = "类型";
+            this.columnHeaderRType.Width = 100;
+            // 
+            // columnHeaderRSize
+            // 
+            this.columnHeaderRSize.Text = "大小";
+            this.columnHeaderRSize.Width = 100;
             // 
             // iml_ExplorerImages
             // 
@@ -920,7 +951,7 @@
             this.btnUploadCancle.TabIndex = 5;
             this.btnUploadCancle.Text = "取消";
             this.btnUploadCancle.UseVisualStyleBackColor = true;
-            this.btnUploadCancle.Visible = false;
+            this.btnUploadCancle.Click += new System.EventHandler(this.btnUploadCancle_Click);
             // 
             // label8
             // 
@@ -957,6 +988,17 @@
             this.txt_remoteexplorer.Size = new System.Drawing.Size(374, 21);
             this.txt_remoteexplorer.TabIndex = 0;
             // 
+            // lb_myexplorer
+            // 
+            this.lb_myexplorer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lb_myexplorer.AutoSize = true;
+            this.lb_myexplorer.Location = new System.Drawing.Point(5, 443);
+            this.lb_myexplorer.Name = "lb_myexplorer";
+            this.lb_myexplorer.Size = new System.Drawing.Size(11, 12);
+            this.lb_myexplorer.TabIndex = 4;
+            this.lb_myexplorer.Text = ":";
+            // 
             // lvLocalDisk
             // 
             this.lvLocalDisk.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -977,6 +1019,26 @@
             this.lvLocalDisk.SelectedIndexChanged += new System.EventHandler(this.lvLocalDisk_SelectedIndexChanged);
             this.lvLocalDisk.DoubleClick += new System.EventHandler(this.lvLocalDisk_DoubleClick);
             this.lvLocalDisk.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lvLocalDisk_MouseDown);
+            // 
+            // columnHeaderName
+            // 
+            this.columnHeaderName.Text = "名称";
+            this.columnHeaderName.Width = 280;
+            // 
+            // columnHeaderDate
+            // 
+            this.columnHeaderDate.Text = "修改日期";
+            this.columnHeaderDate.Width = 130;
+            // 
+            // columnHeaderType
+            // 
+            this.columnHeaderType.Text = "类型";
+            this.columnHeaderType.Width = 100;
+            // 
+            // columnHeaderSize
+            // 
+            this.columnHeaderSize.Text = "大小";
+            this.columnHeaderSize.Width = 100;
             // 
             // gbLocalDisk
             // 
@@ -1012,7 +1074,7 @@
             this.btnDownloadCancle.TabIndex = 6;
             this.btnDownloadCancle.Text = "取消";
             this.btnDownloadCancle.UseVisualStyleBackColor = true;
-            this.btnDownloadCancle.Visible = false;
+            this.btnDownloadCancle.Click += new System.EventHandler(this.btnDownloadCancle_Click);
             // 
             // label10
             // 
@@ -1196,68 +1258,6 @@
             this.notifyIcon1.Text = "E7 升级包发布服务器";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
-            // 
-            // columnHeaderName
-            // 
-            this.columnHeaderName.Text = "名称";
-            this.columnHeaderName.Width = 280;
-            // 
-            // columnHeaderDate
-            // 
-            this.columnHeaderDate.Text = "修改日期";
-            this.columnHeaderDate.Width = 130;
-            // 
-            // columnHeaderType
-            // 
-            this.columnHeaderType.Text = "类型";
-            this.columnHeaderType.Width = 100;
-            // 
-            // columnHeaderSize
-            // 
-            this.columnHeaderSize.Text = "大小";
-            this.columnHeaderSize.Width = 100;
-            // 
-            // columnHeaderRName
-            // 
-            this.columnHeaderRName.Text = "名称";
-            this.columnHeaderRName.Width = 280;
-            // 
-            // columnHeaderRDate
-            // 
-            this.columnHeaderRDate.Text = "修改日期";
-            this.columnHeaderRDate.Width = 130;
-            // 
-            // columnHeaderRType
-            // 
-            this.columnHeaderRType.Text = "类型";
-            this.columnHeaderRType.Width = 100;
-            // 
-            // columnHeaderRSize
-            // 
-            this.columnHeaderRSize.Text = "大小";
-            this.columnHeaderRSize.Width = 100;
-            // 
-            // lb_myexplorer
-            // 
-            this.lb_myexplorer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lb_myexplorer.AutoSize = true;
-            this.lb_myexplorer.Location = new System.Drawing.Point(5, 443);
-            this.lb_myexplorer.Name = "lb_myexplorer";
-            this.lb_myexplorer.Size = new System.Drawing.Size(11, 12);
-            this.lb_myexplorer.TabIndex = 4;
-            this.lb_myexplorer.Text = ":";
-            // 
-            // lb_remoteexplorer
-            // 
-            this.lb_remoteexplorer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lb_remoteexplorer.AutoSize = true;
-            this.lb_remoteexplorer.Location = new System.Drawing.Point(4, 444);
-            this.lb_remoteexplorer.Name = "lb_remoteexplorer";
-            this.lb_remoteexplorer.Size = new System.Drawing.Size(11, 12);
-            this.lb_remoteexplorer.TabIndex = 4;
-            this.lb_remoteexplorer.Text = ":";
             // 
             // AuWriterForm
             // 
