@@ -31,8 +31,7 @@ namespace AU.Common.Codes
         }
         public FileStruct(string name)
         {
-            this.name = name;
-
+            this.name = name;            
         }
 
         public override string ToString()
@@ -48,14 +47,7 @@ namespace AU.Common.Codes
             }
             set
             {
-                try
-                {
-                    this.size = AU.Common.Utility.IO.GetFileSize(this.name);
-                }
-                catch
-                {
-                    this.size = "δ֪";
-                }
+                this.size = value;
             }
 
         }
@@ -68,14 +60,7 @@ namespace AU.Common.Codes
             }
             set
             {
-                try
-                {
-                    lastUpdateTime = File.GetLastWriteTime(name).ToString();
-                }
-                catch
-                {
-                    lastUpdateTime = "δ֪";
-                }
+                this.lastUpdateTime = value;
             }
         }
     }

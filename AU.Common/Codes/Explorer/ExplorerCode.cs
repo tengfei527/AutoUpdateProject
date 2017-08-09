@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 /// <summary>
 /// 文件功能描述：涉及到文件管理的指令－"我的电脑"指令类。
 /// </summary>
@@ -77,12 +78,40 @@ namespace AU.Common.Codes
                 string[] directoryArray = System.IO.Directory.GetDirectories(curPath);
                 directorys = new DirectoryStruct[directoryArray.Length];
                 for (int i = 0; i < directoryArray.Length; i++)
+                {
                     directorys[i] = new DirectoryStruct(directoryArray[i]);
+                    try
+                    {
+                        directorys[i].LastUpdateTime = File.GetLastWriteTime(directoryArray[i]).ToString();
+                    }
+                    catch
+                    {
+                        directorys[i].LastUpdateTime = "未知";
+                    }
+                }
                 //获取当前路径的所有文件
                 string[] fileArray = System.IO.Directory.GetFiles(curPath);
                 files = new FileStruct[fileArray.Length];
                 for (int i = 0; i < files.Length; i++)
+                {
                     files[i] = new FileStruct(fileArray[i]);
+                    try
+                    {
+                        files[i].Size = AU.Common.Utility.IO.GetFileSize(fileArray[i]);
+                    }
+                    catch
+                    {
+                        files[i].Size = "未知";
+                    }
+                    try
+                    {
+                        files[i].LastUpdateTime = File.GetLastWriteTime(fileArray[i]).ToString();
+                    }
+                    catch
+                    {
+                        files[i].LastUpdateTime = "未知";
+                    }
+                }
                 available = true;
             }
             catch

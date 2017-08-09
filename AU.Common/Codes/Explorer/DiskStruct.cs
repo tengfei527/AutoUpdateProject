@@ -20,45 +20,12 @@ namespace AU.Common.Codes
         }
         public DriveType Drive
         {
-            get; protected set;
+            get; set;
         }
         private string size;
 
-        public DiskStruct(string name, long TotalFreeSpace, long TotalSize, DriveType drive = DriveType.Unknown) : base(name)
+        public DiskStruct(string name) : base(name)
         {
-            try
-            {
-                this.Drive = drive;
-                if (TotalFreeSpace < (1024 * 1024))
-                {
-                    this.size = TotalFreeSpace / 1024 + " kb 可用";
-                }
-                else if (TotalFreeSpace < (1024 * 1024 * 1024))
-                {
-                    this.size = TotalFreeSpace / (1024 * 1024) + " MB 可用";
-                }
-                else
-                {
-                    this.size = TotalFreeSpace / (1024 * 1024 * 1024) + " GB 可用";
-                }
-                if (TotalSize < (1024 * 1024))
-                {
-                    this.size += ",共 " + TotalSize / 1024 + " KB";
-                }
-                else if (TotalSize < (1024 * 1024 * 1024))
-                {
-                    this.size += ",共 " + TotalSize / (1024 * 1024) + " MB";
-                }
-                else
-                {
-                    this.size += ",共 " + TotalSize / (1024 * 1024 * 1024) + " GB";
-                }
-            }
-            catch
-            {
-                this.size = "未知";
-                this.Drive = DriveType.Unknown;
-            }
         }
         private string lastUpdateTime;
         public override string LastUpdateTime

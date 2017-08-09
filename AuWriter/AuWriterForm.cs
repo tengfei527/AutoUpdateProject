@@ -724,13 +724,15 @@ namespace AuWriter
                                     this.BeginInvoke((MethodInvoker)delegate
                                     {
                                         IO.ShowHostDirectory(explorer, lvRemoteDisk, imageKey);
+                                        lb_remoteexplorer.Text = lvRemoteDisk.Items.Count + " 项目 ";
                                     });
 
                                     break;
                                 case "GET_FILE_DETIAL":
                                     this.BeginInvoke((MethodInvoker)delegate
                                     {
-                                        txt_remoteexplorer.Text = cp.Body;
+                                        //txt_remoteexplorer.Text = cp.Body;
+                                        lb_remoteexplorer.Text = lvRemoteDisk.Items.Count + " 项目 选中: " + cp.Body;
                                     });
 
                                     break;
@@ -1148,10 +1150,12 @@ namespace AuWriter
                     {
                         txt_myexplorer.Text = basefile.Name;
                         txt_myexplorer.Tag = "";
+                        lb_myexplorer.Text = lvLocalDisk.Items.Count + " 项目 ";
                     }
                     else if (basefile.Flag == AU.Common.Codes.FileFlag.File)
                     {
-                        txt_myexplorer.Text = AU.Common.Utility.IO.GetFileDetial(basefile.Name);
+                        lb_myexplorer.Text = lvLocalDisk.Items.Count + " 项目 选中: " + AU.Common.Utility.IO.GetFileDetial(basefile.Name);
+                        //txt_myexplorer.Text = AU.Common.Utility.IO.GetFileDetial(basefile.Name);
                         txt_myexplorer.Tag = basefile.Name;
                     }
                 }
@@ -1183,10 +1187,19 @@ namespace AuWriter
                             txt_myexplorer.Tag = "";
                             AU.Common.Utility.IO.OpenDirectory(path, lvLocalDisk, imageKey);
                             lbl_Display.Text = path;
+                            lb_myexplorer.Text = lvLocalDisk.Items.Count + " 项目 ";
                         }
                         else
                         {
                             txt_myexplorer.Tag = basefile.Name;
+                            try
+                            {
+                                System.Diagnostics.Process.Start(basefile.Name);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("打开文件失败，详情:" + ex.Message);
+                            }
                         }
                 }
                 else
@@ -1212,6 +1225,7 @@ namespace AuWriter
                     {
                         txt_remoteexplorer.Tag = "";
                         txt_remoteexplorer.Text = basefile.Name;
+                        lb_remoteexplorer.Text = lvRemoteDisk.Items.Count + " 项目 ";
                     }
                     else if (basefile.Flag == AU.Common.Codes.FileFlag.File)
                     {
@@ -1654,7 +1668,8 @@ namespace AuWriter
             if (v > 4)
             {
                 lvRemoteDisk.View = View.LargeIcon;
-            }else
+            }
+            else
             {
                 lvRemoteDisk.View = (View)v;
             }

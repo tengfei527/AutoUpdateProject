@@ -123,6 +123,8 @@ namespace AU.Common.Utility
         /// <returns></returns>
         public static string GetFileSize(string file)
         {
+            if (!System.IO.File.Exists(file))
+                return "";
             double KB = 1024;
             double MB = 1024 * KB;
             double GB = 1024 * MB;
@@ -185,6 +187,8 @@ namespace AU.Common.Utility
                     //文件夹图标
                     dItems[i].ImageKey = (string)imageHashtable["Disk"];
                     dItems[i].Tag = disk[i];
+                    dItems[i].SubItems.Add("");
+                    dItems[i].SubItems.Add(disk[i].Drive.ToString());
                     dItems[i].SubItems.Add(disk[i].Size);
                     lView.Items.Add(dItems[i]);
                 }
@@ -333,7 +337,43 @@ namespace AU.Common.Utility
             DisksCode diskcode = new DisksCode();
             diskcode.Disks = new DiskStruct[drives.Length];
             for (int i = 0; i < drives.Length; i++)
-                diskcode.Disks[i] = new DiskStruct(drives[i].Name.Substring(0, 2), drives[i].TotalFreeSpace, drives[i].TotalSize, drives[i].DriveType);
+            {
+                diskcode.Disks[i] = new DiskStruct(drives[i].Name.Substring(0, 2));
+
+                try
+                {
+                    diskcode.Disks[i].Drive = drives[i].DriveType;
+                    if (drives[i].TotalFreeSpace < (1024 * 1024))
+                    {
+                        diskcode.Disks[i].Size = drives[i].TotalFreeSpace / 1024 + " kb 可用";
+                    }
+                    else if (drives[i].TotalFreeSpace < (1024 * 1024 * 1024))
+                    {
+                        diskcode.Disks[i].Size = drives[i].TotalFreeSpace / (1024 * 1024) + " MB 可用";
+                    }
+                    else
+                    {
+                        diskcode.Disks[i].Size = drives[i].TotalFreeSpace / (1024 * 1024 * 1024) + " GB 可用";
+                    }
+                    if (drives[i].TotalSize < (1024 * 1024))
+                    {
+                        diskcode.Disks[i].Size += ",共 " + drives[i].TotalSize / 1024 + " KB";
+                    }
+                    else if (drives[i].TotalSize < (1024 * 1024 * 1024))
+                    {
+                        diskcode.Disks[i].Size += ",共 " + drives[i].TotalSize / (1024 * 1024) + " MB";
+                    }
+                    else
+                    {
+                        diskcode.Disks[i].Size += ",共 " + drives[i].TotalSize / (1024 * 1024 * 1024) + " GB";
+                    }
+                }
+                catch
+                {
+                    diskcode.Disks[i].Size = "未知";
+                    diskcode.Disks[i].Drive = DriveType.Unknown;
+                }
+            }
             return diskcode;
         }
 

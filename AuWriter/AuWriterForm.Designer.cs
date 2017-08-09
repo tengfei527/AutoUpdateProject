@@ -131,6 +131,8 @@
             this.columnHeaderRDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderRType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderRSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lb_myexplorer = new System.Windows.Forms.Label();
+            this.lb_remoteexplorer = new System.Windows.Forms.Label();
             this.tbpBase.SuspendLayout();
             this.panelAuclient.SuspendLayout();
             this.gbPublish.SuspendLayout();
@@ -768,11 +770,13 @@
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.lb_remoteexplorer);
             this.splitContainer3.Panel1.Controls.Add(this.lvRemoteDisk);
             this.splitContainer3.Panel1.Controls.Add(this.gbRemoteDisk);
             // 
             // splitContainer3.Panel2
             // 
+            this.splitContainer3.Panel2.Controls.Add(this.lb_myexplorer);
             this.splitContainer3.Panel2.Controls.Add(this.lvLocalDisk);
             this.splitContainer3.Panel2.Controls.Add(this.gbLocalDisk);
             this.splitContainer3.Size = new System.Drawing.Size(778, 459);
@@ -1196,7 +1200,7 @@
             // columnHeaderName
             // 
             this.columnHeaderName.Text = "名称";
-            this.columnHeaderName.Width = 300;
+            this.columnHeaderName.Width = 280;
             // 
             // columnHeaderDate
             // 
@@ -1216,7 +1220,7 @@
             // columnHeaderRName
             // 
             this.columnHeaderRName.Text = "名称";
-            this.columnHeaderRName.Width = 300;
+            this.columnHeaderRName.Width = 280;
             // 
             // columnHeaderRDate
             // 
@@ -1232,6 +1236,28 @@
             // 
             this.columnHeaderRSize.Text = "大小";
             this.columnHeaderRSize.Width = 100;
+            // 
+            // lb_myexplorer
+            // 
+            this.lb_myexplorer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lb_myexplorer.AutoSize = true;
+            this.lb_myexplorer.Location = new System.Drawing.Point(5, 443);
+            this.lb_myexplorer.Name = "lb_myexplorer";
+            this.lb_myexplorer.Size = new System.Drawing.Size(11, 12);
+            this.lb_myexplorer.TabIndex = 4;
+            this.lb_myexplorer.Text = ":";
+            // 
+            // lb_remoteexplorer
+            // 
+            this.lb_remoteexplorer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lb_remoteexplorer.AutoSize = true;
+            this.lb_remoteexplorer.Location = new System.Drawing.Point(4, 444);
+            this.lb_remoteexplorer.Name = "lb_remoteexplorer";
+            this.lb_remoteexplorer.Size = new System.Drawing.Size(11, 12);
+            this.lb_remoteexplorer.TabIndex = 4;
+            this.lb_remoteexplorer.Text = ":";
             // 
             // AuWriterForm
             // 
@@ -1276,7 +1302,9 @@
             this.tbpTerminal.ResumeLayout(false);
             this.tbpRes.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel1.PerformLayout();
             this.splitContainer3.Panel2.ResumeLayout(false);
+            this.splitContainer3.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.gbRemoteDisk.ResumeLayout(false);
@@ -1401,6 +1429,8 @@
         private System.Windows.Forms.ColumnHeader columnHeaderRDate;
         private System.Windows.Forms.ColumnHeader columnHeaderRType;
         private System.Windows.Forms.ColumnHeader columnHeaderRSize;
+        private System.Windows.Forms.Label lb_myexplorer;
+        private System.Windows.Forms.Label lb_remoteexplorer;
     }
 }
 
