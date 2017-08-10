@@ -36,7 +36,14 @@ namespace Monitor.Common
         {
             VoidAction action = delegate
             {
-                listBox.Items.Insert(0, string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value));
+                try
+                {
+                    listBox.Items.Insert(0, string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value));
+                }
+                catch (Exception e)
+                {
+                    listBox.Items.Insert(0, e.Message);
+                }
             };
             listBox.BeginInvoke(action);
         }
@@ -45,7 +52,14 @@ namespace Monitor.Common
         {
             VoidAction action = delegate
             {
-                listBox.Items.Insert(0, string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value));
+                try
+                {
+                    listBox.Items.Insert(0, string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value));
+                }
+                catch (Exception e)
+                {
+                    listBox.Items.Insert(0, e.Message);
+                }
             };
             listBox.BeginInvoke(action);
         }

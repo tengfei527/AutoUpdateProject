@@ -465,6 +465,7 @@ namespace AuClient
             int port = Convert.ToInt32(ips[1]);
             System.Threading.Tasks.Task client = new System.Threading.Tasks.Task(() =>
             {
+                int count = 60;
                 while (this.IsUpdateCheckRun)
                 {
                     try
@@ -494,6 +495,13 @@ namespace AuClient
                                 //通知当前客户端版本
                                 SessionOper(-1, null);
                             }
+                        }
+                        count--;
+                        if (count <= 0)
+                        {
+                            count = 60;
+                            //清理注册表错误数据
+                            AU.Common.Utility.RegistryHelper.DeleteRegist(Microsoft.Win32.Registry.LocalMachine, "SYSTEM\\E7\\", "AuError");
                         }
                     }
                     catch (Exception ex)
