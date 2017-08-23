@@ -55,6 +55,10 @@ namespace AuClient
         /// </summary>
         public string Hash256 { get; private set; }
         /// <summary>
+        /// 日志接口
+        /// </summary>
+        public log4net.ILog log = log4net.LogManager.GetLogger(typeof(AuPublishHelp));
+        /// <summary>
         /// 服务器管理
         /// </summary>
         //MyServiceControll mc = new MyServiceControll();
@@ -77,7 +81,8 @@ namespace AuClient
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    log.Error(e);
+                    //Console.WriteLine(e);
                 }
                 //Server
                 SessionTable = new Hashtable();
@@ -97,9 +102,11 @@ namespace AuClient
             string key = p.Key;
             string[] par = p.Parameters;
             if (key != body)
-                Console.WriteLine("{0}:{1}", key, body);
+                log.InfoFormat("{0}:{1}", key, body);
+            //Console.WriteLine("{0}:{1}", key, body);
             else
-                Console.WriteLine(key);
+                log.Info(key);
+            //Console.WriteLine(key);
             try
             {
                 switch (key)
@@ -298,7 +305,8 @@ namespace AuClient
             {
                 this.Send(CommandType.ERROR, e.Message);
                 //log
-                Console.WriteLine(e);
+                log.Error(e);
+                //Console.WriteLine(e);
             }
         }
 
@@ -433,7 +441,8 @@ namespace AuClient
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                log.Error(e);
+                //Console.WriteLine(e);
             }
         }
         private void InitSocketServer()
@@ -470,6 +479,7 @@ namespace AuClient
                 {
                     try
                     {
+                        count--;
                         if (!easyClient.IsConnected)
                         {
                             var res = easyClient.ConnectAsync(new System.Net.IPEndPoint(ServerIp, port));
@@ -485,6 +495,11 @@ namespace AuClient
                                 {
                                     lm = PeculiarHelp.GetProject();
                                 }
+                                if (this.SubSystemDic.ContainsKey("vmsclient"))
+                                {
+                                    //获取车场版本
+                                    lm.Park = PeculiarHelp.GetVersion(this.SubSystemDic["vmsclient"]);
+                                }
                                 lm.Version = Application.ProductVersion.ToString();
                                 lm.Password = "ftf";
                                 lm.UserName = "客户端";
@@ -496,7 +511,11 @@ namespace AuClient
                                 SessionOper(-1, null);
                             }
                         }
-                        count--;
+                        else if (count % 20 == 0)
+                        {
+                            //发送心跳包
+                            this.Send(AU.Common.CommandType.HEART, "");
+                        }
                         if (count <= 0)
                         {
                             count = 60;
@@ -507,7 +526,8 @@ namespace AuClient
                     catch (Exception ex)
                     {
                         //log
-                        Console.WriteLine(ex);
+                        log.Error(ex);
+                        //Console.WriteLine(ex);
                     }
 
                     System.Threading.Thread.Sleep(AppConfig.Current.Interval);
@@ -561,7 +581,8 @@ namespace AuClient
         /// <param name="session"></param>
         private void Ms_NewSessionConnected(AU.Monitor.Server.MonitorSession session)
         {
-            Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
+            log.Info("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
+            //Console.WriteLine("New Connected ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString());
             //this.SessionOper(1, session, new SessionModel()
             //{
             //    SessionId = session.SessionID,
@@ -575,7 +596,8 @@ namespace AuClient
         private void Ms_SessionClosed(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.CloseReason value)
         {
             this.SessionOper(0, session);
-            Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
+            log.Info("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
+            //Console.WriteLine("Session Closed ID=[" + session.SessionID + "] IP=" + session.RemoteEndPoint.ToString() + " Reason=" + value);
         }
         private void Ms_NewRequestReceived(AU.Monitor.Server.MonitorSession session, SuperSocket.SocketBase.Protocol.StringRequestInfo requestInfo)
         {
@@ -583,6 +605,7 @@ namespace AuClient
             //发送分包结束
             switch (requestInfo.Key)
             {
+                case "HEART":
                 case "SESSION":
                     break;
                 case "LOGIN":
@@ -592,7 +615,7 @@ namespace AuClient
                         {
                             SessionId = session.SessionID,
                             RemoteEndPoint = session.RemoteEndPoint.ToString(),
-                            Name = mode == null ? "客户端" : mode.UserName,
+                            Name = mode == null ? "客户端" : mode.UserName + ":" + mode.Park,
                             Version = mode == null ? "0.0.0.0" : mode.Version,
                         });
 
@@ -640,7 +663,8 @@ namespace AuClient
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                log.Error(e);
+                //Console.WriteLine(e);
             }
         }
         /// <summary>
@@ -661,7 +685,8 @@ namespace AuClient
             if (AppConfig.Current.AllowPublish)
             {
                 StartResult result = AU.Monitor.Server.ServerBootstrap.Start();
-                Console.WriteLine("Start result: {0}!", result);
+                log.InfoFormat("Start result: {0}!", result);
+                //Console.WriteLine("Start result: {0}!", result);
                 nancySelfHost?.Start();
             }
 
@@ -681,11 +706,13 @@ namespace AuClient
             if (AppConfig.Current.AllowPublish)
             {
                 AU.Monitor.Server.ServerBootstrap.Stop();
-                Console.WriteLine("Stop Au Monitor Server");
+                log.Info("Stop Au Monitor Server");
+                //Console.WriteLine("Stop Au Monitor Server");
                 nancySelfHost?.Stop();
             }
 
             easyClient.Close();
+            log.Info("Stop EasyClient");
         }
 
         public void StartUpdateCheck()
@@ -795,7 +822,8 @@ namespace AuClient
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    log.Info(e);
+                    //Console.WriteLine(e.Message);
                 }
 
                 System.Threading.Thread.Sleep(AppConfig.Current.Interval);

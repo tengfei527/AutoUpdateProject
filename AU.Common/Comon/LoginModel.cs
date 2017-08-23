@@ -30,5 +30,9 @@ namespace AU.Common
         /// 项目版本
         /// </summary>
         public string ProjectVer { get; set; }
+        /// <summary>
+        /// 车场信息
+        /// </summary>
+        public string Park { get; set; }
     }
 }

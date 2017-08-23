@@ -15,6 +15,10 @@ namespace AuClient
         /// 应用程序名称
         /// </summary>
         public string ApplicationName { get; protected set; }
+        /// <summary>
+        /// 日志接口
+        /// </summary>
+        public log4net.ILog log = log4net.LogManager.GetLogger(typeof(DoUpdate));
         public DoUpdate()
         {
             ApplicationName = System.IO.Path.GetFileNameWithoutExtension(AuClient.Properties.Resources.ApplicationService);
@@ -29,6 +33,7 @@ namespace AuClient
         {
             try
             {
+                log.Info("准备启动 AuClient 升级……");
                 var process = System.Diagnostics.Process.GetProcessesByName(this.ApplicationName);
                 if (process.Length == 0)
                 {
@@ -40,12 +45,18 @@ namespace AuClient
                     processInfo.CreateNoWindow = true;
                     processInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     var proc = System.Diagnostics.Process.Start(processInfo);
+                    log.Info("成功启动 AuClient 升级");
+                }
+                else
+                {
+                    log.Info("已存在 AuClient 升级进程");
                 }
 
                 return true;
             }
             catch (Exception e)
             {
+                log.Error("启动 AuClient 升级失败", e);
                 Console.WriteLine(e);
             }
 

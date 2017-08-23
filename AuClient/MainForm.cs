@@ -31,6 +31,10 @@ namespace AuClient
         /// </summary>
         AuPublishHelp auPublishHelp = null;
         /// <summary>
+        /// 日志接口
+        /// </summary>
+        public log4net.ILog log = log4net.LogManager.GetLogger(typeof(MainForm));
+        /// <summary>
         /// 主窗体是否显示
         /// </summary>
         public bool IsShow
@@ -83,10 +87,11 @@ namespace AuClient
                         System.IO.Directory.Delete(AppConfig.GetUpdateTempPath(subsystem), true);
                 }
             }
-            catch
+            catch (Exception e)
             {
+                log.Error(string.Format("执行静默升级失败,参数{0},{1},{2}", path, subsystem, systemPath), e);
                 //log
-                MessageBox.Show("与服务器连接失败,操作超时!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("升级失败!,详情" + e.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             finally
             {
@@ -131,6 +136,7 @@ namespace AuClient
             {
                 if (subsystem == SystemType.coreserver.ToString() || subsystem == SystemType.managerserver.ToString() || subsystem == SystemType.handsetserver.ToString() || subsystem == SystemType.imageserver.ToString())
                 {
+
                     Process p = new Process();
                     p.StartInfo.FileName = "iisreset";//要执行的程序名称
                     p.StartInfo.CreateNoWindow = true;
@@ -140,13 +146,15 @@ namespace AuClient
                         p.StartInfo.Arguments = "/start";
                     else
                         p.StartInfo.Arguments = "/stop";
-
+                    log.InfoFormat("{0} 开始操作[{1} {2}]", subsystem, p.StartInfo.FileName, p.StartInfo.Arguments);
                     p.Start();//启动程序
                     p.WaitForExit();
+                    log.InfoFormat("{0} 结束操作[{1} {2}]", subsystem, p.StartInfo.FileName, p.StartInfo.Arguments);
                 }
             }
             catch (Exception e)
             {
+                log.Error("操作 iisreset 命令失败", e);
                 //log
                 MessageBox.Show(e.Message);
             }
@@ -189,9 +197,10 @@ namespace AuClient
                         System.IO.Directory.Delete(AppConfig.GetUpdateTempPath(subsystem), true);
                 }
             }
-            catch
+            catch (Exception e)
             {
-                MessageBox.Show("与服务器连接失败,操作超时!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                log.Error(string.Format("执行窗口升级失败,参数{0},{1},{2}", path, subsystem, systemPath), e);
+                MessageBox.Show("升级失败!详情:" + e.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             finally
             {
@@ -213,6 +222,7 @@ namespace AuClient
             }
             catch (Exception ex)
             {
+                log.Error("窗体加载失败", ex);
                 MessageBox.Show(ex.Message);
             }
         }
@@ -223,6 +233,8 @@ namespace AuClient
         /// <param name="e"></param>
         private void Au_Notify(object sender, NotifyMessage e)
         {
+            this.log.InfoFormat("类型:[{0}] 消息:[{1}] 附加内:[{2}]", e.NotifyType, e.Message, e.Attachment);
+
             if (!AppConfig.Current.AllowUI)
                 return;
             this.Invoke((MethodInvoker)delegate ()
@@ -315,6 +327,7 @@ namespace AuClient
             }
             catch (Exception ex)
             {
+                log.Error(ex);
                 MessageBox.Show(ex.Message);
             }
         }
@@ -352,7 +365,7 @@ namespace AuClient
                 lbState.Text = "点击“下一步”开始更新文件";
                 pbDownFile.Value = 0;
                 btnNext.Visible = true;
-                btnCancel.Text = "取消";               
+                btnCancel.Text = "取消";
             }
         }
 
@@ -372,6 +385,7 @@ namespace AuClient
             }
             catch (Exception e)
             {
+                log.Error(e);
                 MessageBox.Show(e.Message);
             }
         }
@@ -406,7 +420,7 @@ namespace AuClient
                         applicationPath = auUpdater.SystemPath + "\\" + htUpdateFile.LocalAuList.Application.Location + "\\" + htUpdateFile.LocalAuList.Application.EntryPoint;
                         args = htUpdateFile.LocalAuList.Application.StartArgs;
                     }
-                    return true;
+                    //return true;
                 }
                 else if (auUpdater.TargetAuPackage.LocalAuList.Application.StartType != 1)
                 {
@@ -420,16 +434,16 @@ namespace AuClient
                     args = auUpdater.TargetAuPackage.LocalAuList.Application.StartArgs;
                 }
             }
-            bool isRun = false;
-            Process[] allProcess = Process.GetProcesses();
-            foreach (Process p in allProcess)
-            {
-                if (p.ProcessName.ToLower() + ".exe" == name)
-                {
-                    isRun = true;
-                    //break;
-                }
-            }
+            bool isRun = AU.Common.Utility.ToolsHelp.IsRunApplication(name);
+            //Process[] allProcess = Process.GetProcesses();
+            //foreach (Process p in allProcess)
+            //{
+            //    if (p.ProcessName.ToLower() + ".exe" == name)
+            //    {
+            //        isRun = true;
+            //        //break;
+            //    }
+            //}
 
             return isRun;
         }
@@ -449,6 +463,7 @@ namespace AuClient
                     {
                         if (System.IO.Directory.Exists(AppConfig.GetUpdateTempPath(d.Key)) && !this.IsShow)
                         {
+                            log.InfoFormat("存在升级临时目录 {0},{1}", d.Key, d.Value);
                             um = new UpgradeMessage()
                             {
                                 UpdatePackFile = "",
@@ -512,6 +527,7 @@ namespace AuClient
             if (!this.IsShow)
             {
                 System.Threading.Thread.Sleep(AppConfig.Current.Interval);
+                log.Info("执行后台服务");
                 bgw.RunWorkerAsync();
             }
         }

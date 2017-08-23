@@ -42,5 +42,31 @@ namespace AuClient
 
             return lm;
         }
+
+        /// <summary>
+        /// 获取版本信息
+        /// </summary>
+        /// <param name="path">路径</param>
+        /// <param name="application">程序名称</param>
+        /// <returns></returns>
+        public static string GetVersion(string path, string application = "OneCardSystem.VehicleManageWPF.exe")
+        {
+            string temp = path + "\\" + application;
+            string result = string.Empty;
+            if (!System.IO.File.Exists(temp))
+                return result;
+            try
+            {
+                System.Diagnostics.FileVersionInfo m_fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(temp);
+
+                result = string.Format("{0}.{1}.{2}.{3}", m_fvi.FileMajorPart, m_fvi.FileMinorPart, m_fvi.FileBuildPart, m_fvi.FilePrivatePart);
+            }
+            catch (Exception e)
+            {
+                result = e.Message;
+            }
+
+            return result;
+        }
     }
 }

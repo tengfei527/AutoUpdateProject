@@ -80,10 +80,11 @@
             this.tabControlLog = new System.Windows.Forms.TabControl();
             this.tbpLog = new System.Windows.Forms.TabPage();
             this.lbLog = new System.Windows.Forms.ListBox();
-            this.tbpLogSelect = new System.Windows.Forms.TabPage();
-            this.tbpContent = new System.Windows.Forms.TextBox();
             this.tbpTerminal = new System.Windows.Forms.TabPage();
             this.rtbTerminial = new System.Windows.Forms.RichTextBox();
+            this.tbpSqlData = new System.Windows.Forms.TabPage();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tbpRes = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.lb_remoteexplorer = new System.Windows.Forms.Label();
@@ -133,6 +134,7 @@
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.lbSQLMsg = new System.Windows.Forms.Label();
             this.tbpBase.SuspendLayout();
             this.panelAuclient.SuspendLayout();
             this.gbPublish.SuspendLayout();
@@ -151,8 +153,10 @@
             this.groupBox2.SuspendLayout();
             this.tabControlLog.SuspendLayout();
             this.tbpLog.SuspendLayout();
-            this.tbpLogSelect.SuspendLayout();
             this.tbpTerminal.SuspendLayout();
+            this.tbpSqlData.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.tbpRes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
@@ -673,8 +677,8 @@
             // tabControlLog
             // 
             this.tabControlLog.Controls.Add(this.tbpLog);
-            this.tabControlLog.Controls.Add(this.tbpLogSelect);
             this.tabControlLog.Controls.Add(this.tbpTerminal);
+            this.tabControlLog.Controls.Add(this.tbpSqlData);
             this.tabControlLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlLog.Location = new System.Drawing.Point(0, 0);
             this.tabControlLog.Name = "tabControlLog";
@@ -709,27 +713,6 @@
             this.lbLog.SelectedIndexChanged += new System.EventHandler(this.lbLog_SelectedIndexChanged);
             this.lbLog.DoubleClick += new System.EventHandler(this.lbLog_DoubleClick);
             // 
-            // tbpLogSelect
-            // 
-            this.tbpLogSelect.Controls.Add(this.tbpContent);
-            this.tbpLogSelect.Location = new System.Drawing.Point(4, 22);
-            this.tbpLogSelect.Name = "tbpLogSelect";
-            this.tbpLogSelect.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpLogSelect.Size = new System.Drawing.Size(770, 295);
-            this.tbpLogSelect.TabIndex = 1;
-            this.tbpLogSelect.Text = "选择";
-            this.tbpLogSelect.UseVisualStyleBackColor = true;
-            // 
-            // tbpContent
-            // 
-            this.tbpContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbpContent.Location = new System.Drawing.Point(3, 3);
-            this.tbpContent.Multiline = true;
-            this.tbpContent.Name = "tbpContent";
-            this.tbpContent.Size = new System.Drawing.Size(764, 289);
-            this.tbpContent.TabIndex = 7;
-            this.tbpContent.Visible = false;
-            // 
             // tbpTerminal
             // 
             this.tbpTerminal.Controls.Add(this.rtbTerminial);
@@ -750,6 +733,43 @@
             this.rtbTerminial.TabIndex = 1;
             this.rtbTerminial.Text = "";
             this.rtbTerminial.MouseDown += new System.Windows.Forms.MouseEventHandler(this.rtbTerminial_MouseDown);
+            // 
+            // tbpSqlData
+            // 
+            this.tbpSqlData.Controls.Add(this.dataGridView1);
+            this.tbpSqlData.Controls.Add(this.groupBox1);
+            this.tbpSqlData.Location = new System.Drawing.Point(4, 22);
+            this.tbpSqlData.Name = "tbpSqlData";
+            this.tbpSqlData.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpSqlData.Size = new System.Drawing.Size(770, 295);
+            this.tbpSqlData.TabIndex = 3;
+            this.tbpSqlData.Text = "SQL脚本结果数据";
+            this.tbpSqlData.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 23;
+            this.dataGridView1.Size = new System.Drawing.Size(764, 258);
+            this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView1_RowPostPaint);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.lbSQLMsg);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox1.Location = new System.Drawing.Point(3, 261);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(764, 31);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
             // 
             // tbpRes
             // 
@@ -1259,6 +1279,16 @@
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
             // 
+            // lbSQLMsg
+            // 
+            this.lbSQLMsg.AutoSize = true;
+            this.lbSQLMsg.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lbSQLMsg.Location = new System.Drawing.Point(732, 17);
+            this.lbSQLMsg.Name = "lbSQLMsg";
+            this.lbSQLMsg.Size = new System.Drawing.Size(29, 12);
+            this.lbSQLMsg.TabIndex = 0;
+            this.lbSQLMsg.Text = "描述";
+            // 
             // AuWriterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1297,9 +1327,11 @@
             this.groupBox2.PerformLayout();
             this.tabControlLog.ResumeLayout(false);
             this.tbpLog.ResumeLayout(false);
-            this.tbpLogSelect.ResumeLayout(false);
-            this.tbpLogSelect.PerformLayout();
             this.tbpTerminal.ResumeLayout(false);
+            this.tbpSqlData.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tbpRes.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel1.PerformLayout();
@@ -1372,10 +1404,8 @@
         private System.Windows.Forms.TextBox tbParameter;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox tbpContent;
         private System.Windows.Forms.TabControl tabControlLog;
         private System.Windows.Forms.TabPage tbpLog;
-        private System.Windows.Forms.TabPage tbpLogSelect;
         private System.Windows.Forms.TreeView tvTerminal;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cmbCmdType;
@@ -1431,6 +1461,10 @@
         private System.Windows.Forms.ColumnHeader columnHeaderRSize;
         private System.Windows.Forms.Label lb_myexplorer;
         private System.Windows.Forms.Label lb_remoteexplorer;
+        private System.Windows.Forms.TabPage tbpSqlData;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lbSQLMsg;
     }
 }
 

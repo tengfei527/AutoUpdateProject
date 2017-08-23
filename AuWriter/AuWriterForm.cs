@@ -616,7 +616,7 @@ namespace AuWriter
                     tvTerminal.Nodes[sessionId].Tag = model;
                     if (!string.IsNullOrEmpty(model.ProjectName))
                     {
-                        tvTerminal.Nodes[sessionId].Text = model.ProjectName + "(Ver:" + model.Version + ")";
+                        tvTerminal.Nodes[sessionId].Text = model.ProjectName + "(Ver:" + model.Version + ")" + (string.IsNullOrEmpty(model.Park) ? "" : " Pv:" + model.Park);
                         tvTerminal.Nodes[sessionId].ToolTipText = string.Format("(E7:{0}) {1} {2} [{3}]", model.ProjectVer, endPoint.ToString(), startTime.ToString("yyyy/MM/dd HH:mm:ss"), model.ProjectNo);
                     }
                 }
@@ -692,6 +692,8 @@ namespace AuWriter
             {
                 switch (requestInfo.Key)
                 {
+                    case "HEART":
+                        return;
                     case "SESSION":
                         {
                             var au = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AU.Common.SessionModel>>(requestInfo.Body);
@@ -904,6 +906,8 @@ namespace AuWriter
                         {
                             this.BeginInvoke((MethodInvoker)delegate
                             {
+                                this.tabControlLog.SelectTab(tbpTerminal);
+                                this.rtbTerminial.ForeColor = Color.Black;
                                 this.rtbTerminial.AppendText(requestInfo.Body + "\n");
                             });
                         }
@@ -911,6 +915,58 @@ namespace AuWriter
                     case "ERROR":
                         {
                             Console.WriteLine(requestInfo.Body);
+                        }
+                        break;
+                    case "SCRIPT":
+                        {
+                            var cp = Newtonsoft.Json.JsonConvert.DeserializeObject<AU.Monitor.Server.CommandPackage>(requestInfo.Body);//other
+                            if ("select".Equals(cp.Key, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                DataSet ds = null;
+                                try
+                                {
+                                    ds = Newtonsoft.Json.JsonConvert.DeserializeObject<DataSet>(cp.Body);
+                                }
+                                catch { }
+                                this.BeginInvoke((MethodInvoker)delegate
+                                {
+                                    if (ds == null || ds.Tables.Count == 0)
+                                    {
+                                        this.tabControlLog.SelectTab(tbpTerminal);
+                                        this.rtbTerminial.ForeColor = Color.Red;
+                                        this.rtbTerminial.Text = string.Format("查询已成功执行,但有错误。\r{0}\r", cp.Body);
+                                    }
+                                    else
+                                    {
+                                        this.tabControlLog.SelectTab(tbpSqlData);
+                                        this.lbSQLMsg.ForeColor = Color.Green;
+                                        this.lbSQLMsg.Text = string.Format("查询已成功执行     | {0} 行", ds.Tables[0].Rows.Count);
+                                        this.dataGridView1.DataSource = ds?.Tables[0];
+                                    }
+                                    this.dataGridView1.Tag = ds;
+
+                                });
+                            }
+                            else
+                            {
+                                this.BeginInvoke((MethodInvoker)delegate
+                                {
+                                    this.tabControlLog.SelectTab(tbpTerminal);
+                                    try
+                                    {
+                                        this.rtbTerminial.ForeColor = Color.Green;
+                                        string rs = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(cp.Body);
+                                        this.rtbTerminial.Text = string.Format("{0}已成功执行     | (受影响行{1})\r", cp.Key, rs);
+                                    }
+                                    catch
+                                    {
+                                        this.rtbTerminial.ForeColor = Color.Red;
+                                        this.rtbTerminial.Text = string.Format("{0}已成功执行,但有错误。\r{1}\r", cp.Key, cp.Body);
+                                    }
+
+
+                                });
+                            }
                         }
                         break;
                 }
@@ -1090,8 +1146,18 @@ namespace AuWriter
         {
             if (lbLog.SelectedIndex > -1)
             {
-                tbpContent.Visible = true;
-                tbpContent.Text = lbLog.Items[lbLog.SelectedIndex].ToString().Replace("\t", "\r\n");
+                //tbpContent.Visible = true;
+                //tbpContent.Text = lbLog.Items[lbLog.SelectedIndex].ToString().Replace("\t", "\r\n");
+                try
+                {
+                    Clipboard.SetDataObject(lbLog.Items[lbLog.SelectedIndex].ToString().Replace("\t", "\r\n"));
+                    this.toolStripStatusLabel1.Text = "提示:已复制到剪切板";
+                }
+                catch (Exception ex)
+                {
+                    this.toolStripStatusLabel1.Text = "";
+                    MessageBox.Show("选中内容放入粘贴板失败，详情：" + ex);
+                }
             }
         }
 
@@ -1315,6 +1381,7 @@ namespace AuWriter
             string route = string.Empty;
             string session = GetTreeViewRoute(tvTerminal.SelectedNode, ref route);
             tvTerminal.Tag = session + ":" + route;
+            toolStripStatusLabel1.Text = string.Format("已连接项目 {0} 个", tvTerminal.Nodes.Count);
         }
 
         private void tsmRemoteResource_Click(object sender, EventArgs e)
@@ -1736,6 +1803,22 @@ namespace AuWriter
         private void btnDownloadCancle_Click(object sender, EventArgs e)
         {
             this.IsDownFile = false;
+        }
+
+        private void dataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            var grid = sender as DataGridView;
+            var rowIdx = (e.RowIndex + 1).ToString();
+
+            var centerFormat = new StringFormat()
+            {
+                // right alignment might actually make more sense for numbers  
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+
+            var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+            e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
     }
 }

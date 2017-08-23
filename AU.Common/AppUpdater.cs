@@ -187,31 +187,42 @@ namespace AU.Common
 
                 if (auapplication != null && !string.IsNullOrEmpty(auapplication.EntryPoint))
                 {
-                    if (auapplication.CloseType == 0)
-                        AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
-                    else
+                    do
                     {
-                        string p = this.TargetAuPackage.LocalPath + "\\" + auapplication.Location + "\\" + auapplication.ApplicationId;
-                        if (System.IO.File.Exists(p))
-                        {
-                            Process pro = System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
-                            pro.WaitForExit(2000);
-                            //防止未关闭进程关闭一次
+                        NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "准备关闭应用: " + auapplication.EntryPoint + "请稍后…"));
+                        if (auapplication.CloseType == 0)
                             AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
-                            //如果消息服务器顺便关闭MQ进程
-                            if (SystemType.coreserver.ToString() == upgradeFiles.SubSystem)
+                        else
+                        {
+                            string p = this.TargetAuPackage.LocalPath + "\\" + auapplication.Location + "\\" + auapplication.ApplicationId;
+                            if (System.IO.File.Exists(p))
                             {
-                                AU.Common.Utility.ToolsHelp.CloseApplication("MQ.BrokerServer.exe");
+                                Process pro = System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
+                                pro.WaitForExit(2000);
+                                //防止未关闭进程关闭一次
+                                AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
+                                //如果消息服务器顺便关闭MQ进程
+                                if (SystemType.coreserver.ToString() == upgradeFiles.SubSystem)
+                                {
+                                    do
+                                    {
+                                        AU.Common.Utility.ToolsHelp.CloseApplication("MQ.BrokerServer.exe");
+                                    } while (AU.Common.Utility.ToolsHelp.IsRunApplication("MQ.BrokerServer.exe"));
+                                }
                             }
                         }
-                    }
+                        System.Threading.Thread.Sleep(2000);
+
+                    } while (AU.Common.Utility.ToolsHelp.IsRunApplication(auapplication.EntryPoint));
+
+                    NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "已成功关闭应用:" + auapplication.EntryPoint));
                 }
                 //清除备份路径
                 if (System.IO.Directory.Exists(this.AuBackupPath))
                 {
                     System.IO.Directory.Move(this.AuBackupPath, this.AuBackupPath.TrimEnd('\\') + "_" + DateTime.Now.ToString("yyyyMMddHHmm"));
+                    NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "检测备份信息……"));
                 }
-
                 int index = 0;
                 NotifyMessage(new Common.NotifyMessage(NotifyType.Process, "请稍后...", upgradeFiles.LocalAuList.Files.Count));
                 foreach (var m in upgradeFiles.LocalAuList.Files)
@@ -254,6 +265,10 @@ namespace AU.Common
                     ToolsHelp.CreateDirtory(this.AuBackupPath + "\\" + AuPackage.PackageName);
                     System.IO.File.Copy(this.TargetAuPackage.PackagePath, this.AuBackupPath + "\\" + AuPackage.PackageName, true);
                 }
+                else
+                {
+                    NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "警告:未找目标包信息！"));
+                }
                 //升级 根据文件类型选择升级？
                 try
                 {
@@ -262,8 +277,18 @@ namespace AU.Common
                 catch (Exception e)
                 {
                     NotifyMessage(new Common.NotifyMessage(NotifyType.Error, "复制文件失败," + e.Message, e));
+                    //删除包信息
+                    try
+                    {
+                        AU.Common.Utility.ToolsHelp.DeleteFile(this.TargetAuPackage.PackagePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "警告:删除目标包信息失败,详情:" + ex.Message, e));
+                    }
                     //还原
                     this.Rollback();
+                    NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "已成功执行升级回滚！"));
                     throw e;
                 }
                 System.IO.Directory.Delete(upgradeFiles.LocalPath, true);
@@ -296,7 +321,18 @@ namespace AU.Common
             {
                 if (this.TargetAuPackage.LocalAuList != null && this.TargetAuPackage.LocalAuList.Application.StartType == 1)
                 {
-                    AU.Common.Utility.ToolsHelp.CloseApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint);
+                    do
+                    {
+                        try
+                        {
+                            AU.Common.Utility.ToolsHelp.CloseApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint);
+                        }
+                        catch (Exception e)
+                        {
+                            NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "警告:回滚版本关闭程序" + this.TargetAuPackage.LocalAuList.Application.EntryPoint + "失败,详情:" + e.Message, e));
+                        }
+                        System.Threading.Thread.Sleep(1000);
+                    } while (AU.Common.Utility.ToolsHelp.IsRunApplication(this.TargetAuPackage.LocalAuList.Application.EntryPoint));
                 }
 
                 AU.Common.Utility.ToolsHelp.CopyFile(this.AuBackupPath, this.SystemPath);

@@ -10,6 +10,10 @@ namespace AU.Common
     public class CommandType
     {
         /// <summary>
+        /// 心跳
+        /// </summary>
+        public static readonly string HEART = "HEART";
+        /// <summary>
         /// 登陆
         /// </summary>
         public static readonly string LOGIN = "LOGIN";

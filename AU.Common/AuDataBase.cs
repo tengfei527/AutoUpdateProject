@@ -97,10 +97,10 @@ namespace AU.Common
                     {
                         //事务级别
                         System.Data.SqlClient.SqlTransaction tran = conn.BeginTransaction();
-                        bool isCommit = false;
+
                         int count = OneCardSystem.DAL.DBUtility.SqlHelper.ExecuteNonQuery(tran, System.Data.CommandType.Text, scriptstr);
-                        if (isCommit)
-                            tran.Commit();
+                        tran.Commit();
+                        result = Newtonsoft.Json.JsonConvert.SerializeObject(count);
                     }
 
                     conn.Close();

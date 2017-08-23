@@ -9,7 +9,7 @@ namespace Monitor.Common
     {
         private ListBox listBox;
         private delegate void VoidAction();
-
+        private log4net.ILog log = log4net.LogManager.GetLogger(typeof(ListTextWriter));
         public ListTextWriter(ListBox box, long lastCount = 3000)
         {
             listBox = box;
@@ -38,10 +38,13 @@ namespace Monitor.Common
             {
                 try
                 {
-                    listBox.Items.Insert(0, string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value));
+                    string msg = string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value);
+                    log.Info(msg);
+                    listBox.Items.Insert(0, msg);
                 }
                 catch (Exception e)
                 {
+                    log.Error(e);
                     listBox.Items.Insert(0, e.Message);
                 }
             };
@@ -54,10 +57,13 @@ namespace Monitor.Common
             {
                 try
                 {
+                    string msg = string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value);
+                    log.Info(msg);
                     listBox.Items.Insert(0, string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value));
                 }
                 catch (Exception e)
                 {
+                    log.Error(e);
                     listBox.Items.Insert(0, e.Message);
                 }
             };
