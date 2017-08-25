@@ -244,7 +244,7 @@ namespace AuWriter
             {
                 Uri pub = new Uri(this.BaseUpdatePath);
                 string url = "http://localhost:" + pub.Port;
-                var nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(url), new MyBootstrapper());
+                var nancySelfHost = new Nancy.Hosting.Self.NancyHost(new Uri(url));
                 nancySelfHost.Start();
                 Console.WriteLine("NancySelfHost已启动。。");
                 //System.Diagnostics.Process.Start(url);
@@ -407,7 +407,7 @@ namespace AuWriter
                     {
                         aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.VehicleManageWPF.exe";
                         aulist.Application.StartType = 1;
-                        aulist.Application.StartArgs = "";
+                        aulist.Application.StartArgs = "-m";
                         aulist.Application.CloseType = 0;
                         aulist.Application.CloseArgs = "";
                         aulist.Application.Location = ".";

@@ -65,8 +65,12 @@ namespace AuUpdate
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);                    
+                    Console.WriteLine(DateTime.Now.ToString() + ":" + e);
                 }
+            }
+            else
+            {
+                Console.WriteLine(DateTime.Now.ToString() + ":" + this.ApplicationName + "进程已存在!");
             }
 
             return false;
@@ -77,7 +81,7 @@ namespace AuUpdate
             string err = string.Empty;
             if (!CloseAuClient(out err))
             {
-                Console.WriteLine("关闭进程[" + this.ApplicationName + "]失败," + err);
+                Console.WriteLine(DateTime.Now.ToString() + ":" + "关闭进程[" + this.ApplicationName + "]失败," + err);
 
                 return false;
             }
@@ -89,7 +93,7 @@ namespace AuUpdate
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(DateTime.Now.ToString() + ":" + e);
 
                 return false;
             }

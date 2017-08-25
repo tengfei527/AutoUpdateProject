@@ -23,12 +23,31 @@ namespace AuClient
                             AU.Common.Utility.ToolsHelp.CloseApplication("AuClient.exe", System.Diagnostics.Process.GetCurrentProcess().Id);
 
                         }
-                        catch
+                        catch(Exception e)
                         {
-
+                            Console.WriteLine(e);
                         }
                         return;
                     }
+                case "-r":
+                case "/r":
+                    {
+                        do
+                        {
+                            try
+                            {
+                                AU.Common.Utility.ToolsHelp.CloseApplication("AuClient.exe", System.Diagnostics.Process.GetCurrentProcess().Id);
+
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
+
+                            System.Threading.Thread.Sleep(2000);
+                        } while (AU.Common.Utility.ToolsHelp.IsRunApplication("AuClient.exe", System.Diagnostics.Process.GetCurrentProcess().Id));
+                    }
+                    break;
                 default:
                     break;
             }

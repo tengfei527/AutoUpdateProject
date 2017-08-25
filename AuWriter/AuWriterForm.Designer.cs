@@ -85,6 +85,7 @@
             this.tbpSqlData = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lbSQLMsg = new System.Windows.Forms.Label();
             this.tbpRes = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.lb_remoteexplorer = new System.Windows.Forms.Label();
@@ -134,7 +135,6 @@
             this.BrowseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RefreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.lbSQLMsg = new System.Windows.Forms.Label();
             this.tbpBase.SuspendLayout();
             this.panelAuclient.SuspendLayout();
             this.gbPublish.SuspendLayout();
@@ -311,7 +311,7 @@
             this.gbPublish.Controls.Add(this.btnProduce);
             this.gbPublish.Location = new System.Drawing.Point(3, 95);
             this.gbPublish.Name = "gbPublish";
-            this.gbPublish.Size = new System.Drawing.Size(832, 399);
+            this.gbPublish.Size = new System.Drawing.Size(634, 399);
             this.gbPublish.TabIndex = 16;
             this.gbPublish.TabStop = false;
             this.gbPublish.Visible = false;
@@ -770,6 +770,16 @@
             this.groupBox1.Size = new System.Drawing.Size(764, 31);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            // 
+            // lbSQLMsg
+            // 
+            this.lbSQLMsg.AutoSize = true;
+            this.lbSQLMsg.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lbSQLMsg.Location = new System.Drawing.Point(732, 17);
+            this.lbSQLMsg.Name = "lbSQLMsg";
+            this.lbSQLMsg.Size = new System.Drawing.Size(29, 12);
+            this.lbSQLMsg.TabIndex = 0;
+            this.lbSQLMsg.Text = "描述";
             // 
             // tbpRes
             // 
@@ -1278,16 +1288,6 @@
             this.notifyIcon1.Text = "E7 升级包发布服务器";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
-            // 
-            // lbSQLMsg
-            // 
-            this.lbSQLMsg.AutoSize = true;
-            this.lbSQLMsg.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lbSQLMsg.Location = new System.Drawing.Point(732, 17);
-            this.lbSQLMsg.Name = "lbSQLMsg";
-            this.lbSQLMsg.Size = new System.Drawing.Size(29, 12);
-            this.lbSQLMsg.TabIndex = 0;
-            this.lbSQLMsg.Text = "描述";
             // 
             // AuWriterForm
             // 

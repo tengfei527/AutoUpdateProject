@@ -262,13 +262,13 @@ namespace AU.Common.Utility
         /// 关闭主应用程序
         /// </summary>
         /// <param name="applicationName"></param>
-        public static bool IsRunApplication(string applicationName)
+        public static bool IsRunApplication(string applicationName, int id = 0)
         {
             applicationName = applicationName.ToLower();
             System.Diagnostics.Process[] allProcess = System.Diagnostics.Process.GetProcesses();
             foreach (System.Diagnostics.Process p in allProcess)
             {
-                if (p.ProcessName.ToLower() + ".exe" == applicationName)
+                if (p.ProcessName.ToLower() + ".exe" == applicationName && (id == 0 || p.Id != id))
                 {
                     return true;
                 }

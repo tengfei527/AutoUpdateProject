@@ -190,26 +190,33 @@ namespace AU.Common
                     do
                     {
                         NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "准备关闭应用: " + auapplication.EntryPoint + "请稍后…"));
-                        if (auapplication.CloseType == 0)
-                            AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
-                        else
+                        try
                         {
-                            string p = this.TargetAuPackage.LocalPath + "\\" + auapplication.Location + "\\" + auapplication.ApplicationId;
-                            if (System.IO.File.Exists(p))
-                            {
-                                Process pro = System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
-                                pro.WaitForExit(2000);
-                                //防止未关闭进程关闭一次
+                            if (auapplication.CloseType == 0)
                                 AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
-                                //如果消息服务器顺便关闭MQ进程
-                                if (SystemType.coreserver.ToString() == upgradeFiles.SubSystem)
+                            else
+                            {
+                                string p = this.TargetAuPackage.LocalPath + "\\" + auapplication.Location + "\\" + auapplication.ApplicationId;
+                                if (System.IO.File.Exists(p))
                                 {
-                                    do
+                                    Process pro = System.Diagnostics.Process.Start(p, auapplication.CloseArgs);
+                                    pro.WaitForExit(2000);
+                                    //防止未关闭进程关闭一次
+                                    AU.Common.Utility.ToolsHelp.CloseApplication(auapplication.EntryPoint);
+                                    //如果消息服务器顺便关闭MQ进程
+                                    if (SystemType.coreserver.ToString() == upgradeFiles.SubSystem)
                                     {
-                                        AU.Common.Utility.ToolsHelp.CloseApplication("MQ.BrokerServer.exe");
-                                    } while (AU.Common.Utility.ToolsHelp.IsRunApplication("MQ.BrokerServer.exe"));
+                                        do
+                                        {
+                                            AU.Common.Utility.ToolsHelp.CloseApplication("MQ.BrokerServer.exe");
+                                        } while (AU.Common.Utility.ToolsHelp.IsRunApplication("MQ.BrokerServer.exe"));
+                                    }
                                 }
                             }
+                        }
+                        catch (Exception e)
+                        {
+                            NotifyMessage(new Common.NotifyMessage(NotifyType.Normal, "警告:关闭应用: " + auapplication.EntryPoint + "异常，" + e.Message));
                         }
                         System.Threading.Thread.Sleep(2000);
 
