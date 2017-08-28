@@ -23,13 +23,14 @@ namespace Repository.EntityFramework.ModelConfigurations
             Property(c => c.ID)
                 .IsRequired()
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(c => c.Rid)
+                .IsRequired();
             Property(c => c.ProjectNo)
                 .IsRequired()
                 .HasMaxLength(36);
             Property(c => c.Name)
                 .IsRequired()
                 .HasMaxLength(30);
-           
 
             ToTable("Project");
         }

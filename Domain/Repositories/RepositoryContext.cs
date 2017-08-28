@@ -98,14 +98,14 @@ namespace Domain.Repositories
         /// <param name="obj">The object to be registered.</param>
         public virtual void RegisterNew<TAggregateRoot>(TAggregateRoot obj) where TAggregateRoot : class, IAggregateRoot
         {
-            if (obj.ID.Equals(Guid.Empty))
+            if (obj.Rid.Equals(Guid.Empty))
                 throw new ArgumentException("The ID of the object is empty.", "obj");
             //if (modifiedCollection.ContainsKey(obj.ID))
-            if (localModifiedCollection.Value.ContainsKey(obj.ID))
+            if (localModifiedCollection.Value.ContainsKey(obj.Rid))
                 throw new InvalidOperationException("The object cannot be registered as a new object since it was marked as modified.");
-            if (localNewCollection.Value.ContainsKey(obj.ID))
+            if (localNewCollection.Value.ContainsKey(obj.Rid))
                 throw new InvalidOperationException("The object has already been registered as a new object.");
-            localNewCollection.Value.Add(obj.ID, obj);
+            localNewCollection.Value.Add(obj.Rid, obj);
             localCommitted.Value = false;
         }
         /// <summary>
@@ -115,12 +115,12 @@ namespace Domain.Repositories
         /// <param name="obj">The object to be registered.</param>
         public virtual void RegisterModified<TAggregateRoot>(TAggregateRoot obj) where TAggregateRoot : class, IAggregateRoot
         {
-            if (obj.ID.Equals(Guid.Empty))
+            if (obj.Rid.Equals(Guid.Empty))
                 throw new ArgumentException("The ID of the object is empty.", "obj");
-            if (localDeletedCollection.Value.ContainsKey(obj.ID))
+            if (localDeletedCollection.Value.ContainsKey(obj.Rid))
                 throw new InvalidOperationException("The object cannot be registered as a modified object since it was marked as deleted.");
-            if (!localModifiedCollection.Value.ContainsKey(obj.ID) && !localNewCollection.Value.ContainsKey(obj.ID))
-                localModifiedCollection.Value.Add(obj.ID, obj);
+            if (!localModifiedCollection.Value.ContainsKey(obj.Rid) && !localNewCollection.Value.ContainsKey(obj.Rid))
+                localModifiedCollection.Value.Add(obj.Rid, obj);
             localCommitted.Value = false;
         }
         /// <summary>
@@ -130,18 +130,18 @@ namespace Domain.Repositories
         /// <param name="obj">The object to be registered.</param>
         public virtual void RegisterDeleted<TAggregateRoot>(TAggregateRoot obj) where TAggregateRoot : class, IAggregateRoot
         {
-            if (obj.ID.Equals(Guid.Empty))
+            if (obj.Rid.Equals(Guid.Empty))
                 throw new ArgumentException("The ID of the object is empty.", "obj");
-            if (localNewCollection.Value.ContainsKey(obj.ID))
+            if (localNewCollection.Value.ContainsKey(obj.Rid))
             {
-                if (localNewCollection.Value.Remove(obj.ID))
+                if (localNewCollection.Value.Remove(obj.Rid))
                     return;
             }
-            bool removedFromModified = localModifiedCollection.Value.Remove(obj.ID);
+            bool removedFromModified = localModifiedCollection.Value.Remove(obj.Rid);
             bool addedToDeleted = false;
-            if (!localDeletedCollection.Value.ContainsKey(obj.ID))
+            if (!localDeletedCollection.Value.ContainsKey(obj.Rid))
             {
-                localDeletedCollection.Value.Add(obj.ID, obj);
+                localDeletedCollection.Value.Add(obj.Rid, obj);
                 addedToDeleted = true;
             }
             localCommitted.Value = !(removedFromModified || addedToDeleted);

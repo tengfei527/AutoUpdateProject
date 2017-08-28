@@ -18,8 +18,9 @@ namespace Repository.EntityFramework
         /// 构造函数，初始化一个新的<c>ByteartRetailDbContext</c>实例。
         /// </summary>
         public AuDbContext()
-            : base("Au")
+            : base("Audb")
         {
+            //Database.SetInitializer<AuDbContext>(null);
             this.Configuration.AutoDetectChangesEnabled = true;
             this.Configuration.LazyLoadingEnabled = true;
         }

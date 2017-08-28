@@ -28,7 +28,7 @@ namespace Domain.Model
             IAggregateRoot ar = obj as IAggregateRoot;
             if (ar == null)
                 return false;
-            return this.id == ar.ID;
+            return this.id == ar.Rid;
         }
         /// <summary>
         /// 用作特定类型的哈希函数。
@@ -46,7 +46,7 @@ namespace Domain.Model
         /// <summary>
         /// 获取当前领域实体类的全局唯一标识。
         /// </summary>
-        public Guid ID
+        public Guid Rid
         {
             get { return id; }
             set { id = value; }

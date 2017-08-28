@@ -66,7 +66,7 @@ namespace Repository.EntityFramework
 
         protected override TAggregateRoot DoGetByKey(Guid key)
         {
-            return efContext.Context.Set<TAggregateRoot>().Where(p => p.ID == key).First();
+            return efContext.Context.Set<TAggregateRoot>().Where(p => p.Rid == key).First();
         }
 
         protected override IEnumerable<TAggregateRoot> DoGetAll(ISpecification<TAggregateRoot> specification, Expression<Func<TAggregateRoot, dynamic>> sortPredicate, SortOrder sortOrder)

@@ -12,6 +12,10 @@ namespace Domain.Model
     public class Project : AggregateRoot
     {
         /// <summary>
+        /// 编号
+        /// </summary>
+        public long ID { get; set; }
+        /// <summary>
         /// 项目编号
         /// </summary>
         public string ProjectNo { get; set; }
@@ -58,14 +62,10 @@ namespace Domain.Model
         /// <summary>
         /// 最后更新时间
         /// </summary>
-        public DateTime LastUpdate { get; set; }
+        public DateTime? LastUpdate { get; set; } = DateTime.Today;
         /// <summary>
         /// 项目编号
         /// </summary>
         public string Gid { get; set; }
-        /// <summary>
-        /// 记录标识
-        /// </summary>
-        public string Rid { get; set; }
     }
 }
