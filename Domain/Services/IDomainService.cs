@@ -11,7 +11,7 @@ namespace Domain.Services
     public interface IDomainService
     {
         #region Methods 
-       
+
         #endregion
     }
 }

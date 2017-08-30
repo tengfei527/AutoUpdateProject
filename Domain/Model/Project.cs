@@ -12,10 +12,6 @@ namespace Domain.Model
     public class Project : AggregateRoot
     {
         /// <summary>
-        /// 编号
-        /// </summary>
-        public long ID { get; set; }
-        /// <summary>
         /// 项目编号
         /// </summary>
         public string ProjectNo { get; set; }
@@ -50,11 +46,7 @@ namespace Domain.Model
         /// <summary>
         /// 标识 0=标准 1=非标
         /// </summary>
-        public int Flag { get; set; }
-        /// <summary>
-        /// 设定版本
-        /// </summary>
-        public string Version { get; set; }
+        public int Flag { get; set; } 
         /// <summary>
         /// 升级状态
         /// </summary>

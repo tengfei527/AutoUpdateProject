@@ -20,7 +20,7 @@ namespace TestDomain
 
         private void button1_Click(object sender, EventArgs e)
         {
-              //var context = Infrastructure.ServiceLocator.Instance.GetService<Domain.Repositories.IRepositoryContext>();
+              var context1 = Infrastructure.ServiceLocator.Instance.GetService<Domain.Repositories.IRepositoryContext>();
             Domain.Repositories.IRepositoryContext context = new Repository.EntityFramework.EntityFrameworkRepositoryContext();
             EntityFrameworkRepository<Project> project = new EntityFrameworkRepository<Project>(context);
 

@@ -53,9 +53,8 @@
     <Compile Include="EntityFramework\EntityFrameworkRepository.cs" />
     <Compile Include="EntityFramework\EntityFrameworkRepositoryContext.cs" />
     <Compile Include="EntityFramework\IEntityFrameworkRepositoryContext.cs" />
-    <Compile Include="EntityFramework\ModelConfigurations\ProjectConfiguration.cs" />
+    <Compile Include="EntityFramework\ModelConfigurations\CommonConfiguration.cs" />
     <Compile Include="EntityFramework\SortByExtension.cs" />
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

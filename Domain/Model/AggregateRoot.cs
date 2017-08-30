@@ -8,7 +8,8 @@ namespace Domain.Model
     public abstract class AggregateRoot : IAggregateRoot
     {
         #region Protected Fields
-        protected Guid id;
+        private long id;
+        protected Guid rid;
         #endregion
 
         #region Public Methods
@@ -28,7 +29,7 @@ namespace Domain.Model
             IAggregateRoot ar = obj as IAggregateRoot;
             if (ar == null)
                 return false;
-            return this.id == ar.Rid;
+            return this.rid == ar.Rid;
         }
         /// <summary>
         /// 用作特定类型的哈希函数。
@@ -38,7 +39,7 @@ namespace Domain.Model
         /// </remarks>
         public override int GetHashCode()
         {
-            return this.id.GetHashCode();
+            return this.rid.GetHashCode();
         }
         #endregion
 
@@ -48,9 +49,13 @@ namespace Domain.Model
         /// </summary>
         public Guid Rid
         {
-            get { return id; }
-            set { id = value; }
+            get { return rid; }
+            set { rid = value; }
         }
+        /// <summary>
+        /// 序号
+        /// </summary>
+        public long Id { get => id; set => id = value; }
 
         #endregion
     }

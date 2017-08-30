@@ -10,6 +10,5 @@ namespace Domain
     /// </summary>
     public interface IAggregateRoot : IEntity
     {
-
     }
 }

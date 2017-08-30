@@ -3,6 +3,7 @@ using Repository.EntityFramework.ModelConfigurations;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace Repository.EntityFramework
         public AuDbContext()
             : base("Audb")
         {
-            //Database.SetInitializer<AuDbContext>(null);
+            Database.SetInitializer<AuDbContext>(null);
             this.Configuration.AutoDetectChangesEnabled = true;
             this.Configuration.LazyLoadingEnabled = true;
         }
@@ -34,7 +35,13 @@ namespace Repository.EntityFramework
         {
             get { return Set<Project>(); }
         }
-                 
+        /// <summary>
+        /// 操作员
+        /// </summary>
+        public DbSet<Operator> Operators
+        {
+            get { return Set<Operator>(); }
+        }
         #endregion
 
         #region Protected Methods
@@ -42,8 +49,24 @@ namespace Repository.EntityFramework
         {
             modelBuilder
                 .Configurations
-                .Add(new ProjectConfiguration());
-               
+                .Add(new CommonConfiguration<Project>(d =>
+                {
+                    d.Property(c => c.ProjectNo)
+                         .IsRequired()
+                         .HasMaxLength(36);
+                    d.Property(c => c.Name)
+                        .IsRequired()
+                        .HasMaxLength(30);
+                }));
+
+            modelBuilder
+                .Configurations
+                .Add(new CommonConfiguration<Operator>(d =>
+                {
+                    d.Property(c => c.LoginId)
+                         .IsRequired();
+                }));
+
             base.OnModelCreating(modelBuilder);
         }
         #endregion
