@@ -12,13 +12,13 @@ namespace Modules
     {
         public HomeModule()
         {
-            Get["simple"] = args =>
+            Get["/Home/simple"] = args =>
              {
                  var model = new RatPack { FirstName = "Frank" };
                  return View["simple", model];
              };
 
-            Get["Hello"] = _ => "Welcome to my home"; 
+            Get["/Home/Hello"] = _ => "Welcome to my home"; 
 
             //主页
             Get["/"] = r =>

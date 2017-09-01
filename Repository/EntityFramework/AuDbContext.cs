@@ -21,7 +21,7 @@ namespace Repository.EntityFramework
         public AuDbContext()
             : base("Audb")
         {
-            Database.SetInitializer<AuDbContext>(null);
+            //Database.SetInitializer<AuDbContext>(null);
             this.Configuration.AutoDetectChangesEnabled = true;
             this.Configuration.LazyLoadingEnabled = true;
         }

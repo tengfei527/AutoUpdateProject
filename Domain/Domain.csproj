@@ -61,6 +61,7 @@
     <Compile Include="Repositories\SortOrder.cs" />
     <Compile Include="Services\DomainService.cs" />
     <Compile Include="Services\IDomainService.cs" />
+    <Compile Include="Services\IProjectService.cs" />
     <Compile Include="Specifications\AndNotSpecification.cs" />
     <Compile Include="Specifications\AndSpecification.cs" />
     <Compile Include="Specifications\AnySpecification.cs" />

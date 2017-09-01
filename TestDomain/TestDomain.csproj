@@ -110,6 +110,10 @@
       <Project>{95792eba-c99d-4e8f-bbad-24f26f735b92}</Project>
       <Name>Events</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Infrastructure.Caching\Infrastructure.Caching.csproj">
+      <Project>{e489e1f5-b8c1-4f75-ac74-e7daf134a451}</Project>
+      <Name>Infrastructure.Caching</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj">
       <Project>{39345aa7-69fb-455d-8c61-b0805d88d84e}</Project>
       <Name>Infrastructure</Name>
