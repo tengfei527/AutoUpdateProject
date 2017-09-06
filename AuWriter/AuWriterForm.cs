@@ -61,6 +61,14 @@ namespace AuWriter
             {"RESOURCE",new List<string>(){"SEND_DISKS","GET_DIRECTORY_DETIAL"}},
             {"SCRIPT",new List<string>(){"select","insert","update","delete","other"}},
         };
+        /// <summary>
+        /// 车场应用
+        /// </summary>
+        public readonly string VmsApplication = "OneCardSystem.VehicleManageWPF.exe";
+        /// <summary>
+        /// API服务应用
+        /// </summary>
+        public readonly string CmsApplication = "OneCardSystem.SyncTokenControl.exe";
         #endregion
         /// <summary>
         /// 构造函数
@@ -377,15 +385,27 @@ namespace AuWriter
                     FileVersionInfo m_fvi = FileVersionInfo.GetVersionInfo(this.txtSrc.Text);
                     aulist.Application.Version = string.Format("{0}.{1}.{2}.{3}", m_fvi.FileMajorPart, m_fvi.FileMinorPart, m_fvi.FileBuildPart, m_fvi.FilePrivatePart);
                     strEntryPoint = this.txtSrc.Text.Trim().Substring(this.txtSrc.Text.Trim().LastIndexOf(@"\") + 1, this.txtSrc.Text.Trim().Length - this.txtSrc.Text.Trim().LastIndexOf(@"\") - 1);
+                    aulist.Application.Location = ".";
                     if (strEntryPoint.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
                     {
                         //入口点
                         aulist.Application.EntryPoint = strEntryPoint;
                         aulist.Application.StartType = 1;
+                        aulist.Application.StartArgs = "-m";
+                        if (strEntryPoint.EndsWith(CmsApplication, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            aulist.Application.CloseType = 1;
+                            aulist.Application.CloseArgs = "-u";
+                            aulist.Application.Location = ".\\Manage\\";
+                        }
+                        else if (strEntryPoint.EndsWith(VmsApplication, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            aulist.Application.CloseType = 0;
+                            aulist.Application.CloseArgs = "-u";
+                        }
                     }
                     aulist.Application.ApplicationId = strEntryPoint;
                     dr = this.txtSrc.Text.Substring(0, this.txtSrc.Text.LastIndexOf(@"\"));
-                    aulist.Application.Location = ".";
                 }
                 else
                 {
@@ -393,9 +413,9 @@ namespace AuWriter
                     aulist.Application.Version = this.PublishVersion;
                     if (SubSystem == AU.Common.SystemType.coreserver.ToString())
                     {
-                        if (File.Exists(dr + "\\Manage\\OneCardSystem.SyncTokenControl.exe"))
+                        if (File.Exists(dr + "\\Manage\\" + CmsApplication))
                         {
-                            aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.SyncTokenControl.exe";
+                            aulist.Application.EntryPoint = aulist.Application.ApplicationId = CmsApplication;
                             aulist.Application.StartType = 1;
                             aulist.Application.StartArgs = "-m";
                             aulist.Application.CloseType = 1;
@@ -405,11 +425,11 @@ namespace AuWriter
                     }
                     else if (SubSystem == AU.Common.SystemType.vmsclient.ToString())
                     {
-                        aulist.Application.EntryPoint = aulist.Application.ApplicationId = "OneCardSystem.VehicleManageWPF.exe";
+                        aulist.Application.EntryPoint = aulist.Application.ApplicationId = VmsApplication;
                         aulist.Application.StartType = 1;
                         aulist.Application.StartArgs = "-m";
                         aulist.Application.CloseType = 0;
-                        aulist.Application.CloseArgs = "";
+                        aulist.Application.CloseArgs = "-u";
                         aulist.Application.Location = ".";
                     }
                 }

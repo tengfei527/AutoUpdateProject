@@ -133,6 +133,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
@@ -173,6 +174,23 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Config\log4net.unix.config" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.eot" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.eot_v=4.3.0" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.svg_v=4.3.0" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.ttf_v=4.3.0" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.woff" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.woff2_v=4.3.0" />
+    <None Include="Content\font-awesome\fonts\fontawesome-webfont.woff_v=4.3.0" />
+    <None Include="Content\fonts\fontawesome-webfont.eot" />
+    <None Include="Content\fonts\fontawesome-webfont.ttf" />
+    <None Include="Content\fonts\fontawesome-webfont.woff" />
+    <None Include="Content\fonts\fontawesome-webfont.woff2" />
+    <None Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -186,11 +204,13 @@
     </Compile>
     <None Include="supersocket.cmd" />
     <None Include="supersocket.sh" />
+    <None Include="Views\edit.cshtml" />
     <None Include="Views\Shard\layout-error.cshtml" />
     <None Include="Views\Shard\layout.cshtml" />
     <None Include="Views\error.cshtml" />
     <None Include="Views\simple.cshtml" />
     <None Include="Views\index.cshtml" />
+    <None Include="Views\Tree\tree.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -237,7 +257,29 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="auwriter.ico" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\codemirror\ambiance.css" />
+    <Content Include="Content\css\codemirror\codemirror.css" />
+    <Content Include="Content\css\dataTables\dataTables.bootstrap.css" />
+    <Content Include="Content\css\font-awesome.css" />
+    <Content Include="Content\css\jsTree\style.min.css" />
+    <Content Include="Content\css\style.min.css" />
     <Content Include="Content\face.png" />
+    <Content Include="Content\font-awesome\css\font-awesome.css" />
+    <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\32px.png" />
+    <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\content.min.js" />
+    <Content Include="Content\js\jquery-2.1.1.min.js" />
+    <Content Include="Content\js\jquery-2.1.4.min.js" />
+    <Content Include="Content\js\jstree.min.js" />
+    <Content Include="Content\js\plugins\codemirror\codemirror.js" />
+    <Content Include="Content\js\plugins\codemirror\mode\javascript\javascript.js" />
+    <Content Include="Content\js\plugins\dataTables\dataTables.bootstrap.js" />
+    <Content Include="Content\js\plugins\dataTables\jquery.dataTables.js" />
+    <Content Include="Content\js\plugins\jquery.metisMenu.js" />
     <Content Include="Content\main.css" />
     <Content Include="Content\scripts.js" />
   </ItemGroup>

@@ -18,7 +18,7 @@ namespace Modules
                  return View["simple", model];
              };
 
-            Get["/Home/Hello"] = _ => "Welcome to my home"; 
+            Get["/Home/Hello"] = _ => "Welcome to my home";
 
             //主页
             Get["/"] = r =>
