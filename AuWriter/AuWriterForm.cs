@@ -263,8 +263,37 @@ namespace AuWriter
                 Console.WriteLine(ex);
                 MessageBox.Show(ex.Message);
             }
+            //supersocket
+            AU.Monitor.Server.ServerBootstrap.Init(d =>
+            {
+                if (d is AU.Monitor.Server.MonitorServer)
+                {
+                    var ms = d as AU.Monitor.Server.MonitorServer;
+                    if (ms == null)
+                        return;
+                    string listen = "Socket Server Listen address: ";
 
-            AU.Monitor.Server.ServerBootstrap.Init(Ms_NewSessionConnected, Ms_SessionClosed, Ms_NewRequestReceived);
+                    Array.ForEach(ms.Listeners, l => listen += l.EndPoint.ToString());
+                    Console.WriteLine(listen);
+                    ms.NewSessionConnected += Ms_NewSessionConnected;
+                    ms.SessionClosed += Ms_SessionClosed;
+                    ms.NewRequestReceived += Ms_NewRequestReceived;
+                }
+                else if (d is SuperSocket.WebSocket.WebSocketServer)
+                {
+                    var ws = d as SuperSocket.WebSocket.WebSocketServer;
+                    if (ws == null)
+                        return;
+                    string listen = "WebSocket Listen address: ";
+                    Array.ForEach(ws.Listeners, l => listen += l.EndPoint.ToString());
+                    Console.WriteLine(listen);
+
+                    ws.NewMessageReceived += Ws_NewMessageReceived; ;//当有信息传入时
+                    ws.NewSessionConnected += Ws_NewSessionConnected; ;//当有用户连入时
+                    ws.SessionClosed += Ws_SessionClosed; ;//当有用户退出时
+                    ws.NewDataReceived += Ws_NewDataReceived; ;//当有数据传入时
+                }
+            });
             启动服务ToolStripMenuItem_Click(启动服务ToolStripMenuItem, EventArgs.Empty);
 
 
@@ -275,6 +304,28 @@ namespace AuWriter
                     imageKey.Add(keyCol[i], keyCol[i]);
 
             IO.OpenRoot(lvLocalDisk, imageKey);
+        }
+
+        private void Ws_NewDataReceived(SuperSocket.WebSocket.WebSocketSession session, byte[] value)
+        {
+            //session.Send(value, 0, value.Length);
+        }
+
+        private void Ws_SessionClosed(SuperSocket.WebSocket.WebSocketSession session, SuperSocket.SocketBase.CloseReason value)
+        {
+            Console.WriteLine("WS:{0} address: {1} Closed: {2}", session.SessionID, session.RemoteEndPoint, value);
+        }
+
+        private void Ws_NewSessionConnected(SuperSocket.WebSocket.WebSocketSession session)
+        {
+            Console.WriteLine("WS:{0} address: {1} Connected", session.SessionID, session.RemoteEndPoint);
+        }
+
+        private void Ws_NewMessageReceived(SuperSocket.WebSocket.WebSocketSession session, string value)
+        {
+            Console.WriteLine("WS:{0} address: {1} recive: {2}", session.SessionID, session.RemoteEndPoint, value);
+
+            session.Send(value);
         }
         #endregion [主窗体加载]
 

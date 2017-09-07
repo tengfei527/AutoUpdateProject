@@ -31,18 +31,43 @@ namespace AU.Monitor.Server
         {
             try
             {
-                foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
+                foreach (var d in Bootstrap.AppServers)
                 {
-                    if (string.IsNullOrEmpty(sessionid))
-                        foreach (var s in d.GetAllSessions())
-                        {
-                            s.Send(Message.Replace("\r\n", ""));
-                        }
-                    else
+                    if (d is AU.Monitor.Server.MonitorServer)
                     {
-                        var s = d.GetSessionByID(sessionid);
-                        if (s != null)
-                            s.Send(Message.Replace("\r\n", ""));
+                        var ms = d as AU.Monitor.Server.MonitorServer;
+                        if (ms == null)
+                            continue;
+
+                        if (string.IsNullOrEmpty(sessionid))
+                            foreach (var s in ms.GetAllSessions())
+                            {
+                                s.Send(Message.Replace("\r\n", ""));
+                            }
+                        else
+                        {
+                            var s = ms.GetSessionByID(sessionid);
+                            if (s != null)
+                                s.Send(Message.Replace("\r\n", ""));
+                        }
+                    }
+                    else if (d is SuperSocket.WebSocket.WebSocketServer)
+                    {
+                        var ws = d as SuperSocket.WebSocket.WebSocketServer;
+                        if (ws == null)
+                            continue;
+
+                        if (string.IsNullOrEmpty(sessionid))
+                            foreach (var s in ws.GetAllSessions())
+                            {
+                                s.Send(Message.Replace("\r\n", ""));
+                            }
+                        else
+                        {
+                            var s = ws.GetSessionByID(sessionid);
+                            if (s != null)
+                                s.Send(Message.Replace("\r\n", ""));
+                        }
                     }
                 }
             }
@@ -62,7 +87,25 @@ namespace AU.Monitor.Server
             string message = key + ":" + body;
             Send(sessionid, message);
         }
-
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="action">委托</param>
+        public static void Init(Action<IWorkItem> action)
+        {
+            try
+            {
+                foreach (var item in Bootstrap.AppServers)
+                {
+                    if (action != null)
+                        action(item);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
         /// <summary>
         /// 初始化
         /// </summary>
@@ -70,17 +113,28 @@ namespace AU.Monitor.Server
         /// <param name="SessionClosedEvent"></param>
         public static void Init(SessionHandler<MonitorSession> SessionConnectedEvent, SessionHandler<MonitorSession, CloseReason> SessionClosedEvent, RequestHandler<MonitorSession, SuperSocket.SocketBase.Protocol.StringRequestInfo> NewRequestReceived)
         {
-            foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
+            foreach (var item in Bootstrap.AppServers)
             {
-                string listen = "Listen address: ";
-                Array.ForEach(d.Listeners, l => listen += l.EndPoint.ToString());
-                Console.WriteLine(listen);
-                if (SessionConnectedEvent != null)
-                    d.NewSessionConnected += SessionConnectedEvent;
-                if (SessionClosedEvent != null)
-                    d.SessionClosed += SessionClosedEvent;
-                if (NewRequestReceived != null)
-                    d.NewRequestReceived += NewRequestReceived;
+                if (item is AU.Monitor.Server.MonitorServer)
+                {
+                    var d = item as AU.Monitor.Server.MonitorServer;
+                    if (d == null)
+                        continue;
+                    string listen = "Listen address: ";
+
+                    Array.ForEach(d.Listeners, l => listen += l.EndPoint.ToString());
+                    Console.WriteLine(listen);
+                    if (SessionConnectedEvent != null)
+                        d.NewSessionConnected += SessionConnectedEvent;
+                    if (SessionClosedEvent != null)
+                        d.SessionClosed += SessionClosedEvent;
+                    if (NewRequestReceived != null)
+                        d.NewRequestReceived += NewRequestReceived;
+                }
+                else
+                {
+
+                }
             }
         }
         /// <summary>
@@ -89,14 +143,22 @@ namespace AU.Monitor.Server
         /// <param name="sessionId"></param>
         public static void Close(string sessionId)
         {
-            foreach (AU.Monitor.Server.MonitorServer d in Bootstrap.AppServers)
+            foreach (var d in Bootstrap.AppServers)
             {
-                var session = d.GetSessionByID(sessionId);
-                if (session != null)
+                if (d is AU.Monitor.Server.MonitorServer)
                 {
-                    session.Close();
-                    break;
+                    var ms = d as AU.Monitor.Server.MonitorServer;
+                    if (ms == null)
+                        continue;
+
+                    var session = ms.GetSessionByID(sessionId);
+                    if (session != null)
+                    {
+                        session.Close();
+                        break;
+                    }
                 }
+
             }
         }
 

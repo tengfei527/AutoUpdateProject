@@ -127,6 +127,9 @@
     <Reference Include="SuperSocket.SocketService, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.Engine.1.6.6.1\lib\net40\SuperSocket.SocketService.exe</HintPath>
     </Reference>
+    <Reference Include="SuperSocket.WebSocket, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.WebSocket.1.6.6.1\lib\net40\SuperSocket.WebSocket.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -151,6 +154,7 @@
     <Compile Include="AuWriterForm.Designer.cs">
       <DependentUpon>AuWriterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\ChannelModule.cs" />
     <Compile Include="Modules\HomeModule.cs" />
     <Compile Include="Models\RatPack.cs" />
     <Compile Include="Modules\ProjectModule.cs" />
@@ -210,6 +214,7 @@
     <None Include="Views\error.cshtml" />
     <None Include="Views\simple.cshtml" />
     <None Include="Views\index.cshtml" />
+    <None Include="Views\test.cshtml" />
     <None Include="Views\Tree\tree.cshtml" />
   </ItemGroup>
   <ItemGroup>
