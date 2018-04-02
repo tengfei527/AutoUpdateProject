@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace UtilityTools
+{
+   public class ListTextWriter : TextWriter
+    {
+        private ListBox listBox;
+        private delegate void VoidAction();
+        private log4net.ILog log = log4net.LogManager.GetLogger(typeof(ListTextWriter));
+        public ListTextWriter(ListBox box, long lastCount = 3000)
+        {
+            listBox = box;
+            System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
+            {
+                while (true)
+                {
+                    if (listBox.Items.Count >= lastCount)
+                    {
+                        VoidAction action = delegate
+                        {
+                            listBox.Items.Clear();
+                        };
+                        listBox.BeginInvoke(action);
+                    }
+
+                    System.Threading.Thread.Sleep(3000);
+                }
+            });
+            t.Start();
+        }
+
+        public override void Write(string value)
+        {
+            VoidAction action = delegate
+            {
+                try
+                {
+                    string msg = string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value);
+                    log.Info(msg);
+                    listBox.Items.Insert(0, msg);
+                }
+                catch (Exception e)
+                {
+                    log.Error(e);
+                    listBox.Items.Insert(0, e.Message);
+                }
+            };
+            listBox.BeginInvoke(action);
+        }
+
+        public override void WriteLine(string value)
+        {
+            VoidAction action = delegate
+            {
+                try
+                {
+                    string msg = string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value);
+                    log.Info(msg);
+                    listBox.Items.Insert(0, string.Format("[{0:HH:mm:ss}]{1}", DateTime.Now, value));
+                }
+                catch (Exception e)
+                {
+                    log.Error(e);
+                    listBox.Items.Insert(0, e.Message);
+                }
+            };
+            listBox.BeginInvoke(action);
+        }
+
+        public override Encoding Encoding
+        {
+            get { return System.Text.Encoding.UTF8; }
+        }
+    }
+}

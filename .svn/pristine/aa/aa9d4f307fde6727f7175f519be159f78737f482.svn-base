@@ -1,0 +1,16 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Razor View Engine Demo - @Model.FirstName</title>
+    @RenderSection("Header")
+</head>
+<body>
+    <div id="body">@RenderBody()</div>
+    <div id="Error">@ThisDoesntExist()</div>
+    <div id="footer">@RenderSection("Footer")</div>
+    <div id="optional">@RenderSection("Optional", false)</div>
+</body>
+</html>

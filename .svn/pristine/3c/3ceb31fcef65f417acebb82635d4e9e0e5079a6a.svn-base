@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{39345AA7-69FB-455D-8C61-B0805D88D84E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Infrastructure</RootNamespace>
+    <AssemblyName>Infrastructure</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Interception.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.Interception.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Interception.Configuration, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.Interception.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.Interception.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Caching\CacheManager.cs" />
+    <Compile Include="Caching\CachingAttribute.cs" />
+    <Compile Include="Caching\CachingMethod.cs" />
+    <Compile Include="Caching\ICacheProvider.cs" />
+    <Compile Include="Communication\ChannelFactoryManager.cs" />
+    <Compile Include="Communication\ServiceProxy.cs" />
+    <Compile Include="DisposableObject.cs" />
+    <Compile Include="IApplicationServiceContract.cs" />
+    <Compile Include="InterceptionBehaviors\CachingBehavior.cs" />
+    <Compile Include="InterceptionBehaviors\ExceptionLoggingBehavior.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="PagedResult.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Transactions\DistributedTransactionCoordinator.cs" />
+    <Compile Include="Transactions\ITransactionCoordinator.cs" />
+    <Compile Include="Transactions\SuppressedTransactionCoordinator.cs" />
+    <Compile Include="Transactions\TransactionCoordinator.cs" />
+    <Compile Include="Transactions\TransactionCoordinatorFactory.cs" />
+    <Compile Include="UnityExtensions\GlobalSuppressions.cs" />
+    <Compile Include="UnityExtensions\UnityBehaviorExtensionElement.cs" />
+    <Compile Include="UnityExtensions\UnityCallContextInitializer.cs" />
+    <Compile Include="UnityExtensions\UnityContextChannelExtension.cs" />
+    <Compile Include="UnityExtensions\UnityContextChannelLifetimeManager.cs" />
+    <Compile Include="UnityExtensions\UnityInstanceContextExtension.cs" />
+    <Compile Include="UnityExtensions\UnityInstanceContextInitializer.cs" />
+    <Compile Include="UnityExtensions\UnityInstanceContextLifetimeManager.cs" />
+    <Compile Include="UnityExtensions\UnityInstanceProvider.cs" />
+    <Compile Include="UnityExtensions\UnityOperationContextExtension.cs" />
+    <Compile Include="UnityExtensions\UnityOperationContextLifetimeManager.cs" />
+    <Compile Include="UnityExtensions\UnityOperationContextMessageInspector.cs" />
+    <Compile Include="UnityExtensions\UnityServiceBehavior.cs" />
+    <Compile Include="UnityExtensions\UnityServiceHostBaseExtension.cs" />
+    <Compile Include="UnityExtensions\UnityServiceHostBaseLifetimeManager.cs" />
+    <Compile Include="UnityExtensions\UnityWcfExtension.cs" />
+    <Compile Include="UnityExtensions\UnityWcfLifetimeManager.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="WcfPerRequestLifetimeManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

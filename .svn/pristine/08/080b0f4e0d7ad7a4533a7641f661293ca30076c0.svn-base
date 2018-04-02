@@ -1,0 +1,19 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Razor View Engine Demo</title>
+    <link href="/Content/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/Content/js/jquery-2.1.4.min.js"></script>
+    <script src="/Content/js/bootstrap.min.js"></script>
+    @RenderSection("Header", false)
+</head>
+<body>
+    <div id="body">@RenderBody()</div>
+    <div id="footer">@RenderSection("Footer", false)</div>
+    <div id="optional">@RenderSection("Optional", false)</div>
+    @RenderSection("scripts", false)
+</body>
+</html>
